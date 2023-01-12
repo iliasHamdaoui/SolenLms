@@ -1,3 +1,12 @@
+[![Web Api - Build](https://github.com/iliasHamdaoui/SolenLms/actions/workflows/api_pull_request.yml/badge.svg)](https://github.com/iliasHamdaoui/SolenLms/actions/workflows/api_pull_request.yml)
+[![Web Api - Deploy](https://github.com/iliasHamdaoui/SolenLms/actions/workflows/api_push_main.yml/badge.svg)](https://github.com/iliasHamdaoui/SolenLms/actions/workflows/api_push_main.yml) \
+[![Web Client - Build](https://github.com/iliasHamdaoui/SolenLms/actions/workflows/webclient_pull_request.yml/badge.svg)](https://github.com/iliasHamdaoui/SolenLms/actions/workflows/webclient_pull_request.yml)
+[![Web Client - Deploy](https://github.com/iliasHamdaoui/SolenLms/actions/workflows/webclient_push_main.yml/badge.svg)](https://github.com/iliasHamdaoui/SolenLms/actions/workflows/webclient_push_main.yml) \
+[![Idp - Build](https://github.com/iliasHamdaoui/SolenLms/actions/workflows/idp_pull_request.yml/badge.svg)](https://github.com/iliasHamdaoui/SolenLms/actions/workflows/idp_pull_request.yml)
+[![Idp - Deploy](https://github.com/iliasHamdaoui/SolenLms/actions/workflows/idp_push_main.yml/badge.svg)](https://github.com/iliasHamdaoui/SolenLms/actions/workflows/idp_push_main.yml)
+
+
+
 The Solen LMS is an open source Learning Management System. It's built using the latest version of `ASP.NET Core`. The application was
 designed and developed following the principles of the *Clean Architecture* as defined
 by [Robert C. Martin (aka Uncle Bob)](http://cleancoder.com) in his

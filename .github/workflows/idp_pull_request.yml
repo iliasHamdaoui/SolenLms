@@ -1,0 +1,32 @@
+# Docs for the Azure Web Apps Deploy action: https://github.com/Azure/webapps-deploy
+# More GitHub Actions for Azure: https://github.com/Azure/actions
+
+name: Build Identity Provider On Pull Request
+
+on:
+  pull_request:
+    paths:
+      - IdentityProvider/**
+  workflow_dispatch:
+
+env:
+  STARTUP_PROJECT_PATH: 'IdentityProvider/Src/Presentation/Web/IdentityProvider.Startup.csproj'
+  DOTNET_VERSION: '7.x'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest 
+
+    steps:
+      - uses: actions/checkout@v2
+      
+      - name: Set up .NET Core
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: ${{ env.DOTNET_VERSION }}
+          include-prerelease: true
+
+      - name: Build with dotnet
+        run: dotnet build ${{env.STARTUP_PROJECT_PATH}} --configuration Release
+
+  

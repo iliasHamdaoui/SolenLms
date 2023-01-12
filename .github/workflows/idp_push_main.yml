@@ -1,0 +1,106 @@
+# Docs for the Azure Web Apps Deploy action: https://github.com/Azure/webapps-deploy
+# More GitHub Actions for Azure: https://github.com/Azure/actions
+
+name: Build And Deploy Identity Provider On Push To main
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - IdentityProvider/**
+  workflow_dispatch:
+
+env:
+  AZURE_WEBAPP_NAME: solenlmsdemoidp
+  STARTUP_PROJECT_PATH: 'IdentityProvider/Src/Presentation/Web/IdentityProvider.Startup.csproj'
+  INFRASTRUCTURE_PROJECT_PATH: 'IdentityProvider/Src/Infrastructure/IdentityProvider.Infrastructure.csproj'
+  DOTNET_VERSION: '7.x'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest 
+
+    steps:
+      - uses: actions/checkout@v2
+        
+      - name: Rename appsettings.template.json to appsettings.json (required to execute migrations scripts)
+        run: mv IdentityProvider/Src/Presentation/Web/appsettings.template.json IdentityProvider/Src/Presentation/Web/appsettings.json
+      
+      - name: Set up .NET Core
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: ${{ env.DOTNET_VERSION }}
+          include-prerelease: true
+
+      - name: Build with dotnet
+        run: dotnet build ${{env.STARTUP_PROJECT_PATH}} --configuration Release
+
+      - name: dotnet publish
+        run: dotnet publish ${{env.STARTUP_PROJECT_PATH}} -c Release -o ${{env.DOTNET_ROOT}}/myapp
+
+
+      - name: Install EntityFrameworkCore Tools
+        run: |
+          dotnet new tool-manifest
+          dotnet tool install dotnet-ef
+
+      - name: IdentityDbContext Migration Script
+        run: dotnet ef migrations script --idempotent --no-build --configuration Release --output ${{env.DOTNET_ROOT}}/sql/identity-sql-script.sql --context IdentityDbContext -p ${{env.INFRASTRUCTURE_PROJECT_PATH}} -s ${{env.STARTUP_PROJECT_PATH}}
+
+      - name: ConfigurationDbContext Migration Script
+        run: dotnet ef migrations script --idempotent --no-build --configuration Release --output ${{env.DOTNET_ROOT}}/sql/configuration-sql-script.sql --context ConfigurationDbContext -p ${{env.INFRASTRUCTURE_PROJECT_PATH}} -s ${{env.STARTUP_PROJECT_PATH}}
+
+      - name: PersistedGrantDbContext Migration Script
+        run: dotnet ef migrations script --idempotent --no-build --configuration Release --output ${{env.DOTNET_ROOT}}/sql/persisted-sql-script.sql --context PersistedGrantDbContext -p ${{env.INFRASTRUCTURE_PROJECT_PATH}} -s ${{env.STARTUP_PROJECT_PATH}}
+        
+      - name: Uploading app artifact for deployment job
+        uses: actions/upload-artifact@v2
+        with:
+          name: .net-app
+          path: ${{env.DOTNET_ROOT}}/myapp
+          
+      - name: Uploading sql scripts for deployment job
+        uses: actions/upload-artifact@v3
+        with:
+           name: sql-scripts
+           path: ${{env.DOTNET_ROOT}}/sql/*.sql
+  
+  deploy:
+    runs-on: windows-latest
+    needs: build
+    environment:
+      name: 'Demo'
+      url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
+
+    steps:
+      - name: Download artifact from build job
+        uses: actions/download-artifact@v3
+
+      - name: IdentityDbContext SQL Deploy
+        uses: Azure/sql-action@v2
+        with:
+          connection-string: ${{ secrets.SQL_CONNECTION_STRING_IDP_DEMO }}
+          path: ./sql-scripts/identity-sql-script.sql
+          
+      - name: ConfigurationDbContext SQL Deploy
+        uses: Azure/sql-action@v2
+        with:
+          connection-string: ${{ secrets.SQL_CONNECTION_STRING_IDP_DEMO }}
+          path: ./sql-scripts/configuration-sql-script.sql
+          
+      - name: PersistedGrantDbContext SQL Deploy
+        uses: Azure/sql-action@v2
+        with:
+          connection-string: ${{ secrets.SQL_CONNECTION_STRING_IDP_DEMO }}
+          path: ./sql-scripts/persisted-sql-script.sql
+          
+      - name: Deploy to Azure Web App
+        id: deploy-to-webapp
+        uses: azure/webapps-deploy@v2
+        with:
+          app-name: ${{ env.AZURE_WEBAPP_NAME }}
+          slot-name: 'Production'
+          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_IDP_DEMO }}
+          package: ./.net-app/
+

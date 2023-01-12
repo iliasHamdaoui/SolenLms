@@ -1,0 +1,25 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net7.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+        <RootNamespace>Imanys.SolenLms.Application.Resources.Core.UseCases</RootNamespace>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\Domain\Resources.Domain.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <InternalsVisibleTo Include="Shared.Infrastructure" />
+        <InternalsVisibleTo Include="Resources.Infrastructure" />
+        <InternalsVisibleTo Include="Shared.Tests" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Microsoft.Extensions.Options" Version="7.0.*" />
+        <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="7.0.*" />
+    </ItemGroup>
+
+</Project>

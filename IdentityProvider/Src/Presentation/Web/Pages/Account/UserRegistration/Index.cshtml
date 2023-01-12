@@ -1,0 +1,41 @@
+﻿@page
+@model Imanys.SolenLms.IdentityProvider.Web.Pages.Account.UserRegistration.IndexModel
+<div>
+    <div class="page-header">
+        <h2>Create account</h2>
+
+    </div>
+    <form class="row g-3 mt-3" asp-page="/Account/UserRegistration/Index">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <input type="hidden" asp-for="Input.Email" />
+        <input type="hidden" asp-for="Input.SecurityCode" />
+        <div class="col-md-12">
+            <label asp-for="Input.Email" class="form-label"></label>
+            <input type="email" class="form-control" asp-for="Input.Email" disabled>
+            <span asp-validation-for="Input.Email" class="text-danger"></span>
+        </div>
+        <div class="col-md-6">
+            <label asp-for="Input.GivenName" class="form-label"></label>
+            <input type="text" class="form-control" asp-for="Input.GivenName">
+            <span asp-validation-for="Input.GivenName" class="text-danger"></span>
+        </div>
+        <div class="col-md-6">
+            <label asp-for="Input.FamilyName" class="form-label"></label>
+            <input type="text" class="form-control" asp-for="Input.FamilyName">
+            <span asp-validation-for="Input.FamilyName" class="text-danger"></span>
+        </div>
+        <div class="col-md-6">
+            <label asp-for="Input.Password" class="form-label"></label>
+            <input type="password" class="form-control" asp-for="Input.Password" autocomplete="off">
+            <span asp-validation-for="Input.Password" class="text-danger"></span>
+        </div>
+        <div class="col-md-6">
+            <label asp-for="Input.ConfirmPassword" class="form-label"></label>
+            <input type="password" class="form-control" asp-for="Input.ConfirmPassword" autocomplete="off">
+            <span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
+        </div>
+        <div class="col-12 mt-4">
+            <button type="submit" class="btn btn-primary">Sign up</button>
+        </div>
+    </form>
+</div>

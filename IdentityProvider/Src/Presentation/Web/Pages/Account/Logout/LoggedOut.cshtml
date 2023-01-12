@@ -1,0 +1,22 @@
+@page
+@model Imanys.SolenLms.IdentityProvider.Web.Pages.Logout.LoggedOut
+
+<div class="logged-out-page">
+    @if (Model.View.PostLogoutRedirectUri != null)
+    {
+        <a class="PostLogoutRedirectUri" href="@Model.View.PostLogoutRedirectUri"></a>
+    }
+
+    @if (Model.View.SignOutIframeUrl != null)
+    {
+        <iframe width="0" height="0" class="signout" src="@Model.View.SignOutIframeUrl"></iframe>
+    }
+</div>
+
+@section scripts
+    {
+    @if (Model.View.AutomaticRedirectAfterSignOut)
+    {
+        <script src="~/js/signout-redirect.js"></script>
+    }
+}

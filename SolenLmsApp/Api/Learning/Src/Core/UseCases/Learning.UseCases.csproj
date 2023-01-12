@@ -1,0 +1,23 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFramework>net7.0</TargetFramework>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
+		<RootNamespace>Imanys.SolenLms.Application.Learning.Core.UseCases</RootNamespace>
+	</PropertyGroup>
+
+	<ItemGroup>
+	  <ProjectReference Include="..\Domain\Learning.Domain.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="7.0.*" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<InternalsVisibleTo Include="Shared.Infrastructure" />
+		<InternalsVisibleTo Include="Learning.Infrastructure" />
+	</ItemGroup>
+
+</Project>

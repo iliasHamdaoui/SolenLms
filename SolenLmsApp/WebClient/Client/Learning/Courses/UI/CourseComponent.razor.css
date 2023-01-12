@@ -1,0 +1,24 @@
+﻿.c-details span {
+    font-weight: 300;
+    font-size: 13px
+}
+
+.card {
+    border-left: solid;
+    border-left-width: 5px;
+    border-left-color: grey;
+}
+
+.progress {
+    height: 0.8rem;
+}
+
+.progress-bar {
+    height: 0.8rem;
+}
+
+
+/*.progress div {
+    background-color: #ffc107
+}
+*/

@@ -1,0 +1,11 @@
+﻿<li class="list-group-item m-0 ps-5 d-flex justify-content-between align-items-center">
+    <div>  <i class=@($"me-1 fas fa-solid {IconLecture}")></i>  @($"{Lecture.Order}.{Lecture.Title}")</div>
+    <div>  <span class="me-3"><i class="fas fa-solid fa-hourglass-half me-1"></i>@Lecture.Duration.ToHours()</span></div>
+</li>
+
+@code {
+    [Parameter]
+    public LectureForGetCourseByIdQueryResult Lecture { get; set; } = default!;
+
+    private string IconLecture => Lecture.LectureType == "Video" ? "fa-square-caret-right" : "fa-file-lines";
+}

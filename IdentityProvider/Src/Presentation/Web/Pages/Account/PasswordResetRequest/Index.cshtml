@@ -1,0 +1,35 @@
+﻿@page
+@model Imanys.SolenLms.IdentityProvider.Web.Pages.Account.PasswordResetRequest.IndexModel
+
+
+<div>
+    <div class="page-header">
+        <h2>Password reset request</h2>
+    </div>
+
+    <div class="row">
+        <div class="col-sm-6">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                </div>
+                <div class="panel-body">
+                    <form asp-page="/Account/PasswordResetRequest/Index">
+                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                        <fieldset>
+                            <p>Enter your account email to reset your password.</p>
+                            <div class="mb-3">
+                                <input class="form-control" asp-for="Email" id="Email" placeholder="Your e-mail address" autofocus>
+                                <span asp-validation-for="Email" class="text-danger"></span>
+                            </div>
+                            <div>
+                                <button type="submit" class="btn btn-labeled btn-primary">
+                                    <span class="btn-label"><i class="fa-solid fa-paper-plane me-2"></i></span>Send request
+                                </button>
+                            </div>
+                        </fieldset>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

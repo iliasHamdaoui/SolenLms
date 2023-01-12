@@ -1,0 +1,46 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+	<PropertyGroup>
+		<TargetFramework>net7.0</TargetFramework>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<RootNamespace>Imanys.SolenLms.IdentityProvider.Web</RootNamespace>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Duende.IdentityServer.AspNetIdentity" Version="6.2.0" />
+
+		<PackageReference Include="Microsoft.AspNetCore.Authentication.Google" Version="7.0.*" />
+		<PackageReference Include="Serilog.AspNetCore" Version="6.1.0" />
+
+		<PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="7.0.*" />
+		<PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="7.0.*" />
+		<PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="7.0.*" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="7.0.*" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="7.0.*" />
+	</ItemGroup>
+
+
+	<ItemGroup>
+		<PackageReference Include="NSwag.MSBuild" Version="13.18.2">
+			<PrivateAssets>all</PrivateAssets>
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
+	</ItemGroup>
+
+	<PropertyGroup>
+		<RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
+	</PropertyGroup>
+
+	<Target Name="NSwag" AfterTargets="PostBuildEvent" Condition=" '$(Configuration)' == 'Debug' AND '$(NCrunch)' != '1'">
+		<Message Importance="High" Text="$(NSwagExe_Net70) run /variables:Configuration=$(Configuration)" />
+
+		<Exec WorkingDirectory="$(ProjectDir)" EnvironmentVariables="ASPNETCORE_ENVIRONMENT=Development" Command="$(NSwagExe_Net70) run /variables:Configuration=$(Configuration)" />
+
+		<!-- Avoids accidently triggering an additional project rebuild. -->
+		<Delete Files="$(ProjectDir)\obj\$(MSBuildProjectFile).NSwag.targets" />
+	</Target>
+
+	<ItemGroup>
+	  <ProjectReference Include="..\..\Infrastructure\IdentityProvider.Infrastructure.csproj" />
+	</ItemGroup>
+</Project>

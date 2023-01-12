@@ -1,0 +1,31 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFramework>net7.0</TargetFramework>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
+		<RootNamespace>Imanys.SolenLms.Application.Shared.Infrastructure</RootNamespace>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="11.4.0" />
+		<PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="11.0.0" />
+		<PackageReference Include="MicroElements.Swashbuckle.FluentValidation" Version="5.7.0" />
+		<PackageReference Include="IdentityModel" Version="6.1.0-preview.1" />
+		<PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.21.0" />
+		<PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="7.0.*" />
+		<PackageReference Include="NSwag.AspNetCore" Version="13.18.2" />
+		<PackageReference Include="ZymLabs.NSwag.FluentValidation" Version="0.6.2" />
+		<PackageReference Include="Azure.Messaging.ServiceBus" Version="7.11.1" />
+		<PackageReference Include="Serilog.AspNetCore" Version="6.1.0" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\..\CourseManagement\Src\Infrastructure\CourseManagement.Infrastructure.csproj" />
+		<ProjectReference Include="..\..\Learning\Src\Infrastructure\Learning.Infrastructure.csproj" />
+		<ProjectReference Include="..\..\Resources\Src\Infrastructure\Resources.Infrastructure.csproj" />
+		<ProjectReference Include="..\Presentation\WebApi\Shared.WebApi.csproj" />
+	</ItemGroup>
+
+</Project>
+

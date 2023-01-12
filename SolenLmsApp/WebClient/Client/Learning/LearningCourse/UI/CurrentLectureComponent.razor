@@ -1,0 +1,55 @@
+﻿<h3>@Lecture?.Title</h3>
+
+
+<div style="height:700px;" class="d-flex flex-column">
+
+    @if (Lecture?.Content != null)
+    {
+        @if (Lecture.LectureType == "Article")
+        {
+            <div style="height:100%; overflow: auto;" class="border border-2 p-2 rounded">
+                @((MarkupString)Lecture.Content)
+            </div>
+
+        }
+
+        @if (Lecture.LectureType == "Video")
+        {
+            <BlazoredVideo class="w-100"
+                   controls="controls">
+                <source src="@Lecture.Content" type="video/mp4" />
+            </BlazoredVideo>
+        }
+
+    }
+
+    <div class="d-flex justify-content-between mt-2">
+        <button type="button" class="btn btn-labeled btn-default" @onclick="OnPreviousLectureClicked" disabled=@(Lecture?.PreviousLectureId == null)>
+            <span class="btn-label"><i class="fa fa-chevron-left"></i></span>Previous lecture
+        </button>
+        <button type="button" class="btn btn-labeled btn-default" @onclick="OnNextLectureClicked" disabled=@(Lecture?.NextLectureId == null)>
+            Next lecture <span class="btn-label"><i class="fa fa-chevron-right"></i></span>
+        </button>
+    </div>
+</div>
+
+
+
+
+@code {
+    [Parameter]
+    public LectureForGetCourseToLearnByIdQueryResult? Lecture { get; set; }
+
+    [Parameter]
+    public EventCallback<string> LectureChanged { get; set; }
+
+    private async Task OnPreviousLectureClicked()
+    {
+        await LectureChanged.InvokeAsync(Lecture?.PreviousLectureId);
+    }
+
+    private async Task OnNextLectureClicked()
+    {
+        await LectureChanged.InvokeAsync(Lecture?.NextLectureId);
+    }
+}

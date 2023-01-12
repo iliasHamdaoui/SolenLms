@@ -1,0 +1,24 @@
+﻿@inherits ComponentWithCancellationToken
+@page "/course-management/courses/{CourseId}/content"
+@inject IDispatcher Dispatcher
+@inject IState<CourseDetailState> State
+
+<CascadingValue Value="@State.Value.CurrentCourse?.CourseId" Name="CurrentCourseId">
+    <CascadingValue Value="@State.Value.CurrentModuleId" Name="CurrentModuleId">
+        <CascadingValue Value="@State.Value.CurrentLectureId">
+            <ModulesList Modules="State.Value.CurrentCourse?.Modules?.ToList()"></ModulesList>
+        </CascadingValue>
+    </CascadingValue>
+</CascadingValue>
+
+
+@code {
+
+    [Parameter]
+    public string? CourseId { get; set; }
+
+    protected override void OnParametersSet()
+    {
+        Dispatcher.Dispatch(new LoadCourseAction(CourseId!, CancellationToken));
+    }
+}

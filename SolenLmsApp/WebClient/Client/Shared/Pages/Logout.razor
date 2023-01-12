@@ -1,0 +1,21 @@
+﻿@page "/logout"
+@inject NavigationManager NavigationManager
+
+
+@code {
+
+    [CascadingParameter]
+    private Task<AuthenticationState> authenticationStateTask { get; set; } = default!;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var authState = await authenticationStateTask;
+        var user = authState.User;
+        if (user.Identity?.IsAuthenticated ?? false)
+        {
+            var logoutUrl = user.FindFirst("bff:logout_url")?.Value;
+            if (logoutUrl != null)
+                NavigationManager.NavigateTo(logoutUrl, true);
+        }
+    }
+}

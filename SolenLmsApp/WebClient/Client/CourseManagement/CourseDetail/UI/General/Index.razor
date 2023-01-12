@@ -1,0 +1,17 @@
+﻿@inherits ComponentWithCancellationToken
+@page "/course-management/courses/{CourseId}"
+@inject IDispatcher Dispatcher
+@inject IState<CourseDetailState> State
+
+<GeneralComponent Course="State.Value.CurrentCourse"></GeneralComponent>
+
+@code {
+
+    [Parameter]
+    public string? CourseId { get; set; }
+
+    protected override void OnParametersSet()
+    {
+        Dispatcher.Dispatch(new LoadCourseAction(CourseId!, CancellationToken));
+    }
+}

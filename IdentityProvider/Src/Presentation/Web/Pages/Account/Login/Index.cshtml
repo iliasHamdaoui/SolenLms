@@ -1,0 +1,62 @@
+@page
+@model Imanys.SolenLms.IdentityProvider.Web.Pages.Login.Index
+
+
+
+
+<div class="page-header">
+    <h2>Login</h2>
+    <div>
+        <span>Not registered yet?</span>
+        <a asp-page="/Account/OrganizationRegistration/Index"
+           asp-route-returnUrl="@Model.Input.ReturnUrl">
+            Sign up
+        </a>
+    </div>
+
+</div>
+
+<div class="row mt-3">
+    <div class="col-sm-6">
+
+        <form asp-page="/Account/Login/Index">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="Input.ReturnUrl" />
+
+            <div class="mb-3">
+                <label asp-for="Input.Email" class="form-label"></label>
+                <input class="form-control" asp-for="Input.Email" id="Email" autofocus>
+                <span asp-validation-for="Input.Email" class="text-danger"></span>
+            </div>
+            <div class="mb-3">
+                <label asp-for="Input.Password" class="form-label"></label>
+                <input type="password" class="form-control" asp-for="Input.Password" autocomplete="off">
+            </div>
+
+            <div class="d-flex justify-content-between mb-3">
+
+                <div class="form-check">
+                    <input type="checkbox" class="form-check-input" asp-for="Input.RememberLogin">
+                    <label class="form-check-label" asp-for="Input.RememberLogin">Remember My Login</label>
+                </div>
+                <div class="form-group">
+                    <a asp-page="/Account/PasswordResetRequest/Index">
+                        Forgot your password?
+                    </a>
+                </div>
+            </div>
+
+            <button class="btn btn-primary" name="Input.Button" value="login" data-spinning-button>Login</button>
+
+
+            <div class="form-group mt-3">
+                <a asp-page="/Account/ResendConfirmationEmail/Index">
+                    Resend email confirmation link
+                </a>
+            </div>
+        </form>
+
+    </div>
+</div>
+
+

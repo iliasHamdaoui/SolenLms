@@ -1,0 +1,72 @@
+﻿<div>
+    <EditForm Model="@_command" OnValidSubmit="@HandleValidSubmit">
+        <DataAnnotationsValidator/>
+        <div class="form-floating my-3">
+            <input type="text" class="form-control" id="name" @bind="_command.OrganizationName" @bind:event="oninput" aria-describedby="emailHelpBlock"
+                   maxlength="@MaxLength(nameof(_command.OrganizationName)))"/>
+            <label for="name">Organization name</label>
+            <div id="emailHelpBlock" class="form-text m-1">
+                @_command?.OrganizationName?.Length / @(MaxLength(nameof(_command.OrganizationName)))
+            </div>
+            <ValidationMessage For="@(() => _command!.OrganizationName)"/>
+        </div>
+
+        <div class="form-floating my-3">
+            <input type="text" class="form-control" id="creationDate" value=@Organization?.CreationDate.ToString("dd/MM/yyyy HH:mm") readonly disabled/>
+            <label for="creationDate">Creation Date</label>
+        </div>
+
+        <div class="form-floating my-3">
+            <input type="text" class="form-control" id="userCount" value=@Organization?.UserCount readonly disabled/>
+            <label for="userCount">User Count</label>
+        </div>
+        <div style="text-align: center">
+            <button type="submit" class="btn btn-primary ms-3">Save</button>
+        </div>
+    </EditForm>
+</div>
+
+<div class="mt-5">
+
+    <h2>Danger Zone</h2>
+    <div class="d-flex align-items-center mt-3 border border-danger p-2">
+        <div>
+            Delete this organization <br/>
+            Once deleted, there is no going back. Please be certain.
+        </div>
+        <div class="ms-auto">
+            <button class="btn btn-danger btn-sm" @onclick="(DeleteOrganization)">Delete this organization</button>
+        </div>
+    </div>
+</div>
+
+@code {
+    private UpdateOrganizationCommand _command { get; set; } = new();
+
+    [Parameter]
+    public GetOrganizationQueryResult? Organization { get; set; }
+
+    [Parameter]
+    public EventCallback<UpdateOrganizationCommand> OrganizationUpdated { get; set; }
+
+    [Parameter]
+    public EventCallback OrganizationDeleted { get; set; }
+
+    protected override void OnParametersSet()
+    {
+        if (Organization != null && _command.OrganizationName == null)
+            _command.OrganizationName = Organization.OrganizationName;
+    }
+
+    private async Task HandleValidSubmit()
+    {
+        await OrganizationUpdated.InvokeAsync(_command);
+    }
+
+    private async Task DeleteOrganization()
+    {
+        await OrganizationDeleted.InvokeAsync();
+    }
+
+    private int MaxLength(string prop) => Utils.MaxLength<UpdateOrganizationCommand>(prop);
+}

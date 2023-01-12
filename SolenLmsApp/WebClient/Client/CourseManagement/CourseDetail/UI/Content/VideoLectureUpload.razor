@@ -1,0 +1,121 @@
+﻿@using Microsoft.Extensions.Configuration
+@using System.ComponentModel.DataAnnotations
+@using System.Net.Http.Headers
+@using System.Net.Http.Json
+@inherits ComponentWithCancellationToken
+@inject HttpClient HttpClient
+@inject NotificationsService NotificationsService
+
+<EditForm Model="@_viewModel" OnValidSubmit="@HandleValidSubmit">
+    <DataAnnotationsValidator/>
+    <div class="mb-3">
+        <label for="formFile" class="form-label">Please select a video file to upload</label>
+        <InputFile class="form-control" type="file" id="formFile" OnChange="OnInputFileChange" aria-describedby="fileUploadHelpBlock"/>
+        <div id="fileUploadHelpBlock" class="form-text m-1">
+            Max. size 100 MB. MP4 video format only.
+        </div>
+        <ValidationMessage For="@(() => _viewModel.File)"/>
+    </div>
+
+    <div class="text-center">
+        @if (_isUploading)
+        {
+            <button type="button" class="btn btn-primary btn-sm" disabled>Uploading...</button>
+        }
+        else
+        {
+            <button type="submit" class="btn btn-primary btn-sm">Upload</button>
+        }
+    </div>
+</EditForm>
+
+@code {
+    private bool _isUploading = false;
+    private ViewModel _viewModel = new();
+
+    [Parameter]
+    public LectureForGetCourseByIdQueryResult Lecture { get; set; } = default!;
+
+    [Parameter]
+    public EventCallback OnVideoUploaded { get; set; }
+
+    private void OnInputFileChange(InputFileChangeEventArgs e)
+    {
+        _viewModel.File = e.File;
+    }
+
+    private async Task HandleValidSubmit()
+    {
+        _isUploading = true;
+        using var content = new MultipartFormDataContent();
+
+        var fileContent = new StreamContent(_viewModel.File!.OpenReadStream(DataFileValidator.MaxContentLength));
+
+        content.Add(content: fileContent, name: "\"file\"", fileName: _viewModel.File.Name);
+        fileContent.Headers.ContentType = new MediaTypeHeaderValue(_viewModel.File.ContentType);
+
+        var result = await HttpClient.PutAsync($"api/resources/lectures/{Lecture.ResourceId}/video", content);
+
+        if (result.IsSuccessStatusCode)
+        {
+            var response = await result.Content.ReadFromJsonAsync<RequestResponseOfString>();
+            var message = response?.Message;
+
+            NotificationsService.ShowConfirmation(message);
+
+            await OnVideoUploaded.InvokeAsync();
+        }
+        else
+        {
+            var problem = await result.Content.ReadFromJsonAsync<ProblemDetails>();
+            var message = problem?.Detail;
+            NotificationsService.ShowErreur(message);
+        }
+
+        _isUploading = false;
+    }
+
+    private sealed class DataFileValidator : ValidationAttribute
+    {
+        public static long MaxContentLength = 1024 * 1024 * 100; //100 MB
+
+        public override bool IsValid(object? value)
+        {
+            var allowedFileExtensions = new[] { ".mp4" };
+
+            var file = value as IBrowserFile;
+
+            if (file == null)
+            {
+                ErrorMessage = "The video file is required.";
+                return false;
+            }
+
+            if (file.ContentType == null || file.ContentType.ToLower() != "video/mp4")
+            {
+                ErrorMessage = "The file format is incorrect.";
+                return false;
+            }
+
+            if (!allowedFileExtensions.Contains(file.Name[file.Name.LastIndexOf('.')..].ToLower()))
+            {
+                ErrorMessage = $"The file format is incorrect. Please select {string.Join(", ", allowedFileExtensions)} file type.";
+                return false;
+            }
+            if (file.Size > MaxContentLength)
+            {
+                ErrorMessage = "The file selected is too large. The maximum allowed size is : " + (MaxContentLength / 1024 / 1024) + " MB";
+                return false;
+            }
+
+            return true;
+        }
+    }
+
+    private sealed class ViewModel
+    {
+        [DataFileValidator]
+        public IBrowserFile? File { get; set; }
+    }
+
+}

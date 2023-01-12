@@ -1,0 +1,97 @@
+﻿@inherits ComponentWithCancellationToken
+
+@inject ICoursesModulesClient ModulesClient
+@inject IDispatcher Dispatcher
+@inject NotificationsService NotificationsService
+
+@if (Modules != null && Modules.Any())
+{
+    <Dropzone Items="Modules" TItem="ModuleForGetCourseByIdQueryResult" OnItemDrop="((_)=> OnModulesReordered())" AllowsDrag="((x) => CurrentModuleId !=  x.Id)">
+        <ModulesListItem Module="@context" ModuleDeleted="OnModuleDeleted"></ModulesListItem>
+    </Dropzone>
+    <div class="d-flex justify-content-end">
+        <button type="button" class="btn btn-primary btn-sm" aria-label="Left Align" @onclick="(() => ShowAddNewModuleModal())" title="Add new module">
+            <span class="fas fa-solid fa-plus" aria-hidden="true"></span>
+        </button>
+    </div>
+}
+else
+{
+    <div class="d-flex justify-content-center align-items-center flex-column" style="height:100%">
+        <span>No module found.</span>
+        <button class="btn btn-primary btn-sm" @onclick="(() => ShowAddNewModuleModal())">Add new module</button>
+    </div>
+}
+
+
+@code {
+
+
+    [Parameter]
+    public List<ModuleForGetCourseByIdQueryResult>? Modules { get; set; }
+
+    [CascadingParameter(Name = "CurrentCourseId")]
+    public string? CurrentCourseId { get; set; }
+
+
+    [CascadingParameter(Name = "CurrentModuleId")]
+    public string? CurrentModuleId { get; set; }
+
+    [CascadingParameter]
+    public IModalService? Modal { get; set; }
+
+    private async Task OnModuleDeleted(ModuleForGetCourseByIdQueryResult module)
+    {
+        try
+        {
+            var response = await ModulesClient.DeleteModuleAsync(CurrentCourseId, module.Id);
+
+            NotificationsService.ShowConfirmation(response.Message);
+
+            Dispatcher.Dispatch(new LoadCourseAction(CurrentCourseId!, CancellationToken));
+        }
+        catch (ApiException<ProblemDetails> exception)
+        {
+            NotificationsService.ShowErreur(exception.Result.Detail);
+        }
+    }
+
+    async Task ShowAddNewModuleModal()
+    {
+        var parameters = new ModalParameters();
+
+        parameters.Add(nameof(AddNewModuleModal.CourseId), CurrentCourseId!);
+
+        var options = new ModalOptions { HideCloseButton = true };
+
+        var messageForm = Modal!.Show<AddNewModuleModal>("New Module", parameters, options);
+        var result = await messageForm.Result;
+
+        if (!result.Cancelled)
+        {
+            Dispatcher.Dispatch(new LoadCourseAction(CurrentCourseId!, CancellationToken));
+        }
+
+    }
+
+    private async Task OnModulesReordered()
+    {
+        try
+        {
+            var modulesOrders = new List<ModuleOrder>();
+
+            for (int i = 0; i < Modules!.Count; i++)
+                modulesOrders.Add(new ModuleOrder { ModuleId = Modules[i].Id, Order = i + 1 });
+
+            var response = await ModulesClient.UpdateModuleOrdersAsync(CurrentCourseId!, new UpdateModulesOrdersCommand { ModulesOrders = modulesOrders }, CancellationToken);
+
+            NotificationsService.ShowConfirmation(response.Message);
+
+            Dispatcher.Dispatch(new LoadCourseAction(CurrentCourseId!, CancellationToken));
+        }
+        catch (ApiException<ProblemDetails> exception)
+        {
+            NotificationsService.ShowErreur(exception.Result.Detail);
+        }
+    }
+}

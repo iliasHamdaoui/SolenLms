@@ -1,0 +1,55 @@
+﻿@using Microsoft.Extensions.Configuration
+@using Microsoft.Extensions.Options
+@inherits ComponentWithCancellationToken
+@inject IResourcesClient ResourcesClient
+@inject IConfiguration Configuration
+@inject NotificationsService NotificationsService
+@inject IOptions<VideoResourcesUrl> videoResourceUrlOptions
+
+@if (_contentSet)
+{
+    <BlazoredVideo class="w-100"
+               controls="controls">
+        <source src="@VideoUrl" type="video/mp4" />
+    </BlazoredVideo>
+}
+else
+{
+    <VideoLectureUpload Lecture="@Lecture" OnVideoUploaded="OnLectureUploaded"></VideoLectureUpload>
+}
+
+@code {
+    private bool _contentSet;
+
+    [Parameter]
+    public LectureForGetCourseByIdQueryResult Lecture { get; set; } = default!;
+    [Parameter]
+    public EventCallback LectureUpdated { get; set; }
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        await CheckContent();
+    }
+
+    private string VideoUrl => $"{videoResourceUrlOptions.Value.Value}/{Lecture.ResourceId}";
+
+    private async Task CheckContent()
+    {
+        try
+        {
+            var result = await ResourcesClient.CheckLectureContentAsync(Lecture.ResourceId, CancellationToken);
+            _contentSet = result.Data;
+        }
+        catch (ApiException<ProblemDetails> exception)
+        {
+            NotificationsService.ShowErreur(exception.Result.Detail);
+        }
+    }
+
+    private async Task OnLectureUploaded()
+    {
+        await CheckContent();
+        await LectureUpdated.InvokeAsync();
+    }
+}

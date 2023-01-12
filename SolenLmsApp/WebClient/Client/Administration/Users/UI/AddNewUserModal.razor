@@ -1,0 +1,116 @@
+﻿@inherits ComponentWithCancellationToken
+
+@inject IUsersClient UsersClient
+@inject NotificationsService NotificationsService
+
+
+<div style="width:400px">
+    <EditForm Model="@_command" OnValidSubmit="@HandleValidSubmit">
+        <DataAnnotationsValidator />
+
+        <div class="form-floating mb-3">
+            <input type="email" class="form-control shadow-none" id="email" @bind="_command.Email" @bind:event="oninput" aria-describedby="emailHelpBlock"
+                   maxlength="@MaxLength(nameof(_command.Email)))" placeholder="Email" />
+            <label for="email">Email</label>
+            <div id="emailHelpBlock" class="form-text m-1">
+                @_command?.Email?.Length / @(MaxLength(nameof(_command.Email)))
+            </div>
+            <ValidationMessage For="@(() => _command!.Email)" />
+        </div>
+
+        <div class="form-floating mb-3">
+            <input type="text" class="form-control shadow-none" id="givenName" @bind="_command!.GivenName" @bind:event="oninput" aria-describedby="givenNameHelpBlock"
+                   maxlength="@MaxLength(nameof(_command.GivenName)))" placeholder="Given name" />
+            <label for="givenName">Family Name</label>
+            <div id="givenNameHelpBlock" class="form-text m-1">
+                @_command?.GivenName?.Length / @(MaxLength(nameof(_command.GivenName)))
+            </div>
+            <ValidationMessage For="@(() => _command!.GivenName)" />
+        </div>
+
+        <div class="form-floating mb-3">
+            <input type="text" class="form-control shadow-none" id="familyName" @bind="_command!.FamilyName" @bind:event="oninput" aria-describedby="familyNameHelpBlock"
+                   maxlength="@MaxLength(nameof(_command.FamilyName)))" placeholder="Family name" />
+            <label for="familyName">Family Name</label>
+            <div id="familyNameHelpBlock" class="form-text m-1">
+                @_command?.FamilyName?.Length / @(MaxLength(nameof(_command.FamilyName)))
+            </div>
+            <ValidationMessage For="@(() => _command!.FamilyName)" />
+        </div>
+        <div class="mb-4">
+            <fieldset>
+                <legend>Roles</legend>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="" id="learneRole" checked disabled>
+                    <label class="form-check-label" for="learneRole">
+                        Learner
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="" id="adminRole" @onchange='((eventArgs) => OnRoleClicked(eventArgs, "Admin"))'>
+                    <label class="form-check-label" for="adminRole">
+                        Admin
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="" id="instructorRole" @onchange='((eventArgs) => OnRoleClicked(eventArgs, "Instructor"))'>
+                    <label class="form-check-label" for="instructorRole">
+                        Instructor
+                    </label>
+                </div>
+            </fieldset>
+        </div>
+        <div style="text-align: center">
+            <button type="button" class="btn btn-secondary" @onclick="Cancel">Cancel</button>
+            <button type="submit" class="btn btn-primary ms-3">Add</button>
+        </div>
+    </EditForm>
+</div>
+
+
+@code {
+    private AddUserCommand _command { get; set; } = new() { FamilyName = string.Empty, GivenName = string.Empty, Email = string.Empty, Roles = new List<string>() };
+
+    [CascadingParameter]
+    BlazoredModalInstance BlazoredModal { get; set; } = default!;
+
+    private async Task HandleValidSubmit()
+    {
+        try
+        {
+            var result = await UsersClient.AddUserAsync(_command, CancellationToken);
+            NotificationsService.ShowConfirmation(result.Message);
+            await BlazoredModal.CloseAsync();
+        }
+        catch (ApiException<ProblemDetails> exception)
+        {
+            NotificationsService.ShowErreur(exception.Result.Detail);
+            return;
+        }
+    }
+
+    private void OnRoleClicked(ChangeEventArgs arg, string role)
+    {
+        var isChecked = arg.Value as bool?;
+        if (isChecked is null)
+            return;
+
+        if (isChecked.Value)
+        {
+            if (!_command.Roles.Contains(role))
+                _command.Roles.Add(role);
+        }
+        else
+        {
+            if (_command.Roles.Contains(role))
+                _command.Roles.Remove(role);
+        }
+    }
+
+
+
+    async Task Cancel() => await BlazoredModal.CancelAsync();
+
+
+    private int MaxLength(string prop) => Utils.MaxLength<AddUserCommand>(prop);
+}

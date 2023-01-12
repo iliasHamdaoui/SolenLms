@@ -1,0 +1,16 @@
+﻿@page "/"
+
+
+<PageTitle>Welcome to Solen LMS</PageTitle>
+
+
+
+
+<AuthorizeView>
+    <Authorized>
+        <LoggedUserIndex></LoggedUserIndex>
+    </Authorized>
+    <NotAuthorized>
+        <UnloggedUserIndex></UnloggedUserIndex>
+    </NotAuthorized>
+</AuthorizeView>

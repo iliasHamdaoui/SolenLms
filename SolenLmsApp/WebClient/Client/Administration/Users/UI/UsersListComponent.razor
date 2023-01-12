@@ -1,0 +1,77 @@
+﻿<div class="table-responsive border-0 mt-3">
+    <table class="table align-middle p-4 mb-0">
+        <thead class="table-dark">
+            <tr>
+                <th scope="col" class="border-0 rounded-start text-center">Family Name</th>
+                <th scope="col" class="border-0 text-center">Given Name </th>
+                <th scope="col" class="border-0 text-center">Email </th>
+                <th scope="col" class="border-0 text-center">Role(s) </th>
+                <th scope="col" class="border-0 text-center">Status </th>
+                <th scope="col" class="border-0 rounded-end text-center">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (Users is null || !Users.Any())
+            {
+                <tr>
+                    <td colspan="3" class="text-center">
+                        No users found.
+                    </td>
+                </tr>
+            }
+            else
+            {
+                @foreach (var user in Users!)
+                {
+                    <tr>
+                        <td class="text-center">
+                            @user.FamilyName
+                        </td>
+                        <td class="text-center">
+                            @user.GivenName
+                        </td>
+                        <td class="text-center">
+                            @user.Email
+                        </td>
+                        <td class="text-center">
+                            @(string.Join(", ", user.Roles))
+                        </td>
+                        <td class="text-center">
+                            @user.Status
+                        </td>
+                        <td class="text-center">
+                            <i class="fa-solid fa-trash me-2" style="cursor:pointer" title="Delete the user" @onclick="() => OnUserDeleted(user.Email)"></i>
+
+                            @if (user.Status != "Active")
+                            {
+                                <i class="fa-solid fa-rotate-right me-2" style="cursor:pointer" title="Regenerate registration code" @onclick="() => OnCodeRegenerationClicked(user.Email)"></i>
+                            }
+                        </td>
+                    </tr>
+                }
+            }
+
+        </tbody>
+    </table>
+</div>
+
+@code {
+    [Parameter]
+    public ICollection<UserForGetUsersQueryResult>? Users { get; set; }
+
+    [Parameter]
+    public EventCallback<string> CodeRegenerationClicked { get; set; }
+
+    [Parameter]
+    public EventCallback<string> UserDeleted { get; set; }
+
+    private async Task OnCodeRegenerationClicked(string userEmail)
+    {
+        await CodeRegenerationClicked.InvokeAsync(userEmail);
+    }
+
+    private async Task OnUserDeleted(string userEmail)
+    {
+        await UserDeleted.InvokeAsync(userEmail);
+    }
+}

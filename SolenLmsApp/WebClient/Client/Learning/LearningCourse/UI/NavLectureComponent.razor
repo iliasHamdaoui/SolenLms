@@ -1,0 +1,23 @@
+﻿<li class=@($"list-group-item m-0 ps-1 d-flex justify-content-between align-items-center {Background}") style="cursor:pointer" @onclick="OnLectureSelected">
+    <div>  <i class=@($"me-1 fas fa-solid {IconLecture}")></i>  @($"{Lecture.Order}.{Lecture.Title}")</div>
+    <div>  <span class="me-3">@Lecture.Duration.ToHours()</span></div>
+</li>
+
+@code {
+    [Parameter]
+    public LectureForGetCourseToLearnByIdQueryResult Lecture { get; set; } = default!;
+    [Parameter]
+    public bool IsCurrentLecture { get; set; }
+    [Parameter]
+    public EventCallback<string> LectureSelected { get; set; }
+
+
+    private string IconLecture => Lecture.LectureType == "Video" ? "fa-square-caret-right" : "fa-file-lines";
+    private string Background => IsCurrentLecture ? "bg-secondary text-white" : string.Empty;
+
+    private async Task OnLectureSelected()
+    {
+        await LectureSelected.InvokeAsync(Lecture.Id);
+    }
+
+}

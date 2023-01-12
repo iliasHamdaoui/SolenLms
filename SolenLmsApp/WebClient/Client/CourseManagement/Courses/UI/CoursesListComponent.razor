@@ -1,0 +1,97 @@
+﻿@if (Courses.Any())
+{
+    <div class="table-responsive border-0">
+        <table class="table align-middle p-4 mb-0 table-hover">
+            <thead class="table-dark">
+                <tr>
+                    <th scope="col" class="border-0 rounded-start" @onclick="@(() => SortTable("courseTitle"))" style="cursor:pointer">Course Title <span class="fas @(GetSortStyle("courseTitle"))"></span></th>
+                    <th scope="col" class="border-0" @onclick="@(() => SortTable("instructor"))" style="cursor:pointer">Instructor <span class="fas @(GetSortStyle("instructor"))"></span></th>
+                    <th scope="col" class="border-0" @onclick="@(() => SortTable("lastUpdate"))" style="cursor:pointer">Last update <span class="fas @(GetSortStyle("lastUpdate"))"></span></th>
+                    <th scope="col" class="border-0 rounded-end">Is Published ?</th>
+                </tr>
+            </thead>
+            <tbody>
+
+                @foreach (var course in Courses)
+                {
+                    <tr @key="course.Id" @onclick="(() => CourseSelected(course.Id))" style="cursor: pointer">
+                        <td>
+                            <div class="d-flex align-items-center">
+                                <div class="mb-0 ms-2">
+                                    <h6>@course.Title</h6>
+                                    <div class="d-sm-flex">
+                                        <p class="h6 fw-light mb-0 small me-3"><i class="fas fa-solid fa-hourglass-half me-2"></i>@course.Duration.ToHours()</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="text-center text-sm-start">@course.InstructorName</td>
+                        <td>
+                            @course.LastUpdate.ToString("dd/MM/yyyy HH:mm")
+                        </td>
+                        <td>
+                            @(course.IsPublished ? "Yes" : "No")
+                        </td>
+                    </tr>
+                }
+            </tbody>
+
+        </table>
+    </div>
+    <div class="d-flex justify-content-center mt-2">
+        <Paginator PageSize="Query.PageSize" TotalItems="CourseTotalCount" Current="Query.Page" PageSelected="OnPageSelected" />
+    </div>
+}
+else
+{
+
+    <div class="d-flex justify-content-center align-items-center border border-2 rounded" style="height:100%">
+        <span class="h4">No courses found.</span>
+    </div>
+}
+@code {
+    [Parameter]
+    public ICollection<CoursesListItem> Courses { get; set; } = default!;
+
+    [Parameter]
+    public int CourseTotalCount { get; set; }
+
+    [Parameter]
+    public GetAllCoursesQuery Query { get; set; } = default!;
+
+    [Parameter]
+    public EventCallback<string> OnCourseSelected { get; set; }
+
+    [Parameter]
+    public EventCallback<int> PageSelected { get; set; }
+
+    [Parameter]
+    public EventCallback<Tuple<string, bool>> ColumnSorted { get; set; }
+
+    private async Task CourseSelected(string courseId)
+    {
+        await OnCourseSelected.InvokeAsync(courseId);
+    }
+
+    private async Task OnPageSelected(int page)
+    {
+        await PageSelected.InvokeAsync(page);
+    }
+
+    private async Task SortTable(string columnName)
+    {
+        if (columnName != Query.OrderBy)
+            await ColumnSorted.InvokeAsync(new Tuple<string, bool>(columnName, false));
+        else
+            await ColumnSorted.InvokeAsync(new Tuple<string, bool>(columnName, !Query.IsSortDescending));
+    }
+
+    private string GetSortStyle(string columnName)
+    {
+        if (Query.OrderBy != columnName)
+
+            return string.Empty;
+
+        return Query.IsSortDescending ? "fa-sort-down" : "fa-sort-up";
+    }
+}

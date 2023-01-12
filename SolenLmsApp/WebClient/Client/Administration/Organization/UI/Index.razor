@@ -1,0 +1,74 @@
+﻿@inherits ComponentWithCancellationToken
+@inject IDispatcher Dispatcher
+@inject IState<OrganizationState> State
+@inject IOrganizationsClient OrganizationsClient
+@inject NotificationsService NotificationsService
+@inject NavigationManager NavigationManager
+
+@page "/admin"
+@page "/admin/organization"
+
+
+<OrganizationInfoComponent Organization="State.Value.Organization" 
+        OrganizationUpdated="OnOrganizationUpdated"
+        OrganizationDeleted="OnDeleteOrganization" />
+
+
+@code {
+
+    [CascadingParameter]
+    private Task<AuthenticationState> AuthenticationStateTask { get; set; } = default!;
+
+    [CascadingParameter]
+    public IModalService? Modal { get; set; }
+
+    protected override void OnParametersSet()
+    {
+        Dispatcher.Dispatch(new LoadOrganizationAction(CancellationToken));
+    }
+
+
+    private async Task OnOrganizationUpdated(UpdateOrganizationCommand command)
+    {
+        try
+        {
+            var result = await OrganizationsClient.UpdateOrganizationAsync(command, CancellationToken);
+            Dispatcher.Dispatch(new LoadOrganizationAction(CancellationToken));
+            Dispatcher.Dispatch(new LoadOrganizationNameAction());
+            NotificationsService.ShowConfirmation(result.Message);
+        }
+        catch (ApiException<ProblemDetails> exception)
+        {
+            NotificationsService.ShowErreur(exception.Result.Detail);
+        }
+    }
+
+    private async Task OnDeleteOrganization()
+    {
+        var options = new ModalOptions { HideCloseButton = true };
+        var parameters = new ModalParameters { { nameof(ConfirmDeletionModal.Message), "Are you sure you want to delete this organization?" } };
+
+        var confirmationModal = Modal!.Show<ConfirmDeletionModal>("Confirmation", parameters, options);
+        var confirmationResult = await confirmationModal.Result;
+
+        if (confirmationResult.Cancelled)
+            return;
+
+        try
+        {
+            await OrganizationsClient.DeleteOrganizationAsync(CancellationToken);
+
+            var authState = await AuthenticationStateTask;
+            var user = authState.User;
+            if (user.Identity?.IsAuthenticated ?? false)
+            {
+                var logoutUrl = user.FindFirst("bff:logout_url")?.Value;
+                NavigationManager.NavigateTo(logoutUrl!, true);
+            }
+        }
+        catch (ApiException<ProblemDetails> exception)
+        {
+            NotificationsService.ShowErreur(exception.Result.Detail);
+        }
+    }
+}

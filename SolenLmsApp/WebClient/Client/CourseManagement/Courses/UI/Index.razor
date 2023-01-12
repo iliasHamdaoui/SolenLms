@@ -1,0 +1,113 @@
+﻿@inherits ComponentWithCancellationToken
+@page "/course-management"
+@page "/course-management/courses"
+@page "/course-management/courses/all"
+@inject IDispatcher Dispatcher
+@inject IState<CoursesState> State
+@inject NavigationManager NavigationManager
+
+
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-lg-3 mt-5">
+            @if (State.Value.Categories is not null && State.Value.Instructors is not null)
+            {
+                <FiltersComponent Categories="@State.Value.Categories" Instructors="@State.Value.Instructors"
+                              Query="State.Value.GetCoursesQuery"
+                              CategorySelected="OnCategorySelected"
+                              InstructorSelected="OnInstructorSelected"
+                              ResetFilters="OnResetFilters">
+                </FiltersComponent>
+            }
+            else
+            {
+                <FiltersLoadingComponent></FiltersLoadingComponent>
+            }
+        </div>
+        <div class="col-lg-9">
+            <div class="row mb-3">
+                <div class="d-flex justify-content-center">
+                    <button class="btn btn-primary btn-sm" @onclick="OnCreateCourseButtonClicked">New course</button>
+                </div>
+            </div>
+            @if (State.Value.Courses is not null)
+            {
+                <CoursesListComponent Courses="State.Value?.Courses"
+                                  CourseTotalCount="State.Value!.CourseTotalCount"
+                                  Query="State.Value.GetCoursesQuery"
+                                  OnCourseSelected="OnCourseSelected"
+                                  PageSelected="OnPageSelected"
+                                  ColumnSorted="OnColumnSorted">
+
+                </CoursesListComponent>
+            }
+            else
+            {
+                <CoursesListLoadingComponent></CoursesListLoadingComponent>
+            }
+        </div>
+    </div>
+
+
+</div>
+
+
+
+@code {
+
+    [CascadingParameter]
+    public IModalService? Modal { get; set; }
+
+    protected override Task OnInitializedAsync()
+    {
+        base.OnInitializedAsync();
+        Dispatcher.Dispatch(new LoadCoursesAction(CancellationToken));
+        Dispatcher.Dispatch(new LoadFiltersAction(CancellationToken));
+        return Task.CompletedTask;
+    }
+
+    public async Task OnCreateCourseButtonClicked()
+    {
+        var options = new ModalOptions { HideCloseButton = true };
+
+        var messageForm = Modal!.Show<AddNewCourseModal>("New Course", options);
+        await messageForm.Result;
+    }
+
+
+    private void OnCourseSelected(string courseId)
+    {
+        NavigationManager.NavigateTo($"course-management/courses/{courseId}");
+    }
+
+    private void OnPageSelected(int page)
+    {
+        Dispatcher.Dispatch(new SetCoursesListPageAction(page));
+        Dispatcher.Dispatch(new LoadCoursesAction(CancellationToken));
+    }
+
+    private void OnCategorySelected(string categories)
+    {
+        Dispatcher.Dispatch(new SetCoursesListCategoriesAction(categories));
+        Dispatcher.Dispatch(new LoadCoursesAction(CancellationToken));
+    }
+
+    private void OnInstructorSelected(string instructors)
+    {
+        Dispatcher.Dispatch(new SetCoursesListInstructorsAction(instructors));
+        Dispatcher.Dispatch(new LoadCoursesAction(CancellationToken));
+    }
+
+    private void OnColumnSorted(Tuple<string, bool> columnTuple)
+    {
+
+        Dispatcher.Dispatch(new SetCoursesListSortedColumnAction(columnTuple.Item1, columnTuple.Item2));
+        Dispatcher.Dispatch(new LoadCoursesAction(CancellationToken));
+    }
+
+    private void OnResetFilters()
+    {
+        Dispatcher.Dispatch(new ResetCoursesListFiltersAction());
+        Dispatcher.Dispatch(new LoadCoursesAction(CancellationToken));
+    }
+}

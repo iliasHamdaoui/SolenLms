@@ -1,0 +1,25 @@
+﻿<div>
+    <p>@Message</p>
+
+    <button @onclick="Annuler" class="btn btn-secondary">Cancel</button>
+    <button @onclick="Confirmer" class="btn btn-danger ms-2">Delete</button>
+
+</div>
+
+@code {
+
+    [CascadingParameter] BlazoredModalInstance? BlazoredModal { get; set; }
+
+    [Parameter]
+    public string? Message { get; set; }
+
+    protected override void OnParametersSet()
+    {
+        Message ??= "Are you sure you want to delete this item?";
+    }
+
+    async Task Confirmer() => await BlazoredModal!.CloseAsync(ModalResult.Ok(true));
+    async Task Annuler() => await BlazoredModal!.CancelAsync();
+
+}
+

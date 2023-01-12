@@ -1,0 +1,10 @@
+﻿global using AutoFixture.Xunit2;
+global using FluentAssertions;
+global using Imanys.SolenLms.Application.Shared.Core;
+global using Imanys.SolenLms.Application.Shared.Tests.Extensions;
+global using System;
+global using System.Net;
+global using System.Net.Http;
+global using System.Net.Http.Json;
+global using System.Threading.Tasks;
+global using Xunit;

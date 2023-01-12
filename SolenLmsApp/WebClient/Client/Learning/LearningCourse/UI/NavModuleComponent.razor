@@ -1,0 +1,66 @@
+﻿<div class="card border-0">
+    <div class="card-header alert alert-primary mb-0">
+        <div class="d-flex flex-row align-items-center">
+            <span @onclick="(() => ToggleCollapse())" style="cursor:pointer">@($"{Module.Order}.{Module.Title}")</span>
+            <span class="ms-auto me-3">@Module.Duration.ToHours()</span>
+            <i class=@($"fas fa-solid {_toggleIcon}") @onclick="(() => ToggleCollapse())" style="cursor:pointer"></i>
+        </div>
+    </div>
+    <div class="@_collapseCss">
+        <div class="card-body p-0">
+            @if (_showContent)
+            {
+                <ul class="list-group p-0 m-0 list-group-flush">
+                    @foreach (var lecture in Module.Lectures)
+                    {
+                        <NavLectureComponent Lecture="lecture" 
+                            IsCurrentLecture="CurrentLecture?.Id == lecture.Id"
+                            LectureSelected="OnLectureSelected"
+                            @key="lecture.Id">
+                        </NavLectureComponent>
+                    }
+                </ul>
+            }
+        </div>
+    </div>
+
+</div>
+
+@code {
+
+    private string accordion = string.Empty;
+    private string _collapseCss = "collapse";
+    private string _toggleIcon = "fa-plus";
+    private bool _showContent = false;
+
+    [Parameter]
+    public ModuleForGetCourseToLearnByIdQueryResult Module { get; set; } = default!;
+    [Parameter]
+    public LectureForGetCourseToLearnByIdQueryResult? CurrentLecture { get; set; }
+    [Parameter]
+    public EventCallback<string> LectureSelected { get; set; }
+
+    protected override void OnParametersSet()
+    {
+        accordion = $"m{Module.Id}";
+        _showContent = Module.Lectures.Any(x => x.Id == CurrentLecture?.Id);
+        SetCss();
+    }
+
+    private void ToggleCollapse()
+    {
+        _showContent = !_showContent;
+        SetCss();
+    }
+
+    private void SetCss()
+    {
+        _collapseCss = _showContent ? "collapse show" : "collapse";
+        _toggleIcon = _showContent ? "fa-minus" : "fa-plus";
+    }
+
+    private async Task OnLectureSelected(string lectureId)
+    {
+        await LectureSelected.InvokeAsync(lectureId);
+    }
+}

@@ -1,0 +1,64 @@
+﻿@if (Courses.Any())
+{
+    <div class="container mt-3 mb-3">
+        @foreach (var course in Courses)
+        {
+            <CourseComponent Course="course" BookmarkToggled="ToggleBookmark" CourseSelected="OnCourseSelected" GoToCourseClicked="OnGoToCourseClicked"></CourseComponent>
+        }
+
+    </div>
+    <div class="d-flex justify-content-center mt-2">
+        <Paginator PageSize="Query.PageSize" TotalItems="CourseTotalCount" Current="Query.Page" PageSelected="OnPageSelected" />
+    </div>
+}
+else
+{
+    <div class="mt-3 d-flex justify-content-center align-items-center border border-2 rounded" style="height:100%">
+        <span class="h4">No courses found.</span>
+    </div>
+}
+
+@code {
+    [Parameter]
+    public ICollection<CoursesListItem> Courses { get; set; } = default!;
+
+    [Parameter]
+    public int CourseTotalCount { get; set; }
+
+    [Parameter]
+    public GetAllCoursesQuery Query { get; set; } = default!;
+
+    [Parameter]
+    public EventCallback<string> CourseSelected { get; set; }
+
+    [Parameter]
+    public EventCallback<string> GoToCourseClicked { get; set; }
+
+    [Parameter]
+    public EventCallback<int> PageSelected { get; set; }
+
+    [Parameter]
+    public EventCallback<string> BookmarkToggled { get; set; }
+
+
+
+    private async Task OnCourseSelected(string courseId)
+    {
+        await CourseSelected.InvokeAsync(courseId);
+    }
+
+    private async Task OnGoToCourseClicked(string courseId)
+    {
+        await GoToCourseClicked.InvokeAsync(courseId);
+    }
+
+    private async Task OnPageSelected(int page)
+    {
+        await PageSelected.InvokeAsync(page);
+    }
+
+    private async Task ToggleBookmark(string courseId)
+    {
+        await BookmarkToggled.InvokeAsync(courseId);
+    }
+}

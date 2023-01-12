@@ -1,0 +1,23 @@
+﻿@if (Course is not null)
+{
+    @foreach (var module in Course.Modules)
+    {
+        <NavModuleComponent Module="module" CurrentLecture="CurrentLecture" LectureSelected="OnLectureSelected">
+            
+        </NavModuleComponent>
+    }
+}
+
+@code {
+    
+    [Parameter]
+    public GetCourseToLearnByIdQueryResult? Course { get; set; }
+    [Parameter]
+    public LectureForGetCourseToLearnByIdQueryResult? CurrentLecture { get; set; }
+    [Parameter]
+    public EventCallback<string> LectureSelected { get; set; }
+    private async Task OnLectureSelected(string lectureId)
+    {
+        await LectureSelected.InvokeAsync(lectureId);
+    }
+}

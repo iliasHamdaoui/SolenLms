@@ -1,0 +1,96 @@
+﻿<div class="d-flex flex-column align-items-center">
+    <nav aria-label="...">
+        <ul class="pagination pagination-sm">
+            @foreach (LinkModel link in _links)
+            {
+                <li @onclick="(() => OnPageSelected(link))"
+                style="cursor:pointer"
+                class="page-item @(link.IsEnabled ? null: "disabled") @(link.IsActive ? "active": null)">
+                    <span class="page-link">@((MarkupString)@link.Text)</span>
+                </li>
+            }
+        </ul>
+    </nav>
+
+    <div class="text-center">
+        <small class="form-text">1–@_totalPages of @TotalItems courses</small>
+    </div>
+</div>
+
+@code {
+
+    private List<LinkModel> _links = new();
+    private int _totalPages;
+
+
+    [Parameter]
+    public int Current { get; set; } = 1;
+    [Parameter]
+    public int TotalItems { get; set; } = 0;
+    [Parameter]
+    public int PageSize { get; set; } = 10;
+    [Parameter]
+    public int Radius { get; set; } = 3;
+    [Parameter]
+    public EventCallback<int> PageSelected { get; set; }
+
+
+    protected override Task OnParametersSetAsync()
+    {
+        LoadLinks();
+
+        return Task.CompletedTask;
+    }
+
+    private void LoadLinks()
+    {
+        _links = new List<LinkModel>();
+
+        _links.Add(new LinkModel(Current - 1, Current != 1, "&laquo;"));
+
+        _totalPages = (int)Math.Ceiling(TotalItems / (double)PageSize);
+
+        for (int i = 1; i <= _totalPages; i++)
+            if (i >= Current - Radius && i <= Current + Radius)
+                _links.Add(new LinkModel(i) { IsActive = Current == i });
+
+        _links.Add(new LinkModel(Current + 1, Current != _totalPages, "&raquo;"));
+    }
+
+    private async Task OnPageSelected(LinkModel link)
+    {
+        if (link.Page == Current || link.IsEnabled == false)
+            return;
+
+        Current = link.Page;
+
+        await PageSelected.InvokeAsync(link.Page);
+    }
+
+
+    public class LinkModel
+    {
+        public LinkModel(int page) : this(page, true)
+        {
+
+        }
+
+        public LinkModel(int page, bool isEnabled) : this(page, isEnabled, page.ToString())
+        {
+
+        }
+
+        public LinkModel(int page, bool isEnabled, string text)
+        {
+            Page = page;
+            IsEnabled = isEnabled;
+            Text = text;
+        }
+
+        public string Text { get; set; }
+        public int Page { get; set; }
+        public bool IsEnabled { get; set; } = true;
+        public bool IsActive { get; set; }
+    }
+
+}

@@ -1,0 +1,65 @@
+﻿@inherits ComponentWithCancellationToken
+
+@inject ICoursesLecturesClient LecturesClient
+@inject NotificationsService NotificationsService
+
+<div style="width:300px">
+    <EditForm Model="@Command" OnValidSubmit="@HandleValidSubmit">
+
+        <DataAnnotationsValidator />
+
+        <div class="form-floating mb-3">
+            <input type="text" class="form-control shadow-none" id="title" @bind="Command.LectureTitle" @bind:event="oninput" aria-describedby="titleHelpBlock"
+                   maxlength="@MaxLength(nameof(Command.LectureTitle)))" placeholder="Title" />
+            <label for="title">Title</label>
+            <div id="titleHelpBlock" class="form-text m-1">
+                @Command?.LectureTitle?.Length / @(MaxLength(nameof(Command.LectureTitle)))
+            </div>
+            <ValidationMessage For="@(() => Command!.LectureTitle)" />
+        </div>
+
+
+        <div style="text-align: center">
+            <button type="button" class="btn btn-secondary" @onclick="Cancel">Cancel</button>
+            <button type="submit" class="btn btn-primary ms-3">Update</button>
+        </div>
+
+
+    </EditForm>
+</div>
+
+
+@code {
+    [CascadingParameter]
+    BlazoredModalInstance BlazoredModal { get; set; } = default!;
+
+    [Parameter]
+    public UpdateLectureCommand Command { get; set; } = default!;
+    [Parameter]
+    public string CourseId { get; set; } = default!;
+    [Parameter]
+    public string ModuleId { get; set; } = default!;
+    [Parameter]
+    public string LectureId { get; set; } = default!;
+
+
+
+    private async Task HandleValidSubmit()
+    {
+        try
+        {
+            var result = await LecturesClient.UpdateLectureAsync(CourseId, ModuleId, LectureId, Command, CancellationToken);
+            NotificationsService.ShowConfirmation(result.Message);
+            await BlazoredModal.CloseAsync();
+        }
+        catch (ApiException<ProblemDetails> exception)
+        {
+            NotificationsService.ShowErreur(exception.Result.Detail);
+        }
+    }
+
+    async Task Cancel() => await BlazoredModal.CancelAsync();
+
+
+    private int MaxLength(string prop) => Utils.MaxLength<UpdateLectureCommand>(prop);
+}

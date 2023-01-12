@@ -1,0 +1,160 @@
+﻿@inherits ComponentWithCancellationToken
+
+@inject ICoursesCategoriesClient CoursesCategoriesClient
+@inject ICategoriesClient SettingsCategoriesClient
+@inject NotificationsService NotificationsService
+@inject IDispatcher Dispatcher
+
+<div class="table-responsive border-0 mt-2">
+    <table class="table align-middle p-4 mb-0">
+        <thead class="table-dark">
+            <tr>
+                <th scope="col" class="border-0 rounded-start text-center"> Is selected</th>
+                <th scope="col" class="border-0 text-center">Name</th>
+                <th scope="col" class="border-0 rounded-end text-center">Action</th>
+            </tr>
+        </thead>
+        <tbody>
+
+            @foreach (var category in Categories!)
+            {
+                <tr @key="category.Id">
+                    <td class="text-center">
+                        <input type="checkbox" @onchange="((eventArgs) => OnCheckboxClicked(category.Id, eventArgs))" checked=@SelectedCategoriesIds!.Contains(category.Id)>
+                    </td>
+                    <td class="text-center">
+                        @category.Name
+                    </td>
+                    <td class="text-center">
+                        <i class="fas fa-regular fa-pen-to-square" style="cursor:pointer" title="edit" @onclick="(() => ShowEditCategoryModal(category))"></i>
+                        <i class="ms-1 fas fa-solid fa-trash" @onclick="(() => DeleteCategory(category.Id))" style="cursor:pointer; color:red" title="delete"></i>
+                    </td>
+                </tr>
+
+            }
+            <tr>
+                <td class="text-center border-0">
+                </td>
+                <td class="text-center border-0">
+                </td>
+                <td class="text-center border-0">
+                    <button type="button" class="btn btn-primary btn-sm" aria-label="Left Align" @onclick="OnCreateCategoryButtonClicked" title="Add new category">
+                        <span class="fas fa-solid fa-plus" aria-hidden="true"></span>
+                    </button>
+                </td>
+            </tr>
+
+        </tbody>
+    </table>
+</div>
+
+@code {
+    private List<int> _selectedIds = new();
+
+    [Parameter]
+    public ICollection<CategoriesListItem>? Categories { get; set; }
+
+    [Parameter]
+    public ICollection<int>? SelectedCategoriesIds { get; set; }
+
+    [CascadingParameter(Name = "CurrentCourseId")]
+    public string? CurrentCourseId { get; set; }
+
+    [CascadingParameter]
+    public IModalService? Modal { get; set; }
+
+    protected override void OnParametersSet()
+    {
+        _selectedIds.Clear();
+        if (SelectedCategoriesIds is not null)
+            _selectedIds.AddRange(SelectedCategoriesIds);
+    }
+    private async Task OnCheckboxClicked(int selectedId, ChangeEventArgs arg)
+    {
+        var isChecked = arg.Value as bool?;
+        if (isChecked is null)
+            return;
+
+        if (isChecked.Value)
+        {
+            if (!_selectedIds.Contains(selectedId))
+                _selectedIds.Add(selectedId);
+        }
+        else
+        {
+            if (_selectedIds.Contains(selectedId))
+                _selectedIds.Remove(selectedId);
+        }
+
+        await Save();
+    }
+
+    private async Task Save()
+    {
+        try
+        {
+            var command = new UpdateCourseCategoriesCommand { SelectecdCategroriesIds = _selectedIds };
+            var result = await CoursesCategoriesClient.UpdateCourseCategoriesAsync(CurrentCourseId, command, CancellationToken);
+            NotificationsService.ShowConfirmation(result.Message);
+        }
+        catch (ApiException<ProblemDetails> exception)
+        {
+            NotificationsService.ShowErreur(exception.Result.Detail);
+        }
+    }
+
+    public async Task OnCreateCategoryButtonClicked()
+    {
+        var options = new ModalOptions { HideCloseButton = true };
+
+        var messageForm = Modal!.Show<AddNewCategoryModal>("New category", options);
+        var result = await messageForm.Result;
+
+        if (!result.Cancelled)
+        {
+            Dispatcher.Dispatch(new LoadCourseCategoriesAction(CurrentCourseId!, CancellationToken));
+        }
+    }
+
+    async Task ShowEditCategoryModal(CategoriesListItem category)
+    {
+        var command = new UpdateCategoryCommand { CategoryName = category.Name };
+
+        var parameters = new ModalParameters();
+        parameters.Add(nameof(EditCategoryModal.Command), command);
+        parameters.Add(nameof(EditCategoryModal.CategoryId), category.Id);
+
+
+        var options = new ModalOptions { HideCloseButton = true };
+
+        var messageForm = Modal!.Show<EditCategoryModal>("Update category", parameters, options);
+        var result = await messageForm.Result;
+
+        if (!result.Cancelled)
+        {
+            Dispatcher.Dispatch(new LoadCourseCategoriesAction(CurrentCourseId!, CancellationToken));
+        }
+    }
+
+    private async Task DeleteCategory(int categoryId)
+    {
+        var options = new ModalOptions { HideCloseButton = true };
+
+        var confirmationModal = Modal!.Show<ConfirmDeletionModal>("Confirmation", options);
+        var result = await confirmationModal.Result;
+
+        if (result.Cancelled)
+            return;
+
+        try
+        {
+            var deleteResponse = await SettingsCategoriesClient.DeleteCategoryAsync(categoryId, CancellationToken);
+            NotificationsService.ShowConfirmation(deleteResponse.Message);
+            Dispatcher.Dispatch(new LoadCourseCategoriesAction(CurrentCourseId!, CancellationToken));
+        }
+        catch (ApiException<ProblemDetails> exception)
+        {
+            NotificationsService.ShowErreur(exception.Result.Detail);
+        }
+    }
+}

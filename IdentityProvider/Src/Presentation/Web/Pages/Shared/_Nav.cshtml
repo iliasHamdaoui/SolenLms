@@ -1,0 +1,12 @@
+@using Imanys.SolenLms.IdentityProvider.Infrastructure
+@using Microsoft.Extensions.Options
+@inject IOptions<SolenLmsWebClientUrl> WebClientUrl
+
+<div class="nav-page">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+
+        <a href="@WebClientUrl.Value.Value" class="navbar-brand ms-2">
+           Solen LMS
+        </a>
+    </nav>
+</div>

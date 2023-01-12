@@ -1,0 +1,46 @@
+﻿@inherits ComponentWithCancellationToken
+@page "/learning/courses/{CourseId}"
+@inject IDispatcher Dispatcher
+@inject IState<LearningCourseOverviewState> State
+@inject ICoursesClient CoursesClient
+@inject NotificationsService NotificationsService
+@inject NavigationManager NavigationManager
+
+<CourseInfoComponent Course="State.Value.CurrentCourse" BookmarkToggled="OnBookmarkToggled" 
+    CoursesListLinkClicked="OnCoursesListLinkClicked" GoToCourseClicked="OnGoToCourseLinkClicked" />
+
+@code {
+
+    [Parameter]
+    public string? CourseId { get; set; }
+
+    protected override void OnParametersSet()
+    {
+        Dispatcher.Dispatch(new LoadCourseAction(CourseId!, CancellationToken));
+    }
+
+    private async Task OnBookmarkToggled(string courseId)
+    {
+        try
+        {
+            var result = await CoursesClient.ToggleBookmarkAsync(courseId, CancellationToken);
+            NotificationsService.ShowConfirmation(result.Message);
+            Dispatcher.Dispatch(new LoadCourseAction(CourseId!, CancellationToken));
+        }
+        catch (ApiException<ProblemDetails> exception)
+        {
+            NotificationsService.ShowErreur(exception.Result.Detail);
+        }
+    }
+
+    private void OnCoursesListLinkClicked()
+    {
+        NavigationManager.NavigateTo("learning");
+    }
+
+    private void OnGoToCourseLinkClicked()
+    {
+        NavigationManager.NavigateTo($"learning/{CourseId}");
+    }
+}
+

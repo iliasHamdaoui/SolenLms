@@ -1,0 +1,8 @@
+﻿namespace Imanys.SolenLms.Application.Shared.Core.Events.Resources;
+
+public sealed record LectureResourceContentUpdated : BaseIntegratedEvent
+{
+    public required string ResourceId { get; set; }
+    public int Duration { get; set; }
+    public override string EventType => nameof(LectureResourceContentUpdated);
+}

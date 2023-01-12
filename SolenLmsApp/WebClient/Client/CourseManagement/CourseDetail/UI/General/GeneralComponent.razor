@@ -1,0 +1,200 @@
+﻿@inherits ComponentWithCancellationToken
+@using System.ComponentModel.DataAnnotations
+
+@inject IDispatcher Dispatcher
+@inject ICoursesClient CoursesClient
+@inject NotificationsService NotificationsService
+@inject NavigationManager NavigationManager
+
+<div class="mt-2">
+    <EditForm Model="@_model" OnValidSubmit="@HandleValidSubmit">
+        <DataAnnotationsValidator />
+
+        <div class="form-floating mb-3">
+            <input type="text" class="form-control shadow-none" id="title" @bind="_model.CourseTitle" @bind:event="oninput" aria-describedby="titleHelpBlock" maxlength="@MaxLength(nameof(_model.CourseTitle)))" placeholder="Title" />
+            <label for="title">Title</label>
+            <div id="titleHelpBlock" class="form-text m-1">
+                @_model?.CourseTitle?.Length / @(MaxLength(nameof(_model.CourseTitle)))
+            </div>
+            <ValidationMessage For="@(() => _model!.CourseTitle)" />
+        </div>
+
+        <div class="form-floating my-3">
+            <textarea class="form-control shadow-none" id="description" @bind="_model!.CourseDescription" @bind:event="oninput" aria-describedby="descriptionHelpBlock" maxlength="@MaxLength(nameof(_model.CourseDescription)))" placeholder="Course description" style="height: 100px"></textarea>
+            <label for="description">Desciption</label>
+            <div id="descriptionHelpBlock" class="form-text m-1">
+                @(_model?.CourseDescription?.Length ?? 0) / @(MaxLength(nameof(_model.CourseDescription)))
+            </div>
+            <ValidationMessage For="@(() => _model!.CourseDescription)" />
+        </div>
+
+        <div class="form-floating my-3">
+            <input type="text" class="form-control" id="referent" value=@Course?.InstructorName readonly disabled />
+            <label for="referent">Referent</label>
+        </div>
+
+        <div class="form-floating my-3">
+            <input type="text" class="form-control" id="creationDate" value=@Course?.CreatedAt.ToString("dd/MM/yyyy HH:mm") readonly disabled />
+            <label for="creationDate">Creation Date</label>
+        </div>
+
+        <div class="form-floating my-3">
+            <input type="text" class="form-control" id="lastModification" value=@Course?.LastModifiedAt.ToString("dd/MM/yyyy HH:mm") readonly disabled />
+            <label for="lastModification">Last Update</label>
+        </div>
+
+        <div class="col m-auto">
+            <button type="submit" class="btn btn-primary btn-sm">Save</button>
+        </div>
+    </EditForm>
+    <div class="mt-5">
+
+        <h2>Publication</h2>
+        @if (Course is not null)
+        {
+            @if (Course.IsPublished)
+            {
+                <div class="d-flex align-items-center mt-3 border border-warning p-2">
+                    <div>
+                        Unpublish this course <br />
+                        Once a course is unpublished, learners can not access it nor its contents.
+                    </div>
+                    <div class="ms-auto">
+                        <button class="btn btn-warning btn-sm" @onclick="(() => UnpublisCourse())">Unpublish this course</button>
+                    </div>
+                </div>
+            }
+            else
+            {
+                <div class="d-flex align-items-center mt-3 border border-warning p-2">
+                    <div>
+                        Publish this course <br />
+                        Once a course is published, learners can access it and its contents.
+                    </div>
+                    <div class="ms-auto">
+                        <button class="btn btn-warning btn-sm" @onclick="(() => PublisCourse())">Publish this course</button>
+                    </div>
+                </div>
+            }
+        }
+    </div>
+    <div class="mt-5">
+
+        <h2>Danger Zone</h2>
+        <div class="d-flex align-items-center mt-3 border border-danger p-2">
+            <div>
+                Delete this course <br />
+                Once you delete a course, there is no going back. Please be certain.
+            </div>
+            <div class="ms-auto">
+                <button class="btn btn-danger btn-sm" @onclick="(() => DeleteCourse())">Delete this course</button>
+            </div>
+        </div>
+    </div>
+</div>
+@code {
+    private UpdateCourseCommand _model = new();
+
+    [Parameter]
+    public GetCourseByIdQueryResult? Course { get; set; }
+
+
+    [CascadingParameter]
+    public IModalService? Modal { get; set; }
+
+    protected override void OnParametersSet()
+    {
+        _model.CourseTitle = Course?.Title;
+        _model.CourseDescription = Course?.Description;
+    }
+
+    private async Task HandleValidSubmit()
+    {
+        try
+        {
+            var result = await CoursesClient.UpdateCourseAsync(Course?.CourseId, _model, CancellationToken);
+            NotificationsService.ShowConfirmation(result.Message);
+            Dispatcher.Dispatch(new LoadCourseAction(Course!.CourseId, CancellationToken));
+        }
+        catch (ApiException<ProblemDetails> exception)
+        {
+            NotificationsService.ShowErreur(exception.Result.Detail);
+        }
+    }
+
+
+    private int MaxLength(string prop) => Utils.MaxLength<UpdateCourseCommand>(prop);
+
+    private async Task DeleteCourse()
+    {
+        var options = new ModalOptions { HideCloseButton = true };
+        var parameters = new ModalParameters();
+        parameters.Add(nameof(ConfirmDeletionModal.Message), "Are you sure you want to delete this course?");
+
+        var confirmationModal = Modal!.Show<ConfirmDeletionModal>("Confirmation", parameters, options);
+        var result = await confirmationModal.Result;
+
+        if (result.Cancelled)
+            return;
+
+        try
+        {
+            var response = await CoursesClient.DeleteCourseAsync(Course!.CourseId, CancellationToken);
+            NotificationsService.ShowConfirmation(response.Message);
+            NavigationManager.NavigateTo($"course-management/courses");
+        }
+        catch (ApiException<ProblemDetails> exception)
+        {
+            NotificationsService.ShowErreur(exception.Result.Detail);
+        }
+
+    }
+
+    private async Task PublisCourse()
+    {
+        var options = new ModalOptions { HideCloseButton = true };
+        var parameters = new ModalParameters();
+        parameters.Add(nameof(ConfirmActionModal.Message), "Are you sure you want to publish this course?");
+        var confirmationModal = Modal!.Show<ConfirmActionModal>("Confirmation", parameters, options);
+        var result = await confirmationModal.Result;
+        if (result.Cancelled)
+            return;
+
+        try
+        {
+            var response = await CoursesClient.PublishCourseAsync(Course!.CourseId, CancellationToken);
+            NotificationsService.ShowConfirmation(response.Message);
+            Dispatcher.Dispatch(new LoadCourseAction(Course!.CourseId, CancellationToken));
+
+        }
+        catch (ApiException<ProblemDetails> exception)
+        {
+            NotificationsService.ShowErreur(exception.Result.Detail);
+        }
+    }
+
+    private async Task UnpublisCourse()
+    {
+        var options = new ModalOptions { HideCloseButton = true };
+        var parameters = new ModalParameters();
+        parameters.Add(nameof(ConfirmActionModal.Message), "Are you sure you want to unpublish this course?");
+        var confirmationModal = Modal!.Show<ConfirmActionModal>("Confirmation", parameters, options);
+        var result = await confirmationModal.Result;
+        if (result.Cancelled)
+            return;
+
+        try
+        {
+            var response = await CoursesClient.UnpublishCourseAsync(Course!.CourseId, CancellationToken);
+            NotificationsService.ShowConfirmation(response.Message);
+            Dispatcher.Dispatch(new LoadCourseAction(Course!.CourseId, CancellationToken));
+
+        }
+        catch (ApiException<ProblemDetails> exception)
+        {
+            NotificationsService.ShowErreur(exception.Result.Detail);
+        }
+    }
+
+
+}

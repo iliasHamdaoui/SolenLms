@@ -1,0 +1,43 @@
+# Docs for the Azure Web Apps Deploy action: https://github.com/Azure/webapps-deploy
+# More GitHub Actions for Azure: https://github.com/Azure/actions
+
+name: Build and Test Web Api On Pull Request
+
+on:
+  pull_request:
+    paths:
+      - SolenLmsApp/Api/**
+  workflow_dispatch:
+
+env:
+  STARTUP_PROJECT_PATH: 'SolenLmsApp/Api/Startup/WebApi/WebApi.Startup.csproj'
+  COURSE_MANAGEMENT_TESTS_PROJECT_PATH: 'SolenLmsApp/Api/CourseManagement/Tests/CourseManagement.Tests.csproj'
+  LEARNING_TESTS_PROJECT_PATH: 'SolenLmsApp/Api/Learning/Tests/Learning.Tests.csproj'
+  DOTNET_VERSION: '7.x'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Rename appsettings.template.json to appsettings.json (required to execute tests)
+        run: mv SolenLmsApp/Api/Startup/WebApi/appsettings.template.json SolenLmsApp/Api/Startup/WebApi/appsettings.json
+            
+      - name: Set up .NET Core
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: ${{ env.DOTNET_VERSION }}
+          include-prerelease: true
+
+      - name: Build with dotnet
+        run: dotnet build ${{env.STARTUP_PROJECT_PATH}} --configuration Release
+
+      - name: testing course management module
+        run: dotnet test -c Release ${{env.COURSE_MANAGEMENT_TESTS_PROJECT_PATH}}
+
+      - name: testing learning module
+        run: dotnet test -c Release ${{env.LEARNING_TESTS_PROJECT_PATH}}
+  
+

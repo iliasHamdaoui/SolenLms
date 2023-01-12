@@ -1,0 +1,204 @@
+﻿@inherits ComponentWithCancellationToken
+
+@inject ICoursesLecturesClient LecturesClient
+@inject IDispatcher Dispatcher
+@inject NotificationsService NotificationsService
+
+<div class="my-2">
+    <div class="card">
+        <div class="card-header alert alert-primary mb-0">
+            <div class="d-flex flex-row align-items-center">
+                <span @onclick="(() => ToggleCollapse())" style="cursor:pointer">@($"{Module.Order}.{Module.Title}")</span>
+                <span class="ms-auto me-3"><i class="fas fa-solid fa-hourglass-half me-1"></i>@Module.Duration.ToHours()</span>
+                <i class="me-3 fa-regular fa-pen-to-square" style="cursor:pointer" title="edit" @onclick="(() => ShowModuleUpdateModal())"></i>
+                <i class="fas fa-solid fa-trash me-3" @onclick="(() => DeleteModule())" style="cursor:pointer; color:red" title="delete"></i>
+                <i class=@($"fas fa-solid {_toggleIcon}") @onclick="(() => ToggleCollapse())" style="cursor:pointer"></i>
+            </div>
+        </div>
+        <div class="@_collapseCss">
+            <div class="card-body">
+                @if (_showContent && _lectures.Any())
+                {
+
+                    <Dropzone Items="_lectures" TItem="LectureForGetCourseByIdQueryResult" OnItemDrop="((_)=> OnLecturesReordered())"
+                          AllowsDrag="((x) => CurrentLectureId !=  x.Id)">
+                        <LectureComponent Lecture="@context"
+                                      OnLectureDeleted="OnLectureDeleted"
+                                      LectureUpdated="OnLectureUpdated"
+                                      LectureContentUpdated="OnLectureContentUpdated" />
+                    </Dropzone>
+                    <div class="d-flex justify-content-end">
+                        <button type="button" class="btn btn-primary btn-sm" aria-label="Left Align" @onclick="(() => ShowAddNewLectureModal())" title="Add new lecture">
+                            <span class="fas fa-solid fa-plus" aria-hidden="true"></span>
+                        </button>
+                    </div>
+
+                }
+                else
+                {
+                    <div class="d-flex justify-content-center align-items-center flex-column" style="height:100%">
+                        <span>No lecture found.</span>
+                        <button class="btn btn-primary btn-sm" @onclick="(() => ShowAddNewLectureModal())">Add new lecture</button>
+                    </div>
+                }
+
+            </div>
+        </div>
+
+    </div>
+</div>
+
+
+@code {
+    private string accordion = string.Empty;
+    private string _collapseCss = "collapse";
+    private string _toggleIcon = "fa-plus";
+    private bool _showContent = false;
+    private List<LectureForGetCourseByIdQueryResult> _lectures = new();
+
+    [Parameter]
+    public ModuleForGetCourseByIdQueryResult Module { get; set; } = default!;
+
+    [CascadingParameter(Name = "CurrentCourseId")]
+    public string? CurrentCourseId { get; set; }
+
+    [CascadingParameter(Name = "CurrentModuleId")]
+    public string? CurrentModuleId { get; set; }
+
+    [CascadingParameter]
+    public string? CurrentLectureId { get; set; }
+
+    [CascadingParameter]
+    public IModalService? Modal { get; set; }
+
+    [Parameter]
+    public EventCallback<ModuleForGetCourseByIdQueryResult> ModuleDeleted { get; set; }
+
+    protected override void OnParametersSet()
+    {
+        accordion = $"m{Module.Id}";
+        _showContent = CurrentModuleId == Module.Id;
+        _lectures.Clear();
+        _lectures.AddRange(Module.Lectures);
+        SetCss();
+    }
+
+    private void ToggleCollapse()
+    {
+        _showContent = !_showContent;
+        SetCss();
+
+        if (_showContent)
+            Dispatcher.Dispatch(new SetCurrentModuleAction(Module.Id));
+        else
+            Dispatcher.Dispatch(new SetCurrentModuleAction(null));
+    }
+
+    private void SetCss()
+    {
+        _collapseCss = _showContent ? "collapse show" : "collapse";
+        _toggleIcon = _showContent ? "fa-minus" : "fa-plus";
+    }
+
+    private async Task DeleteModule()
+    {
+        var options = new ModalOptions { HideCloseButton = true };
+
+        var confirmationModal = Modal!.Show<ConfirmDeletionModal>("Confirmation", options);
+        var result = await confirmationModal.Result;
+
+        if (result.Cancelled)
+            return;
+
+        await ModuleDeleted.InvokeAsync(Module);
+    }
+
+    private async Task OnLectureDeleted(LectureForGetCourseByIdQueryResult lecture)
+    {
+        try
+        {
+            var response = await LecturesClient.DeleteLectureAsync(CurrentCourseId, Module.Id, lecture.Id);
+
+            NotificationsService.ShowConfirmation(response.Message);
+
+            Dispatcher.Dispatch(new LoadCourseAction(CurrentCourseId!, CancellationToken));
+        }
+        catch (ApiException<ProblemDetails> exception)
+        {
+            NotificationsService.ShowErreur(exception.Result.Detail);
+        }
+    }
+
+    private async Task OnLectureContentUpdated()
+    {
+        await Task.Delay(400);
+        Dispatcher.Dispatch(new LoadCourseAction(CurrentCourseId!, CancellationToken));
+        await Task.CompletedTask;
+    }
+
+    private async Task OnLectureUpdated()
+    {
+        Dispatcher.Dispatch(new LoadCourseAction(CurrentCourseId!, CancellationToken));
+        await Task.CompletedTask;
+    }
+
+    async Task ShowAddNewLectureModal()
+    {
+        var parameters = new ModalParameters();
+
+        parameters.Add(nameof(AddNewLectureModal.CourseId), CurrentCourseId!);
+        parameters.Add(nameof(AddNewLectureModal.ModuleId), Module.Id);
+
+        var options = new ModalOptions { HideCloseButton = true };
+
+        var messageForm = Modal!.Show<AddNewLectureModal>("New Lecture", parameters, options);
+        var result = await messageForm.Result;
+
+        if (!result.Cancelled)
+        {
+            await Task.Delay(400);
+            Dispatcher.Dispatch(new LoadCourseAction(CurrentCourseId!, CancellationToken));
+        }
+    }
+
+    async Task ShowModuleUpdateModal()
+    {
+        var command = new UpdateModuleCommand { ModuleTitle = Module.Title };
+
+        var parameters = new ModalParameters();
+        parameters.Add(nameof(ModuleTitleUpdateModal.Command), command);
+        parameters.Add(nameof(ModuleTitleUpdateModal.CourseId), CurrentCourseId!);
+        parameters.Add(nameof(ModuleTitleUpdateModal.ModuleId), Module.Id);
+
+        var options = new ModalOptions { HideCloseButton = true };
+
+        var messageForm = Modal!.Show<ModuleTitleUpdateModal>("Update Module", parameters, options);
+        var result = await messageForm.Result;
+
+        if (!result.Cancelled)
+        {
+            Dispatcher.Dispatch(new LoadCourseAction(CurrentCourseId!, CancellationToken));
+        }
+    }
+
+    private async Task OnLecturesReordered()
+    {
+        try
+        {
+            var modulesOrders = new List<LectureOrder>();
+
+            for (int i = 0; i < _lectures.Count; i++)
+                modulesOrders.Add(new LectureOrder { LectureId = _lectures[i].Id, Order = i + 1 });
+
+            var response = await LecturesClient.UpdateLectureOrdersAsync(CurrentCourseId!, Module.Id, new UpdateLecturesOrdersCommand { LecturesOrders = modulesOrders }, CancellationToken);
+
+            NotificationsService.ShowConfirmation(response.Message);
+
+            Dispatcher.Dispatch(new LoadCourseAction(CurrentCourseId!, CancellationToken));
+        }
+        catch (ApiException<ProblemDetails> exception)
+        {
+            NotificationsService.ShowErreur(exception.Result.Detail);
+        }
+    }
+}

@@ -1,0 +1,46 @@
+﻿@inherits ComponentWithCancellationToken
+@page "/learning/{CourseId}"
+@inject IDispatcher Dispatcher
+@inject IState<LearningState> State
+
+
+<div class="container mt-3 py-5" style="height:100%">
+
+    <div class="row" style="height:100%">
+        @if (State.Value.Course is not null)
+        {
+            <div class="col-12 text-center mb-5">
+                <h2>@State.Value.Course.Title </h2>
+            </div>
+            <div class="col-12 col-lg-8">
+                <CurrentLectureComponent Lecture="State.Value.CurrentLecture" LectureChanged="OnLectureSelected"></CurrentLectureComponent>
+            </div>
+            <div class="col-lg-4 d-none d-lg-block mt-5">
+                <NavComponent Course="State.Value.Course" CurrentLecture="State.Value.CurrentLecture"
+                          LectureSelected="OnLectureSelected">
+                </NavComponent>
+            </div>
+        }
+        else
+        {
+            <CourseLoadingComponent></CourseLoadingComponent>
+        }
+    </div>
+
+</div>
+
+
+@code {
+    [Parameter]
+    public string? CourseId { get; set; }
+
+    protected override void OnParametersSet()
+    {
+        Dispatcher.Dispatch(new LoadLearningCourseAction(CourseId!, CancellationToken));
+    }
+
+    private void OnLectureSelected(string lectureId)
+    {
+        Dispatcher.Dispatch(new LoadLectureAction(CourseId!, lectureId, CancellationToken));
+    }
+}

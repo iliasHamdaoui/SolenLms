@@ -1,0 +1,26 @@
+﻿@using System.Collections.ObjectModel
+
+
+<div class="accordion-item">
+    <h2 class="accordion-header" id="@($"panelsStayOpen-headings{Module.Id}")">
+        <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="@($"#panelsStayOpen-collapse{Module.Id}")" aria-expanded="true" aria-controls="@($"panelsStayOpen-collapse{Module.Id}")">
+            <span>@($"{Module.Order}.{Module.Title}")</span>
+        </button>
+    </h2>
+    <div id="@($"panelsStayOpen-collapse{Module.Id}")" class="accordion-collapse collapse show" aria-labelledby="@($"panelsStayOpen-headings{Module.Id}")">
+        <div class="accordion-body p-0">
+            <ul class="list-group p-0 m-0 list-group-flush">
+                @foreach (var lecture in Module.Lectures)
+                {
+                    <LectureComponent Lecture="lecture"></LectureComponent>
+                }
+            </ul>
+        </div>
+    </div>
+</div>
+
+
+@code {
+    [Parameter]
+    public ModuleForGetCourseByIdQueryResult Module { get; set; } = default!;
+}

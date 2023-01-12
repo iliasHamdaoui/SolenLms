@@ -1,0 +1,128 @@
+﻿@inject IResourcesClient ResourcesClient
+@inject IDispatcher Dispatcher
+
+<div class="card my-2">
+    <div class="card-header">
+        <div class="d-flex flex-row align-items-center">
+            <i class=@($"me-1 fas fa-solid {IconLecture}")></i>
+            <span @onclick="(() => ToggleCollapse())" style="cursor:pointer">@($"{Lecture.Order}.{Lecture.Title}")</span>
+            <span class="ms-auto me-3"><i class="fas fa-solid fa-hourglass-half me-1"></i>@Lecture.Duration.ToHours()</span>
+            <i class="me-3 fa-regular fa-pen-to-square" style="cursor:pointer" title="edit" @onclick="(() => ShowLectureUpdateModal())"></i>
+            <i class="fas fa-solid fa-trash me-3" @onclick="(() => DeleteLecture())" style="cursor:pointer; color:red" title="delete"></i>
+            <i class=@($"fas fa-solid {_toggleIcon}") @onclick="(() => ToggleCollapse())" style="cursor:pointer"></i>
+        </div>
+    </div>
+    <div class="@_collapseCss">
+        <div class="card-body">
+            @if (_showContent && @Lecture.ResourceId != null)
+            {
+                @if (Lecture.LectureType == "Article")
+                {
+                    <ArticleLecture Lecture="@Lecture" LectureUpdated="OnLectureUpdated"></ArticleLecture>
+                }
+
+                @if (Lecture.LectureType == "Video")
+                {
+                    <VideoLecture Lecture="@Lecture" LectureUpdated="OnLectureUpdated"></VideoLecture>
+                }
+            }
+        </div>
+    </div>
+</div>
+
+
+@code {
+    private string _collapseCss = "collapse";
+    private string _toggleIcon = "fa-plus";
+    private bool _showContent = false;
+
+    [CascadingParameter(Name = "CurrentCourseId")]
+    public string? CurrentCourseId { get; set; }
+
+    [CascadingParameter(Name = "CurrentModuleId")]
+    public string? CurrentModuleId { get; set; }
+
+    [CascadingParameter]
+    public string? CurrentLectureId { get; set; }
+
+    [CascadingParameter]
+    public IModalService? Modal { get; set; }
+
+    [Parameter]
+    public LectureForGetCourseByIdQueryResult Lecture { get; set; } = default!;
+
+    [Parameter]
+    public EventCallback<LectureForGetCourseByIdQueryResult> OnLectureDeleted { get; set; }
+
+    [Parameter]
+    public EventCallback LectureContentUpdated { get; set; }
+
+    [Parameter]
+    public EventCallback LectureUpdated { get; set; }
+
+
+    protected override void OnParametersSet()
+    {
+        _showContent = CurrentLectureId == Lecture.Id;
+        SetCss();
+    }
+
+    private string IconLecture => Lecture.LectureType == "Video" ? "fa-square-caret-right" : "fa-file-lines";
+
+    private void ToggleCollapse()
+    {
+        _showContent = !_showContent;
+        SetCss();
+
+        if (_showContent)
+            Dispatcher.Dispatch(new SetCurrentLectureAction(Lecture.Id));
+        else
+            Dispatcher.Dispatch(new SetCurrentLectureAction(null));
+    }
+
+    private async Task DeleteLecture()
+    {
+        var options = new ModalOptions { HideCloseButton = true };
+
+        var confirmationModal = Modal!.Show<ConfirmDeletionModal>("Confirmation", options);
+        var result = await confirmationModal.Result;
+
+        if (result.Cancelled)
+            return;
+
+        await OnLectureDeleted.InvokeAsync(Lecture);
+    }
+    private async Task OnLectureUpdated()
+    {
+        await LectureContentUpdated.InvokeAsync();
+    }
+
+    private void SetCss() 
+    {
+        _collapseCss = _showContent ? "collapse show" : "collapse";
+        _toggleIcon = _showContent ? "fa-minus" : "fa-plus";
+    }
+
+    async Task ShowLectureUpdateModal()
+    {
+        var command = new UpdateLectureCommand { LectureTitle = Lecture.Title };
+
+        var parameters = new ModalParameters();
+        parameters.Add(nameof(LectureTitleUpdateModal.Command), command);
+        parameters.Add(nameof(LectureTitleUpdateModal.CourseId), CurrentCourseId!);
+        parameters.Add(nameof(LectureTitleUpdateModal.ModuleId), CurrentModuleId!);
+        parameters.Add(nameof(LectureTitleUpdateModal.LectureId), Lecture.Id);
+
+        var options = new ModalOptions { HideCloseButton = true };
+
+        var messageForm = Modal!.Show<LectureTitleUpdateModal>("Update Lecture", parameters, options);
+        var result = await messageForm.Result;
+
+       if(!result.Cancelled)
+       {
+            await LectureUpdated.InvokeAsync();
+       }
+
+    }
+
+}

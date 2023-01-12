@@ -1,0 +1,32 @@
+﻿@using Fluxor.Blazor.Web.Components
+@inherits FluxorComponent
+@inject IState<CourseDetailState> State
+
+<div class="border rounded-3 pb-0 p-3 w-100">
+	<!-- Dashboard menu -->
+    <ul class="nav nav-pills flex-column mb-sm-auto mb-0 align-items-center align-items-sm-start" id="menu">
+        <li class="nav-item mb-3">
+            <NavLink href=@($"course-management/courses/{State.Value.CurrentCourse?.CourseId}") class="nav-link" Match="@NavLinkMatch.All">
+                <i class="fas fa-solid fa-gear me-2"></i>General
+            </NavLink>
+        </li>
+        <li class="nav-item mb-3">
+            <NavLink href=@($"course-management/courses/{State.Value.CurrentCourse?.CourseId}/content") class="nav-link" Match="@NavLinkMatch.All">
+                <i class="fas fa-solid fa-table me-2"></i>Content
+            </NavLink>
+        </li>
+        <li class="nav-item mb-3">
+            <NavLink href=@($"course-management/courses/{State.Value.CurrentCourse?.CourseId}/categories") class="nav-link" Match="@NavLinkMatch.All">
+                <i class="fas fa-solid fa-tags me-2"></i>Categories
+            </NavLink>
+        </li>
+        <li class="nav-item mb-3">
+            <NavLink href=@($"course-management/courses/{State.Value.CurrentCourse?.CourseId}/learners") class="nav-link" Match="@NavLinkMatch.All">
+                <i class="fa-solid fa-graduation-cap me-2"></i>Learners
+            </NavLink>
+        </li>
+    </ul>
+</div>
+@code {
+
+}

@@ -1,0 +1,34 @@
+﻿@page
+@model Imanys.SolenLms.IdentityProvider.Web.Pages.Account.ResendConfirmationEmail.IndexModel
+
+<div>
+    <div class="page-header">
+        <h2>Email verification</h2>
+    </div>
+
+    <div class="row">
+        <div class="col-sm-6">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                </div>
+                <div class="panel-body">
+                    <form asp-page="/Account/ResendConfirmationEmail/Index">
+                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                        <fieldset>
+                            <p>Enter the email you want to confirm.</p>
+                            <div class="mb-3">
+                                <input class="form-control" asp-for="Input.Email" id="Email" placeholder="Your e-mail address" autofocus>
+                                <span asp-validation-for="Input.Email" class="text-danger"></span>
+                            </div>
+                            <div>
+                                <button type="submit" class="btn btn-labeled btn-primary">
+                                    <span class="btn-label"><i class="fa-solid fa-paper-plane me-2"></i></span>Resend email confirmation link
+                                </button>
+                            </div>
+                        </fieldset>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

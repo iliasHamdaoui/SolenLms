@@ -1,0 +1,60 @@
+﻿@inherits ComponentWithCancellationToken
+
+@inject ICategoriesClient SettingsCategoriesClient
+@inject NotificationsService NotificationsService
+
+<div style="width:300px">
+    <EditForm Model="@Command" OnValidSubmit="@HandleValidSubmit">
+
+        <DataAnnotationsValidator />
+
+        <div class="form-floating mb-3">
+            <input type="text" class="form-control shadow-none" id="title" @bind="Command.CategoryName" @bind:event="oninput" aria-describedby="nameHelpBlock"
+                   maxlength="@MaxLength(nameof(Command.CategoryName)))" placeholder="Title" />
+            <label for="title">Name</label>
+            <div id="nameHelpBlock" class="form-text m-1">
+                @Command?.CategoryName?.Length / @(MaxLength(nameof(Command.CategoryName)))
+            </div>
+            <ValidationMessage For="@(() => Command!.CategoryName)" />
+        </div>
+
+
+        <div style="text-align: center">
+            <button type="button" class="btn btn-secondary" @onclick="Cancel">Cancel</button>
+            <button type="submit" class="btn btn-primary ms-3">Update</button>
+        </div>
+    </EditForm>
+</div>
+
+
+@code {
+    [CascadingParameter]
+    BlazoredModalInstance BlazoredModal { get; set; } = default!;
+
+    [Parameter]
+    public UpdateCategoryCommand Command { get; set; } = default!;
+
+    [Parameter]
+    public int CategoryId { get; set; } = default!;
+
+
+
+    private async Task HandleValidSubmit()
+    {
+        try
+        {
+            var result = await SettingsCategoriesClient.UpdateCategoryAsync(CategoryId, Command, CancellationToken);
+            NotificationsService.ShowConfirmation(result.Message);
+            await BlazoredModal.CloseAsync();
+        }
+        catch (ApiException<ProblemDetails> exception)
+        {
+            NotificationsService.ShowErreur(exception.Result.Detail);
+        }
+    }
+
+    async Task Cancel() => await BlazoredModal.CancelAsync();
+
+
+    private int MaxLength(string prop) => Utils.MaxLength<UpdateCategoryCommand>(prop);
+}

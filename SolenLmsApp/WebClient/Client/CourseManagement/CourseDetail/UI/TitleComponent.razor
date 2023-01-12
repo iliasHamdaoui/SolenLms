@@ -1,0 +1,17 @@
+﻿@using Fluxor.Blazor.Web.Components
+@inherits FluxorComponent
+@inject IState<CourseDetailState> State
+
+<h3 class="ms-2">@State.Value.CurrentCourse?.Title</h3>
+<span class="mx-2"><i class="fas fa-solid fa-hourglass-half me-1"></i>@CourseDuration</span>
+<i class="fas fa-solid fa-table me-1"></i>@LectureCount Lecture(s)
+
+
+@code 
+{
+    private string? CourseDuration => State.Value.CurrentCourse?.Duration.ToHours();
+    private int? LectureCount => State.Value.CurrentCourse?.Modules.SelectMany(x => x.Lectures).Count();
+}
+
+
+

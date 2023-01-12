@@ -1,0 +1,51 @@
+﻿
+
+
+
+<div class="table-responsive border-0 mt-2">
+    <table class="table align-middle p-4 mb-0">
+        <thead class="table-dark">
+            <tr>
+                <th scope="col" class="border-0 rounded-start text-center">Name</th>
+                <th scope="col" class="border-0 text-center">Progress </th>
+                <th scope="col" class="border-0 rounded-end text-center">Last Access</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (Learners is null || !Learners.Any())
+            {
+                <tr>
+                    <td colspan="3" class="text-center">
+                        No Learners found.
+                    </td>
+                </tr>
+            }
+            else
+            {
+                @foreach (var learner in Learners!)
+                {
+                    <tr>
+                        <td class="text-center">
+                            @learner.Name
+                        </td>
+                        <td class="text-center">
+                            @($"{LearnerProgress(learner)}%")
+                        </td>
+                        <td class="text-center">
+                            @(learner.LastAccessTime?.ToString("dd/MM/yyyy HH:mm") ?? "Never")
+                        </td>
+                    </tr>
+                }
+            }
+
+        </tbody>
+    </table>
+</div>
+
+@code {
+
+    [Parameter]
+    public ICollection<LearnerForGetCourseLearnersQuery>? Learners { get; set; }
+
+    private float LearnerProgress(LearnerForGetCourseLearnersQuery learner) => (int)(learner.Progress * 100);
+}

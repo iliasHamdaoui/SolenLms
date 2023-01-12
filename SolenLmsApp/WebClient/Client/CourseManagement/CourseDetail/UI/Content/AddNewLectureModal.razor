@@ -1,0 +1,73 @@
+﻿@inherits ComponentWithCancellationToken
+
+@inject ICoursesLecturesClient LecturesClient
+@inject NotificationsService NotificationsService
+@inject IDispatcher Dispatcher
+
+<div style="width:300px">
+    <EditForm Model="@_command" OnValidSubmit="@HandleValidSubmit">
+
+        <DataAnnotationsValidator />
+
+        <div class="form-floating mb-3">
+            <input type="text" class="form-control shadow-none" id="title" @bind="_command.LectureTitle" @bind:event="oninput" aria-describedby="titleHelpBlock"
+                   maxlength="@MaxLength(nameof(_command.LectureTitle)))" placeholder="Title" />
+            <label for="title">Lecture title</label>
+            <div id="titleHelpBlock" class="form-text m-1">
+                @_command?.LectureTitle?.Length / @(MaxLength(nameof(_command.LectureTitle)))
+            </div>
+            <ValidationMessage For="@(() => _command!.LectureTitle)" />
+        </div>
+
+        <div class="form-floating mb-3">
+            <InputSelect class="form-select" id="floatingSelect" @bind-Value="_command!.LectureType">
+                <option selected></option>
+                <option value="Article">Article</option>
+                <option value="Video">Video</option>
+            </InputSelect>
+            <label for="floatingSelect">Lecture type</label>
+            <ValidationMessage For="@(() => _command!.LectureType)" />
+        </div>
+
+        <div style="text-align: center">
+            <button type="button" class="btn btn-secondary" @onclick="Cancel">Cancel</button>
+            <button type="submit" class="btn btn-primary ms-3">Create</button>
+        </div>
+
+
+    </EditForm>
+</div>
+
+
+@code {
+    private CreateLectureCommand _command { get; set; } = new() { LectureTitle = string.Empty};
+
+    [CascadingParameter]
+    BlazoredModalInstance BlazoredModal { get; set; } = default!;
+
+    [Parameter]
+    public string CourseId { get; set; } = default!;
+    [Parameter]
+    public string ModuleId { get; set; } = default!;
+
+    private async Task HandleValidSubmit()
+    {
+        try
+        {
+            var result = await LecturesClient.CreateLectureAsync(CourseId, ModuleId, _command, CancellationToken);
+            NotificationsService.ShowConfirmation(result.Message);
+            Dispatcher.Dispatch(new SetCurrentLectureAction(result.Data));
+            await BlazoredModal.CloseAsync();
+        }
+        catch (ApiException<ProblemDetails> exception)
+        {
+            NotificationsService.ShowErreur(exception.Result.Detail);
+            return;
+        }
+    }
+
+    async Task Cancel() => await BlazoredModal.CancelAsync();
+
+
+    private int MaxLength(string prop) => Utils.MaxLength<CreateLectureCommand>(prop);
+}

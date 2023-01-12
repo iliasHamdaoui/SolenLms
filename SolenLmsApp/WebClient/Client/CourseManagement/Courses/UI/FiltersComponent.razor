@@ -1,0 +1,150 @@
+﻿<div class="w-100 d-flex flex-column">
+    <button class="btn btn-outline-secondary btn-sm mb-2" @onclick="(() => ResetFilters.InvokeAsync())">Reset</button>
+    <ul class="list-group bg-light mb-2">
+        <li class="list-group-item list-group-item-dark">
+            Categories
+        </li>
+        @foreach (var category in Categories)
+        {
+            <li class="list-group-item p-2">
+                <div class="form-check form-switch">
+                    <input class="form-check-input" type="checkbox" id="@category.Name"
+                       @onchange="((eventArgs) => OnCategoryCheckboxClicked(category.Id.ToString(), eventArgs))"
+                       checked=@_selectedCategoriesIds.Contains(category.Id.ToString())>
+                    <label class="form-check-label" for="@category.Name">
+                        @category.Name
+                    </label>
+                </div>
+            </li>
+        }
+        @if (!Categories.Any())
+        {
+            <li class="list-group-item">No categories</li>
+        }
+
+    </ul>
+    <ul class="list-group">
+        <li class="list-group-item list-group-item-dark">
+            Instructors
+        </li>
+        @foreach (var instructor in Instructors)
+        {
+            <li class="list-group-item p-2">
+                <div class="form-check form-switch">
+                    <input class="form-check-input" type="checkbox" id="@instructor.Name"
+                       @onchange="((eventArgs) => OnInstructorCheckboxClicked(instructor.Id, eventArgs))"
+                       checked=@_selectedInstructorsIds.Contains(instructor.Id)>
+                    <label class="form-check-label" for="@instructor.Name">
+                        @instructor.Name
+                    </label>
+                </div>
+            </li>
+        }
+        @if (!Instructors.Any())
+        {
+            <li class="list-group-item">No instructor</li>
+        }
+    </ul>
+</div>
+
+
+@code
+{
+    private List<string> _selectedCategoriesIds = new();
+    private List<string> _selectedInstructorsIds = new();
+
+
+    [Parameter]
+    public ICollection<CategoriesListItem> Categories { get; set; } = default!;
+
+    [Parameter]
+    public ICollection<InstructorsListItem> Instructors { get; set; } = default!;
+
+    [Parameter]
+    public GetAllCoursesQuery Query { get; set; } = default!;
+
+    [Parameter]
+    public EventCallback<string> CategorySelected { get; set; }
+
+    [Parameter]
+    public EventCallback<string> InstructorSelected { get; set; }
+    [Parameter]
+    public EventCallback<bool> BookmarkedFilterChanged { get; set; }
+
+    [Parameter]
+    public EventCallback<string> OrderByChanged { get; set; }
+
+    [Parameter]
+    public EventCallback ResetFilters { get; set; }
+
+
+    protected override void OnParametersSet()
+    {
+        _selectedCategoriesIds.Clear();
+        if (Query.CategoriesIds.Split(',').All(x => !string.IsNullOrEmpty(x)))
+            _selectedCategoriesIds.AddRange(Query.CategoriesIds.Split(','));
+
+        _selectedInstructorsIds.Clear();
+        if (Query.InstructorsIds.Split(',').All(x => !string.IsNullOrEmpty(x)))
+            _selectedInstructorsIds.AddRange(Query.InstructorsIds.Split(','));
+
+    }
+
+    private async Task OnCategoryCheckboxClicked(string selectedId, ChangeEventArgs arg)
+    {
+        var isChecked = arg.Value as bool?;
+        if (isChecked is null)
+            return;
+
+        if (isChecked.Value)
+        {
+            if (!_selectedCategoriesIds.Contains(selectedId))
+                _selectedCategoriesIds.Add(selectedId);
+        }
+        else
+        {
+            if (_selectedCategoriesIds.Contains(selectedId))
+                _selectedCategoriesIds.Remove(selectedId);
+        }
+
+        var selectedCategories = string.Join(',', _selectedCategoriesIds);
+
+        await CategorySelected.InvokeAsync(selectedCategories);
+    }
+
+    private async Task OnBookmarkedFilterClicked(ChangeEventArgs arg)
+    {
+        var isChecked = arg.Value as bool?;
+        if (isChecked is null)
+            return;
+
+        await BookmarkedFilterChanged.InvokeAsync(isChecked.Value);
+    }
+
+    private async Task OnInstructorCheckboxClicked(string selectedId, ChangeEventArgs arg)
+    {
+        var isChecked = arg.Value as bool?;
+        if (isChecked is null)
+            return;
+
+        if (isChecked.Value)
+        {
+            if (!_selectedInstructorsIds.Contains(selectedId))
+                _selectedInstructorsIds.Add(selectedId);
+        }
+        else
+        {
+            if (_selectedInstructorsIds.Contains(selectedId))
+                _selectedInstructorsIds.Remove(selectedId);
+        }
+
+        var selectedInstructors = string.Join(',', _selectedInstructorsIds);
+
+        await InstructorSelected.InvokeAsync(selectedInstructors);
+    }
+
+    private async Task OnSortByChanged(ChangeEventArgs e)
+    {
+        await OrderByChanged.InvokeAsync(e.Value!.ToString());
+    }
+}

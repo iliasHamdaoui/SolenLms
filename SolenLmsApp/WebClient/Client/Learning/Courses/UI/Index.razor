@@ -1,0 +1,122 @@
+﻿@inherits ComponentWithCancellationToken
+@page "/learning"
+@page "/learning/courses"
+@inject IDispatcher Dispatcher
+@inject IState<LearningCoursesState> State
+@inject NavigationManager NavigationManager
+@inject NotificationsService NotificationsService
+@inject ICoursesClient CoursesClient
+
+<div class="container mt-5 py-5">
+    <div class="row">
+        <div class="col-lg-3">
+            @if (State.Value.Categories is not null && State.Value.Instructors is not null)
+            {
+                <FiltersComponent Categories="@State.Value.Categories" Instructors="@State.Value.Instructors"
+                                  Query="State.Value.GetCoursesQuery"
+                                  CategorySelected="OnCategorySelected"
+                                  InstructorSelected="OnInstructorSelected"
+                                  OrderByChanged="OnSortByChanged"
+                                  ResetFilters="OnResetFilters"
+                                  BookmarkedFilterChanged="OnBookmarkedFilterChanged">
+                </FiltersComponent>
+            }
+            else
+            {
+                <FiltersLoadingComponent></FiltersLoadingComponent>
+            }
+        </div>
+        <div class="col-lg-9">
+            @if (State.Value.Courses is not null)
+            {
+                <CoursesListComponent Courses="State.Value?.Courses"
+                                      CourseTotalCount="State.Value!.CourseTotalCount"
+                                      CourseSelected="OnCourseSelected"
+                                      GoToCourseClicked="OnGoToCourseClicked"
+                                      Query="State.Value.GetCoursesQuery"
+                                      PageSelected="OnPageSelected"
+                                      BookmarkToggled="OnBookmarkToggled">
+
+                </CoursesListComponent>
+            }
+            else
+            {
+                <CoursesListLoadingComponent></CoursesListLoadingComponent>
+            }
+        </div>
+    </div>
+
+</div>
+
+@code {
+
+
+    protected override Task OnInitializedAsync()
+    {
+        base.OnInitializedAsync();
+        Dispatcher.Dispatch(new LoadCoursesAction(CancellationToken));
+        return Task.CompletedTask;
+    }
+
+
+    private void OnCourseSelected(string courseId)
+    {
+        NavigationManager.NavigateTo($"learning/courses/{courseId}");
+    }
+
+    private void OnGoToCourseClicked(string courseId)
+    {
+        NavigationManager.NavigateTo($"learning/{courseId}");
+    }
+
+    private void OnPageSelected(int page)
+    {
+        Dispatcher.Dispatch(new SetCoursesListPageAction(page));
+        Dispatcher.Dispatch(new LoadCoursesAction(CancellationToken));
+    }
+
+    private void OnCategorySelected(string categories)
+    {
+        Dispatcher.Dispatch(new SetCoursesListCategoriesAction(categories));
+        Dispatcher.Dispatch(new LoadCoursesAction(CancellationToken));
+    }
+
+    private void OnInstructorSelected(string instructors)
+    {
+        Dispatcher.Dispatch(new SetCoursesListInstructorsAction(instructors));
+        Dispatcher.Dispatch(new LoadCoursesAction(CancellationToken));
+    }
+
+    private void OnSortByChanged(string orderBy)
+    {
+        Dispatcher.Dispatch(new SetCoursesListSortedByAction(orderBy));
+        Dispatcher.Dispatch(new LoadCoursesAction(CancellationToken));
+    }
+
+    private void OnResetFilters()
+    {
+        Dispatcher.Dispatch(new ResetCoursesListFiltersAction());
+        Dispatcher.Dispatch(new LoadCoursesAction(CancellationToken));
+    }
+
+    private void OnBookmarkedFilterChanged(bool bookmarkedOnly)
+    {
+        Dispatcher.Dispatch(new SetCoursesListBookmarkOnlyAction(bookmarkedOnly));
+        Dispatcher.Dispatch(new LoadCoursesAction(CancellationToken));
+    }
+
+    private async Task OnBookmarkToggled(string courseId)
+    {
+        try
+        {
+            var result = await CoursesClient.ToggleBookmarkAsync(courseId, CancellationToken);
+            NotificationsService.ShowConfirmation(result.Message);
+            Dispatcher.Dispatch(new LoadCoursesAction(CancellationToken));
+        }
+        catch (ApiException<ProblemDetails> exception)
+        {
+            NotificationsService.ShowErreur(exception.Result.Detail);
+        }
+    }
+
+}

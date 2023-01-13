@@ -42,9 +42,9 @@ internal sealed class AzureBobVideoManager : IMediaManager
     {
         var containerClient = _blobServiceClient.GetBlobContainerClient(organizationId);
 
-        var allLecureblobs = containerClient.GetBlobsAsync(prefix: $"{courseId}/{moduleId}/{lectureId}");
+        var allLectureBlobs = containerClient.GetBlobsAsync(prefix: $"{courseId}/{moduleId}/{lectureId}");
 
-        await foreach (var blob in allLecureblobs)
+        await foreach (var blob in allLectureBlobs)
         {
             await containerClient.DeleteBlobAsync(blob.Name);
         }
@@ -108,21 +108,21 @@ internal sealed class AzureBobVideoManager : IMediaManager
         var result = new MediaUploadResult { IsSuccess = true };
 
         var fileName = $"{Guid.NewGuid()}{resourceFile.FileExtension}";
-        var fileTempPath = Path.Combine(GetTempFolder(), fileName);
-        var stream = new FileStream(fileTempPath, FileMode.Create);
-        try
-        {
-            await resourceFile.CopyToAsync(stream);
-        }
-        finally
-        {
-            await stream.DisposeAsync();
-        }
+        // var fileTempPath = Path.Combine(GetTempFolder(), fileName);
+        // var stream = new FileStream(fileTempPath, FileMode.Create);
+        // try
+        // {
+        //     await resourceFile.CopyToAsync(stream);
+        // }
+        // finally
+        // {
+        //     await stream.DisposeAsync();
+        // }
 
         // Todo: calculate duration in azure function   
-        result.Duration = await Helpers.GetVideoDuration(_env, fileTempPath, _logger);
+        result.Duration = 600; // await Helpers.GetVideoDuration(_env, fileTempPath, _logger);
 
-        File.Delete(fileTempPath);
+        // File.Delete(fileTempPath);
 
         var containerClient = _blobServiceClient.GetBlobContainerClient(organizationId);
 

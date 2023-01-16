@@ -12,7 +12,7 @@
         <label for="formFile" class="form-label">Please select a video file to upload</label>
         <InputFile class="form-control" type="file" id="formFile" OnChange="OnInputFileChange" aria-describedby="fileUploadHelpBlock"/>
         <div id="fileUploadHelpBlock" class="form-text m-1">
-            Max. size 100 MB. MP4 video format only.
+            Max. size 300 MB. MP4 video format only.
         </div>
         <ValidationMessage For="@(() => _viewModel.File)"/>
     </div>
@@ -77,7 +77,7 @@
 
     private sealed class DataFileValidator : ValidationAttribute
     {
-        public static long MaxContentLength = 1024 * 1024 * 100; //100 MB
+        public static long MaxContentLength = 1024 * 1024 * 300; //300 MB
 
         public override bool IsValid(object? value)
         {

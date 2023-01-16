@@ -1,9 +1,6 @@
 ﻿using Azure.Storage.Blobs;
 using Azure.Storage.Blobs.Models;
 using Imanys.SolenLms.Application.Resources.Core.UseCases;
-using Imanys.SolenLms.Application.Shared.Core;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
 namespace Imanys.SolenLms.Application.Resources.Infrastructure.Storage.AzureBlobStorage;
@@ -11,61 +8,51 @@ namespace Imanys.SolenLms.Application.Resources.Infrastructure.Storage.AzureBlob
 internal sealed class AzureBobVideoManager : IMediaManager
 {
     private readonly BlobServiceClient _blobServiceClient;
-    private readonly ICurrentUser _currentUser;
-    private readonly IWebHostEnvironment _env;
-    private readonly ILogger<AzureBobVideoManager> _logger;
-    private readonly IOptions<AzureBlobStorageSettings> _azureOptions;
+    private readonly AzureBlobStorageSettings _blobStorageSettings;
 
-    public AzureBobVideoManager(BlobServiceClient blobServiceClient, ICurrentUser currentUser, IWebHostEnvironment env,
-        ILogger<AzureBobVideoManager> logger, IOptions<AzureBlobStorageSettings> azureOptions)
+    public AzureBobVideoManager(BlobServiceClient blobServiceClient, IOptions<AzureBlobStorageSettings> azureOptions)
     {
         _blobServiceClient = blobServiceClient;
-        _currentUser = currentUser;
-        _env = env;
-        _logger = logger;
-        _azureOptions = azureOptions;
+        _blobStorageSettings = azureOptions.Value;
     }
 
     public async Task DeleteCourseMedias(string organizationId, string courseId)
     {
-        var containerClient = _blobServiceClient.GetBlobContainerClient(organizationId);
+        var containerClient = _blobServiceClient.GetBlobContainerClient(_blobStorageSettings.ResourcesContainerName);
 
-        var allCourseBlobs = containerClient.GetBlobsAsync(prefix: courseId);
+        var allCourseBlobs = containerClient.GetBlobsAsync(prefix: $"{organizationId}/{courseId}");
 
         await foreach (var blob in allCourseBlobs)
-        {
             await containerClient.DeleteBlobAsync(blob.Name);
-        }
     }
 
     public async Task DeleteLectureMedias(string organizationId, string courseId, string moduleId, string lectureId)
     {
-        var containerClient = _blobServiceClient.GetBlobContainerClient(organizationId);
+        var containerClient = _blobServiceClient.GetBlobContainerClient(_blobStorageSettings.ResourcesContainerName);
 
-        var allLectureBlobs = containerClient.GetBlobsAsync(prefix: $"{courseId}/{moduleId}/{lectureId}");
+        var allLectureBlobs = containerClient.GetBlobsAsync(prefix: $"{organizationId}/{courseId}/{moduleId}/{lectureId}");
 
         await foreach (var blob in allLectureBlobs)
-        {
             await containerClient.DeleteBlobAsync(blob.Name);
-        }
     }
 
     public async Task DeleteModuleMedias(string organizationId, string courseId, string moduleId)
     {
-        var containerClient = _blobServiceClient.GetBlobContainerClient(organizationId);
+        var containerClient = _blobServiceClient.GetBlobContainerClient(_blobStorageSettings.ResourcesContainerName);
 
-        var allModuleBlobs = containerClient.GetBlobsAsync(prefix: $"{courseId}/{moduleId}");
+        var allModuleBlobs = containerClient.GetBlobsAsync(prefix: $"{organizationId}/{courseId}/{moduleId}");
 
         await foreach (var blob in allModuleBlobs)
-        {
             await containerClient.DeleteBlobAsync(blob.Name);
-        }
     }
 
     public async Task DeleteOrganizationMedias(string organizationId)
     {
-        var containerClient = _blobServiceClient.GetBlobContainerClient(organizationId);
-        await containerClient.DeleteIfExistsAsync();
+        var containerClient = _blobServiceClient.GetBlobContainerClient(_blobStorageSettings.ResourcesContainerName);
+        var allOrganizationBlobs = containerClient.GetBlobsAsync(prefix: organizationId);
+
+        await foreach (var blob in allOrganizationBlobs)
+            await containerClient.DeleteBlobAsync(blob.Name);
     }
 
     public async Task<byte[]> GetMediaContent(string? mediaPath)
@@ -73,8 +60,7 @@ internal sealed class AzureBobVideoManager : IMediaManager
         if (mediaPath == null)
             return Array.Empty<byte>();
 
-
-        var containerClient = _blobServiceClient.GetBlobContainerClient(_currentUser.OrganizationId);
+        var containerClient = _blobServiceClient.GetBlobContainerClient(_blobStorageSettings.ResourcesContainerName);
         var blobClient = containerClient.GetBlobClient(mediaPath);
         if (await blobClient.ExistsAsync())
         {
@@ -82,8 +68,7 @@ internal sealed class AzureBobVideoManager : IMediaManager
             await blobClient.DownloadToAsync(ms);
             return ms.ToArray();
         }
-
-
+        
         return Array.Empty<byte>();
     }
 
@@ -92,7 +77,7 @@ internal sealed class AzureBobVideoManager : IMediaManager
         if (mediaPath == null)
             return null;
 
-        var containerClient = _blobServiceClient.GetBlobContainerClient(_currentUser.OrganizationId);
+        var containerClient = _blobServiceClient.GetBlobContainerClient(_blobStorageSettings.ResourcesContainerName);
         var blobClient = containerClient.GetBlobClient(mediaPath);
         if (await blobClient.ExistsAsync())
         {
@@ -108,27 +93,15 @@ internal sealed class AzureBobVideoManager : IMediaManager
         var result = new MediaUploadResult { IsSuccess = true };
 
         var fileName = $"{Guid.NewGuid()}{resourceFile.FileExtension}";
-        // var fileTempPath = Path.Combine(GetTempFolder(), fileName);
-        // var stream = new FileStream(fileTempPath, FileMode.Create);
-        // try
-        // {
-        //     await resourceFile.CopyToAsync(stream);
-        // }
-        // finally
-        // {
-        //     await stream.DisposeAsync();
-        // }
-
+        
         // Todo: calculate duration in azure function   
-        result.Duration = 600; // await Helpers.GetVideoDuration(_env, fileTempPath, _logger);
+        result.Duration = 600;
 
-        // File.Delete(fileTempPath);
-
-        var containerClient = _blobServiceClient.GetBlobContainerClient(organizationId);
+        var containerClient = _blobServiceClient.GetBlobContainerClient(_blobStorageSettings.ResourcesContainerName);
 
         await containerClient.CreateIfNotExistsAsync();
 
-        var fileBlobName = $"{courseId}/{moduleId}/{lectureId}/{fileName}";
+        var fileBlobName = $"{organizationId}/{courseId}/{moduleId}/{lectureId}/{fileName}";
 
         var blobClient = containerClient.GetBlobClient(fileBlobName);
 
@@ -146,14 +119,5 @@ internal sealed class AzureBobVideoManager : IMediaManager
 
         return result;
     }
-
-    private string GetTempFolder()
-    {
-        var tempDirectory = Path.Combine(Directory.GetCurrentDirectory(), _azureOptions.Value.TempDirectory);
-
-        if (!Directory.Exists(tempDirectory))
-            Directory.CreateDirectory(tempDirectory);
-
-        return tempDirectory;
-    }
+    
 }

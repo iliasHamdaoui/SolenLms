@@ -12,6 +12,27 @@ designed and developed following the principles of the *Clean Architecture* as d
 by [Robert C. Martin (aka Uncle Bob)](http://cleancoder.com) in his
 book [Clean Architecture](https://www.amazon.com/Clean-Architecture-Craftsmans-Software-Structure/dp/0134494164).
 
+Table of Contents :
+
+- [Clean Architecture (Quick Overview)](#clean-architecture--quick-overview-)
+  * [Introduction](#introduction)
+  * [The Dependency Rule](#the-dependency-rule)
+  * [Characteristics of a _Clean Architecture_](#characteristics-of-a--clean-architecture-)
+- [Solen LMS Architecture](#solen-lms-architecture)
+  * [Solution Structure](#solution-structure)
+  * [Screaming Architecture](#screaming-architecture)
+  * [Domain Layer](#domain-layer)
+  * [Use Cases Layer](#use-cases-layer)
+    + [Presentation](#presentation)
+    + [CQRS Pattern](#cqrs-pattern)
+    + [Mediator Pattern](#mediator-pattern)
+    + [MediatR Library](#mediatr-library)
+    + [Requests Validation](#requests-validation)
+  * [Infrastructure layer](#infrastructure-layer)
+  * [Presentation layer](#presentation-layer)
+    + [_Thin_ Controller vs _Fat_ Controller](#-thin--controller-vs--fat--controller)
+- [Contribution](#contribution)
+- 
 # Clean Architecture (Quick Overview)
 
 ## Introduction

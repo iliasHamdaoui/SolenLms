@@ -93,9 +93,6 @@ internal sealed class AzureBobVideoManager : IMediaManager
         var result = new MediaUploadResult { IsSuccess = true };
 
         var fileName = $"{Guid.NewGuid()}{resourceFile.FileExtension}";
-        
-        // Todo: calculate duration in azure function   
-        result.Duration = 600;
 
         var containerClient = _blobServiceClient.GetBlobContainerClient(_blobStorageSettings.ResourcesContainerName);
 

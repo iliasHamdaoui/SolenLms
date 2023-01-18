@@ -24,7 +24,7 @@ public static class DependencyInjection
         .AddSecurity()
         .AddHashids(configuration)
         .AddCourseManagementInfrastructure(configuration, mvcBuilder)
-        .AddResourcesInfrastructure(configuration, mvcBuilder, environment)
+        .AddResourcesInfrastructure(configuration, mvcBuilder)
         .AddLearnerInfrastructure(configuration, mvcBuilder);
 
         return services;

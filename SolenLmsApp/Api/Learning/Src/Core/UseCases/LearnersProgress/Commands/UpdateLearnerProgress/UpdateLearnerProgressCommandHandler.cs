@@ -16,11 +16,11 @@ internal sealed class
     private readonly IDateTime _dateTime;
     private readonly ILogger<UpdateLearnerProgressCommandHandler> _logger;
     private readonly IUpdateLearnerProgressRepo _repo;
-    private readonly IIntegratedEventsSender _eventsSender;
+    private readonly IIntegrationEventsSender _eventsSender;
 
     public UpdateLearnerProgressCommandHandler(ICurrentUser currentUser, IDateTime dateTime,
         ILogger<UpdateLearnerProgressCommandHandler> logger,
-        IUpdateLearnerProgressRepo repo, IIntegratedEventsSender eventsSender)
+        IUpdateLearnerProgressRepo repo, IIntegrationEventsSender eventsSender)
     {
         _currentUser = currentUser;
         _dateTime = dateTime;

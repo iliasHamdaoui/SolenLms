@@ -4,18 +4,18 @@ using Imanys.SolenLms.Application.Shared.Core.Events.IdentityProvider;
 using Newtonsoft.Json;
 using System.Text;
 
-namespace Imanys.SolenLms.Application.Shared.Infrastructure.Services.AzureServiceBus;
+namespace Imanys.SolenLms.Application.Shared.Infrastructure.IdpEvents;
 internal sealed class IdpEventsCreatorFactory
 {
 
-    public (bool success, BaseIntegratedEvent? createdEvent) GetEvent(ServiceBusReceivedMessage message)
+    public (bool success, BaseIntegrationEvent? createdEvent) GetEvent(ServiceBusReceivedMessage message)
     {
 
         var eventType = message.ApplicationProperties["eventType"];
         if (eventType == null)
             return (false, null);
 
-        BaseIntegratedEvent? createdEvent = null;
+        BaseIntegrationEvent? createdEvent = null;
 
         switch (eventType)
         {

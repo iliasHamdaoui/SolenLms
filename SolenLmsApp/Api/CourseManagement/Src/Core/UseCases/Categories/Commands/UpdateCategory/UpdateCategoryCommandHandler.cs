@@ -10,10 +10,10 @@ internal sealed class UpdateCategoryCommandHandler : IRequestHandler<UpdateCateg
 {
     private readonly IRepository<Category> _repo;
     private readonly ILogger<UpdateCategoryCommandHandler> _logger;
-    private readonly IIntegratedEventsSender _eventsSender;
+    private readonly IIntegrationEventsSender _eventsSender;
 
     public UpdateCategoryCommandHandler(IRepository<Category> repo, ILogger<UpdateCategoryCommandHandler> logger,
-        IIntegratedEventsSender eventsSender)
+        IIntegrationEventsSender eventsSender)
     {
         _repo = repo;
         _logger = logger;

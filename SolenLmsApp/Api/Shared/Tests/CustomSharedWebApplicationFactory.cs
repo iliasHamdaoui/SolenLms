@@ -38,7 +38,7 @@ public class CustomSharedWebApplicationFactory : WebApplicationFactory<IAssembly
     public readonly Uri LearnerCoursesBaseUrl = new("https://localhost/api/courses/");
 
     public Mock<IDateTime> DateTimeMoq { get; private set; }
-    public IIntegratedEventsSender IntegratedEventsSender { get; protected set; }
+    public IIntegrationEventsSender IntegrationEventsSender { get; protected set; }
 
     public CustomSharedWebApplicationFactory()
     {
@@ -91,8 +91,8 @@ public class CustomSharedWebApplicationFactory : WebApplicationFactory<IAssembly
             services.RemoveAll<IDateTime>();
             services.AddTransient(_ => DateTimeMoq.Object);
 
-            services.RemoveAll<IIntegratedEventsSender>();
-            services.AddScoped<IIntegratedEventsSender, IntegratedEventsSender>();
+            services.RemoveAll<IIntegrationEventsSender>();
+            services.AddScoped<IIntegrationEventsSender, IntegrationEventsSender>();
 
             services.RemoveAll<IMediaManager>();
             services.AddScoped<IMediaManager, LocalVideoManager>();
@@ -101,7 +101,7 @@ public class CustomSharedWebApplicationFactory : WebApplicationFactory<IAssembly
 
             ServiceProvider sp = services.BuildServiceProvider();
 
-            IntegratedEventsSender = sp.GetRequiredService<IIntegratedEventsSender>();
+            IntegrationEventsSender = sp.GetRequiredService<IIntegrationEventsSender>();
         });
     }
 

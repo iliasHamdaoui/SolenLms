@@ -16,13 +16,13 @@ internal sealed class UploadLectureVideoCommandHandler : IRequestHandler<UploadL
     private readonly IMediaManager _videoManager;
     private readonly IHashids _hashids;
     private readonly ICurrentUser _currentUser;
-    private readonly IIntegratedEventsSender _eventsSender;
+    private readonly IIntegrationEventsSender _eventsSender;
     private readonly IStorageRepo _storageRepo;
     private readonly int _maxMediaStorageSpaceInGb;
     private readonly ILogger<UploadLectureVideoCommandHandler> _logger;
 
     public UploadLectureVideoCommandHandler(IRepository<LectureResource> repository, IMediaManager videoManager,
-        IHashids hashids, ICurrentUser currentUser, IIntegratedEventsSender eventsSender, IStorageRepo storageRepo,
+        IHashids hashids, ICurrentUser currentUser, IIntegrationEventsSender eventsSender, IStorageRepo storageRepo,
         IOptions<ResourcesSettings> resourceOptions, ILogger<UploadLectureVideoCommandHandler> logger)
     {
         _repository = repository;

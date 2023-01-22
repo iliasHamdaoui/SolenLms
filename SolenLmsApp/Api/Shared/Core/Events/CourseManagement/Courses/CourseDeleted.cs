@@ -1,6 +1,6 @@
 ﻿namespace Imanys.SolenLms.Application.Shared.Core.Events.CourseManagement.Courses;
 
-public sealed record CourseDeleted : BaseIntegratedEvent
+public sealed record CourseDeleted : BaseIntegrationEvent
 {
     public required string OrganizationId { get; init; }
     public required string CourseId { get; init; }

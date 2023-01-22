@@ -4,7 +4,7 @@ namespace Imanys.SolenLms.Application.Shared.Core.Events.CourseManagement.Course
 
 #nullable disable
 
-public sealed record LectureWithResourceCreated : BaseIntegratedEvent
+public sealed record LectureWithResourceCreated : BaseIntegrationEvent
 {
     public string OrganizationId { get; init; }
     public string CourseId { get; init; }

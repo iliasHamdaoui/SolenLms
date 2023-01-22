@@ -12,10 +12,10 @@ internal sealed class PublishCourseCommandHandler : IRequestHandler<PublishCours
     private readonly IHashids _hashids;
     private readonly IDateTime _dateTime;
     private readonly ILogger<PublishCourseCommandHandler> _logger;
-    private readonly IIntegratedEventsSender _eventsSender;
+    private readonly IIntegrationEventsSender _eventsSender;
 
     public PublishCourseCommandHandler(IRepository<Course> courseRepository, IHashids hashids, IDateTime dateTime,
-        ILogger<PublishCourseCommandHandler> logger, IIntegratedEventsSender eventsSender)
+        ILogger<PublishCourseCommandHandler> logger, IIntegrationEventsSender eventsSender)
     {
         _courseRepository = courseRepository;
         _hashids = hashids;

@@ -10,10 +10,10 @@ internal sealed class DeleteCategoryCommandHandler : IRequestHandler<DeleteCateg
 {
     private readonly IRepository<Category> _repo;
     private readonly ILogger<DeleteCategoryCommandHandler> _logger;
-    private readonly IIntegratedEventsSender _eventsSender;
+    private readonly IIntegrationEventsSender _eventsSender;
 
     public DeleteCategoryCommandHandler(IRepository<Category> repo, ILogger<DeleteCategoryCommandHandler> logger,
-        IIntegratedEventsSender eventsSender)
+        IIntegrationEventsSender eventsSender)
     {
         _repo = repo;
         _logger = logger;

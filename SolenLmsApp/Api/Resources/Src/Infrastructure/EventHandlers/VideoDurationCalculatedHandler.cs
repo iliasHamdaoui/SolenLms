@@ -10,10 +10,10 @@ namespace Imanys.SolenLms.Application.Resources.Infrastructure.EventHandlers;
 internal sealed class VideoDurationCalculatedHandler : INotificationHandler<VideoDurationCalculated>
 {
     private readonly ResourcesDbContext _dbContext;
-    private readonly IIntegratedEventsSender _eventsSender;
+    private readonly IIntegrationEventsSender _eventsSender;
     private readonly IHashids _hashids;
 
-    public VideoDurationCalculatedHandler(ResourcesDbContext dbContext, IIntegratedEventsSender eventsSender,
+    public VideoDurationCalculatedHandler(ResourcesDbContext dbContext, IIntegrationEventsSender eventsSender,
         IHashids hashids)
     {
         _dbContext = dbContext;

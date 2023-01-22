@@ -2,7 +2,7 @@
 
 #nullable disable
 
-public sealed record LectureResourceCreated : BaseIntegratedEvent
+public sealed record LectureResourceCreated : BaseIntegrationEvent
 {
     public string LectureId { get; set; }
     public string ResourceId { get; set; }

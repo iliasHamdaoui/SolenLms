@@ -4,26 +4,26 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using Newtonsoft.Json;
-using System.Text;
 
-namespace Imanys.SolenLms.Application.Resources.Infrastructure.Services.VideoDurationCalculator;
+namespace Imanys.SolenLms.Application.Shared.Infrastructure.IdpEvents;
 
-internal sealed class VideoDurationCalculatorListenerService : BackgroundService
+internal sealed class IdpEventsListenerService : BackgroundService
 {
     private readonly IServiceProvider _serviceProvider;
     private readonly ServiceBusClient _serviceBusClient;
-    private readonly ILogger<VideoDurationCalculatorListenerService> _logger;
+    private readonly IdpEventsCreatorFactory _idpEventsCreatorFactory;
+    private readonly ILogger<IdpEventsListenerService> _logger;
     private readonly ServiceBusProcessor _serviceBusProcessor;
 
-    public VideoDurationCalculatorListenerService(IServiceProvider serviceProvider, ServiceBusClient serviceBusClient,
-        IOptions<VideoDurationCalculatorAzureServiceBusSettings> settings,
-        ILogger<VideoDurationCalculatorListenerService> logger)
+    public IdpEventsListenerService(IServiceProvider serviceProvider, ServiceBusClient serviceBusClient,
+        IOptions<IdpEventsAzureServiceBusSettings> settings, IdpEventsCreatorFactory idpEventsCreatorFactory,
+        ILogger<IdpEventsListenerService> logger)
     {
         _serviceProvider = serviceProvider;
         _serviceBusClient = serviceBusClient;
+        _idpEventsCreatorFactory = idpEventsCreatorFactory;
         _logger = logger;
-        _serviceBusProcessor = serviceBusClient.CreateProcessor(settings.Value.VideoDurationCalculatorQueueName,
+        _serviceBusProcessor = serviceBusClient.CreateProcessor(settings.Value.IdpQueueName,
             new ServiceBusProcessorOptions { MaxConcurrentCalls = 1, AutoCompleteMessages = false });
     }
 
@@ -39,19 +39,23 @@ internal sealed class VideoDurationCalculatorListenerService : BackgroundService
 
     async Task MessageHandler(ProcessMessageEventArgs args)
     {
-        _logger.LogInformation("Handling the message from Video Duration Calculator, {message}",
-            args.Message.Body.ToString());
+        _logger.LogInformation("Handling the message from IDP, {message}", args.Message.Body.ToString());
+
+        var (isSuccess, createdEvent) = _idpEventsCreatorFactory.GetEvent(args.Message);
+
+        if (!isSuccess)
+        {
+            _logger.LogWarning("Unknown event type, {message}", args.Message.Body.ToString());
+            return;
+        }
 
         try
         {
-            var durationCalculated =
-                JsonConvert.DeserializeObject<VideoDurationCalculated>(Encoding.UTF8.GetString(args.Message.Body));
-
             using var scope = _serviceProvider.CreateScope();
 
             var mediator = scope.ServiceProvider.GetRequiredService<IMediator>();
 
-            await mediator.Publish(durationCalculated!);
+            await mediator.Publish(createdEvent!);
 
             await args.CompleteMessageAsync(args.Message);
 

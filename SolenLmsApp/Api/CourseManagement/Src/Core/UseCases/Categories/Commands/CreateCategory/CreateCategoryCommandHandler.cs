@@ -11,10 +11,10 @@ internal sealed class CreateCategoryCommandHandler : IRequestHandler<CreateCateg
     private readonly IRepository<Category> _repo;
     private readonly ICurrentUser _currentUser;
     private readonly ILogger<CreateCategoryCommandHandler> _logger;
-    private readonly IIntegratedEventsSender _eventsSender;
+    private readonly IIntegrationEventsSender _eventsSender;
 
     public CreateCategoryCommandHandler(IRepository<Category> repo, ICurrentUser currentUser,
-        ILogger<CreateCategoryCommandHandler> logger, IIntegratedEventsSender eventsSender)
+        ILogger<CreateCategoryCommandHandler> logger, IIntegrationEventsSender eventsSender)
     {
         _repo = repo;
         _currentUser = currentUser;

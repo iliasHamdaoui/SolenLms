@@ -14,11 +14,11 @@ internal sealed class LectureWithResourceCreatedHandler : INotificationHandler<L
 {
     private readonly ResourcesDbContext _dbContext;
     private readonly IHashids _hashids;
-    private readonly IIntegratedEventsSender _eventSender;
+    private readonly IIntegrationEventsSender _eventSender;
     private readonly ILogger<LectureWithResourceCreatedHandler> _logger;
 
     public LectureWithResourceCreatedHandler(ResourcesDbContext dbContext, IHashids hashids,
-        IIntegratedEventsSender eventSender, ILogger<LectureWithResourceCreatedHandler> logger)
+        IIntegrationEventsSender eventSender, ILogger<LectureWithResourceCreatedHandler> logger)
     {
         _dbContext = dbContext;
         _hashids = hashids;

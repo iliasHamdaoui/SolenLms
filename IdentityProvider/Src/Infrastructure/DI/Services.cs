@@ -21,8 +21,8 @@ internal static class Services
         services.AddHostedService(sp => sp.GetRequiredService<IEmailService>() as EmailBackgroundService);
         services.Configure<EmailSettings>(configuration.GetSection("EmailSettings"));
 
-        services.AddSingleton<IIntegratedEventsSender, IntegratedEventsBrokerService>();
-        services.AddHostedService(sp => sp.GetRequiredService<IIntegratedEventsSender>() as IntegratedEventsBrokerService);
+        services.AddSingleton<IIntegrationEventsSender, IntegrationEventsBrokerService>();
+        services.AddHostedService(sp => sp.GetRequiredService<IIntegrationEventsSender>() as IntegrationEventsBrokerService);
 
 
         services.AddSingleton(_ => new ServiceBusClient(configuration["AzureServiceBusSettings:ConnectionString"]));

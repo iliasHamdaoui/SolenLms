@@ -1,7 +1,7 @@
 ﻿namespace Imanys.SolenLms.Application.Shared.Core.Events.Learning;
 
 
-public sealed record LearnerCourseProgressUpdated : BaseIntegratedEvent
+public sealed record LearnerCourseProgressUpdated : BaseIntegrationEvent
 {
     public override string EventType => nameof(LearnerCourseProgressUpdated);
     public string LearnerId { get; init; } = default!;

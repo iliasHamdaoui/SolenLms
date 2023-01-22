@@ -5,22 +5,23 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using System.Threading.Channels;
 
-namespace Imanys.SolenLms.Application.Shared.Infrastructure.Services;
+namespace Imanys.SolenLms.Application.Shared.Infrastructure.IntegrationEvents;
 
-internal sealed class IntegratedEventsBrokerServices : BackgroundService, IIntegratedEventsSender
+internal sealed class IntegrationEventsBroker : BackgroundService, IIntegrationEventsSender
 {
     private readonly IServiceProvider _serviceProvider;
-    private readonly ILogger<IntegratedEventsBrokerServices> _logger;
-    private readonly Channel<BaseIntegratedEvent> _channel;
+    private readonly ILogger<IntegrationEventsBroker> _logger;
+    private readonly Channel<BaseIntegrationEvent> _channel;
 
-    public IntegratedEventsBrokerServices(IServiceProvider serviceProvider, ILogger<IntegratedEventsBrokerServices> logger)
+    public IntegrationEventsBroker(IServiceProvider serviceProvider,
+        ILogger<IntegrationEventsBroker> logger)
     {
         _serviceProvider = serviceProvider;
         _logger = logger;
-        _channel = Channel.CreateUnbounded<BaseIntegratedEvent>();
+        _channel = Channel.CreateUnbounded<BaseIntegrationEvent>();
     }
 
-    public async Task<bool> SendEvent(BaseIntegratedEvent @event, CancellationToken ct = default)
+    public async Task<bool> SendEvent(BaseIntegrationEvent @event, CancellationToken ct = default)
     {
         while (await _channel.Writer.WaitToWriteAsync(ct) && !ct.IsCancellationRequested)
         {
@@ -33,11 +34,10 @@ internal sealed class IntegratedEventsBrokerServices : BackgroundService, IInteg
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
-        await foreach (var @event in _channel.Reader.ReadAllAsync(stoppingToken))
+        await foreach (BaseIntegrationEvent @event in _channel.Reader.ReadAllAsync(stoppingToken))
         {
             try
             {
-
                 _logger.LogInformation("Handling the event, {event}", @event);
 
                 using var scope = _serviceProvider.CreateScope();

@@ -8,21 +8,21 @@ using System.Threading.Channels;
 
 namespace Imanys.SolenLms.IdentityProvider.Infrastructure.Services;
 
-internal class IntegratedEventsBrokerService : BackgroundService, IIntegratedEventsSender
+internal class IntegrationEventsBrokerService : BackgroundService, IIntegrationEventsSender
 {
-    private readonly Channel<BaseIntegratedEvent> _channel;
+    private readonly Channel<BaseIntegrationEvent> _channel;
     private readonly ServiceBusSender _serviceBusSender;
-    private readonly ILogger<IntegratedEventsBrokerService> _logger;
+    private readonly ILogger<IntegrationEventsBrokerService> _logger;
 
-    public IntegratedEventsBrokerService(ServiceBusClient serviceBusClient,
-        IOptions<AzureServiceBusSettings> settings, ILogger<IntegratedEventsBrokerService> logger)
+    public IntegrationEventsBrokerService(ServiceBusClient serviceBusClient,
+        IOptions<AzureServiceBusSettings> settings, ILogger<IntegrationEventsBrokerService> logger)
     {
-        _channel = Channel.CreateUnbounded<BaseIntegratedEvent>();
+        _channel = Channel.CreateUnbounded<BaseIntegrationEvent>();
         _serviceBusSender = serviceBusClient.CreateSender(settings.Value.IdpQueueName);
         _logger = logger;
     }
 
-    public async Task<bool> SendEvent(BaseIntegratedEvent @event, CancellationToken ct = default)
+    public async Task<bool> SendEvent(BaseIntegrationEvent @event, CancellationToken ct = default)
     {
         while (await _channel.Writer.WaitToWriteAsync(ct) && !ct.IsCancellationRequested)
         {

@@ -11,10 +11,10 @@ internal sealed class UnpublishCourseCommandHandler : IRequestHandler<UnpublishC
     private readonly IRepository<Course> _courseRepository;
     private readonly IHashids _hashids;
     private readonly ILogger<UnpublishCourseCommandHandler> _logger;
-    private readonly IIntegratedEventsSender _eventsSender;
+    private readonly IIntegrationEventsSender _eventsSender;
 
     public UnpublishCourseCommandHandler(IRepository<Course> courseRepository, IHashids hashids,
-        ILogger<UnpublishCourseCommandHandler> logger, IIntegratedEventsSender eventsSender)
+        ILogger<UnpublishCourseCommandHandler> logger, IIntegrationEventsSender eventsSender)
     {
         _courseRepository = courseRepository;
         _hashids = hashids;

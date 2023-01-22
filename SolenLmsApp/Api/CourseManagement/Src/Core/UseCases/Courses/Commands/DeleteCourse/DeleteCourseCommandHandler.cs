@@ -11,11 +11,11 @@ internal sealed class DeleteCourseCommandHandler : IRequestHandler<DeleteCourseC
     private readonly IRepository<Course> _repository;
     private readonly IHashids _hashids;
     private readonly ILogger<DeleteCourseCommandHandler> _logger;
-    private readonly IIntegratedEventsSender _eventsSender;
+    private readonly IIntegrationEventsSender _eventsSender;
 
     public DeleteCourseCommandHandler(IRepository<Course> repository, IHashids hashids,
         ILogger<DeleteCourseCommandHandler> logger,
-        IIntegratedEventsSender eventsSender)
+        IIntegrationEventsSender eventsSender)
     {
         _repository = repository;
         _hashids = hashids;

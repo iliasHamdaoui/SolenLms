@@ -10,7 +10,7 @@ public static class Infrastructure
     {
         services
             .AddPersistence(configuration)
-            .AddServices(configuration)
+            .AddVideoDurationCalculator(configuration)
             .AddStorage(configuration)
             .AddWebApi(mvcBuilder);
 

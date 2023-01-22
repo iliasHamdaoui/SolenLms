@@ -17,13 +17,13 @@ internal sealed class AccountService : IAccountService
 {
     private readonly UserManager<User> _userManager;
     private readonly SignInManager<User> _signInManager;
-    private readonly IIntegratedEventsSender _eventsSender;
+    private readonly IIntegrationEventsSender _eventsSender;
     private readonly IdentityDbContext _dbContext;
     private readonly IServer _server;
     private readonly IEmailService _emailService;
 
     public AccountService(UserManager<User> userManager, SignInManager<User> signInManager,
-        IIntegratedEventsSender eventsSender,
+        IIntegrationEventsSender eventsSender,
         IdentityDbContext dbContext, IServer server, IEmailService emailService)
     {
         _userManager = userManager;

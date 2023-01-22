@@ -1,7 +1,7 @@
 ﻿namespace Imanys.SolenLms.Application.Shared.Core.Events.IdentityProvider;
 
 
-public sealed record UserAdded(string OrganizationId, string UserId) : BaseIntegratedEvent
+public sealed record UserAdded(string OrganizationId, string UserId) : BaseIntegrationEvent
 {
     public string GivenFamily { get; set; } = default!;
     public string FamilyFamily { get; set; } = default!;

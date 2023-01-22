@@ -3,16 +3,16 @@ using MediatR;
 
 namespace Imanys.SolenLms.Application.Shared.Tests.Implementations;
 
-public sealed class IntegratedEventsSender : IIntegratedEventsSender
+public sealed class IntegrationEventsSender : IIntegrationEventsSender
 {
     private readonly IMediator _mediator;
 
-    public IntegratedEventsSender(IMediator mediator)
+    public IntegrationEventsSender(IMediator mediator)
     {
         _mediator = mediator;
     }
 
-    public async Task<bool> SendEvent(BaseIntegratedEvent @event, CancellationToken ct = default)
+    public async Task<bool> SendEvent(BaseIntegrationEvent @event, CancellationToken ct = default)
     {
         await _mediator.Publish(@event, ct);
 

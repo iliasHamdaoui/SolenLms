@@ -1,4 +1,4 @@
-﻿namespace Imanys.SolenLms.Application.Resources.Infrastructure.Services.VideoDurationCalculator;
+﻿namespace Imanys.SolenLms.Application.Resources.Infrastructure.VideoDurationCalculator;
 
 internal sealed class VideoDurationCalculatorAzureServiceBusSettings
 {

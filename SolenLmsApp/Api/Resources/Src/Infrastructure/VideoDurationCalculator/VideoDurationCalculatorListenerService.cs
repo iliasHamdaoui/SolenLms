@@ -4,73 +4,70 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Newtonsoft.Json;
+using System.Text;
 
-namespace Imanys.SolenLms.Application.Shared.Infrastructure.Services.AzureServiceBus;
+namespace Imanys.SolenLms.Application.Resources.Infrastructure.VideoDurationCalculator;
 
-internal sealed class IdpEventsListenerService : BackgroundService
+internal sealed class VideoDurationCalculatorListenerService : BackgroundService
 {
     private readonly IServiceProvider _serviceProvider;
     private readonly ServiceBusClient _serviceBusClient;
-    private readonly IdpEventsCreatorFactory _idpEventsCreatorFactory;
-    private readonly ILogger<IdpEventsListenerService> _logger;
+    private readonly ILogger<VideoDurationCalculatorListenerService> _logger;
     private readonly ServiceBusProcessor _serviceBusProcessor;
-    public IdpEventsListenerService(IServiceProvider serviceProvider, ServiceBusClient serviceBusClient,
-        IOptions<AzureServiceBusSettings> settings, IdpEventsCreatorFactory idpEventsCreatorFactory,
-        ILogger<IdpEventsListenerService> logger)
+
+    public VideoDurationCalculatorListenerService(IServiceProvider serviceProvider, ServiceBusClient serviceBusClient,
+        IOptions<VideoDurationCalculatorAzureServiceBusSettings> settings,
+        ILogger<VideoDurationCalculatorListenerService> logger)
     {
         _serviceProvider = serviceProvider;
         _serviceBusClient = serviceBusClient;
-        _idpEventsCreatorFactory = idpEventsCreatorFactory;
         _logger = logger;
-        _serviceBusProcessor = serviceBusClient.CreateProcessor(settings.Value.IdpQueueName, new ServiceBusProcessorOptions { MaxConcurrentCalls = 1, AutoCompleteMessages = false });
-
+        _serviceBusProcessor = serviceBusClient.CreateProcessor(settings.Value.VideoDurationCalculatorQueueName,
+            new ServiceBusProcessorOptions { MaxConcurrentCalls = 1, AutoCompleteMessages = false });
     }
+
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
-
         _serviceBusProcessor.ProcessMessageAsync += MessageHandler;
 
         _serviceBusProcessor.ProcessErrorAsync += ErrorHandler;
 
         await _serviceBusProcessor.StartProcessingAsync(stoppingToken);
-
     }
 
 
     async Task MessageHandler(ProcessMessageEventArgs args)
     {
-        _logger.LogInformation("Handling the message from IDP, {message}", args.Message.Body.ToString());
-
-        var (isSuccess, createdEvent) = _idpEventsCreatorFactory.GetEvent(args.Message);
-
-        if (!isSuccess)
-        {
-            _logger.LogWarning("Unknown event type, {message}", args.Message.Body.ToString());
-            return;
-        }
+        _logger.LogInformation("Handling the message from Video Duration Calculator, {message}",
+            args.Message.Body.ToString());
 
         try
         {
+            var durationCalculated =
+                JsonConvert.DeserializeObject<VideoDurationCalculated>(Encoding.UTF8.GetString(args.Message.Body));
+
             using var scope = _serviceProvider.CreateScope();
 
             var mediator = scope.ServiceProvider.GetRequiredService<IMediator>();
 
-            await mediator.Publish(createdEvent!);
+            await mediator.Publish(durationCalculated!);
 
             await args.CompleteMessageAsync(args.Message);
 
             _logger.LogInformation("Message handled successfully, {message}", args.Message.Body.ToString());
-
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Error occured when handling the message, {message}, {exception}", args.Message.Body.ToString(), ex.Message);
+            _logger.LogError(ex, "Error occured when handling the message, {message}, {exception}",
+                args.Message.Body.ToString(), ex.Message);
         }
     }
 
     Task ErrorHandler(ProcessErrorEventArgs args)
     {
-        _logger.LogError(args.Exception, "Error occured when receiving a message, {exception}, {args}", args.Exception.Message, args);
+        _logger.LogError(args.Exception, "Error occured when receiving a message, {exception}, {args}",
+            args.Exception.Message, args);
         return Task.CompletedTask;
     }
 

@@ -2,7 +2,7 @@
 
 namespace Imanys.SolenLms.Application.Shared.Core.Events.CourseManagement.Courses;
 
-public sealed record CoursePublished(PublishedCourse PublishedCourse) : BaseIntegratedEvent
+public sealed record CoursePublished(PublishedCourse PublishedCourse) : BaseIntegrationEvent
 {
     public override string EventType => nameof(CoursePublished);
 }

@@ -13,11 +13,11 @@ internal sealed class UpdateLectureArticleCommandHandler : IRequestHandler<Updat
 {
     private readonly IRepository<LectureResource> _repository;
     private readonly IHashids _hashids;
-    private readonly IIntegratedEventsSender _eventsSender;
+    private readonly IIntegrationEventsSender _eventsSender;
     private readonly ILogger<UpdateLectureArticleCommandHandler> _logger;
 
     public UpdateLectureArticleCommandHandler(IRepository<LectureResource> repository, IHashids hashids,
-        IIntegratedEventsSender eventsSender,
+        IIntegrationEventsSender eventsSender,
         ILogger<UpdateLectureArticleCommandHandler> logger)
     {
         _repository = repository;

@@ -12,10 +12,10 @@ internal sealed class CreateLectureCommandHandler : IRequestHandler<CreateLectur
     private readonly IRepository<Course> _repository;
     private readonly IHashids _hashids;
     private readonly ILogger<CreateLectureCommandHandler> _logger;
-    private readonly IIntegratedEventsSender _eventsSender;
+    private readonly IIntegrationEventsSender _eventsSender;
 
     public CreateLectureCommandHandler(IRepository<Course> repository, IHashids hashids,
-        ILogger<CreateLectureCommandHandler> logger, IIntegratedEventsSender eventsSender)
+        ILogger<CreateLectureCommandHandler> logger, IIntegrationEventsSender eventsSender)
     {
         _repository = repository;
         _hashids = hashids;

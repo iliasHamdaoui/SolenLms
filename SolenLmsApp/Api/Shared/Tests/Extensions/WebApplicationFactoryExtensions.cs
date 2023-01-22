@@ -18,7 +18,7 @@ public static class WebApplicationFactoryExtensions
             Roles = new[] { user.Role }
         };
 
-        await factory.IntegratedEventsSender.SendEvent(userCreationEvent);
+        await factory.IntegrationEventsSender.SendEvent(userCreationEvent);
 
         return client;
     }

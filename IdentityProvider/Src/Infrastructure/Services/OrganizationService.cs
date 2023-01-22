@@ -9,9 +9,9 @@ namespace Imanys.SolenLms.IdentityProvider.Infrastructure.Services;
 internal sealed class OrganizationService : IOrganizationService
 {
     private readonly IdentityDbContext _dbContext;
-    private readonly IIntegratedEventsSender _eventsSender;
+    private readonly IIntegrationEventsSender _eventsSender;
 
-    public OrganizationService(IdentityDbContext dbContext, IIntegratedEventsSender eventsSender)
+    public OrganizationService(IdentityDbContext dbContext, IIntegrationEventsSender eventsSender)
     {
         _dbContext = dbContext;
         _eventsSender = eventsSender;

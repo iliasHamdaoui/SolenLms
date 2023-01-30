@@ -1,12 +1,37 @@
 ﻿using Imanys.SolenLms.Application.Learning.Core.Domain.BookmarkAggregate;
-using Imanys.SolenLms.Application.Shared.Core.UseCases;
-using Microsoft.Extensions.Logging;
-using static Imanys.SolenLms.Application.Shared.Core.UseCases.RequestResponse;
 
-namespace Imanys.SolenLms.Application.Learning.Core.UseCases.Bookmarks.Commands.ToggleBookmark;
+namespace Imanys.SolenLms.Application.Learning.Features.Bookmarks.Commands.ToggleBookmark;
+
+#region Web API
+
+[Route("courses")]
+[ProducesResponseType(StatusCodes.Status403Forbidden)]
+[ApiExplorerSettings(GroupName = LearningGroupName)]
+public sealed class WebApiController : BaseController
+{
+    /// <summary>
+    /// Toggle course bookmark
+    /// </summary>
+    /// <param name="courseId">The id of the training course that we want to bookmark or unbookmark</param>
+    /// <param name="cancellationToken">The cancellation token</param>
+    /// <returns></returns>
+    [HttpPut("{courseId}/bookmark")]
+    [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status200OK)]
+    public async Task<ActionResult<RequestResponse>> ToggleBookmark(string courseId,
+        CancellationToken cancellationToken)
+    {
+        return Ok(await Mediator.Send(new ToggleBookmarkCommand(courseId), cancellationToken));
+    }
+}
+
+#endregion
+
+public sealed record ToggleBookmarkCommand(string CourseId) : IRequest<RequestResponse>;
 
 internal sealed class ToggleBookmarkCommandHandler : IRequestHandler<ToggleBookmarkCommand, RequestResponse>
 {
+    #region Constructor
+
     private readonly IRepository<BookmarkedCourse> _bookmarkRepo;
     private readonly ICurrentUser _currentUser;
     private readonly ILogger<ToggleBookmarkCommandHandler> _logger;
@@ -18,6 +43,8 @@ internal sealed class ToggleBookmarkCommandHandler : IRequestHandler<ToggleBookm
         _currentUser = currentUser;
         _logger = logger;
     }
+
+    #endregion
 
     public async Task<RequestResponse> Handle(ToggleBookmarkCommand command, CancellationToken _)
     {
@@ -32,11 +59,12 @@ internal sealed class ToggleBookmarkCommandHandler : IRequestHandler<ToggleBookm
             }
 
             await SaveBookmarkToRepository(command.CourseId);
+            
             return Ok("Bookmarked");
         }
         catch (Exception ex)
         {
-            return UnexpectedError("while toggling course bookmarking.", ex);
+            return UnexpectedError("Error occured while toggling course bookmark.", ex);
         }
     }
 

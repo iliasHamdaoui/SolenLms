@@ -1,4 +1,4 @@
-﻿using Imanys.SolenLms.Application.Learning.Core.UseCases;
+﻿using Imanys.SolenLms.Application.Learning.Features;
 using Imanys.SolenLms.Application.Learning.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;

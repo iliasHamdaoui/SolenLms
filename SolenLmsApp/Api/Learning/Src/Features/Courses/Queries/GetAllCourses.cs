@@ -1,25 +1,80 @@
 ﻿using Imanys.SolenLms.Application.Learning.Core.Domain.CourseAggregate;
 using System.Linq.Expressions;
-using static Imanys.SolenLms.Application.Shared.Core.UseCases.RequestResponse<Imanys.SolenLms.Application.Learning.Core.
-    UseCases.Courses.Queries.GetAllCourses.GetAllCoursesQueryResult>;
-using Response =
-    Imanys.SolenLms.Application.Shared.Core.UseCases.RequestResponse<Imanys.SolenLms.Application.Learning.Core.UseCases.
-        Courses.Queries.GetAllCourses.GetAllCoursesQueryResult>;
 
-namespace Imanys.SolenLms.Application.Learning.Core.UseCases.Courses.Queries.GetAllCourses;
+namespace Imanys.SolenLms.Application.Learning.Features.Courses.Queries.GetAllCourses;
+
+using static RequestResponse<GetAllCoursesQueryResult>;
+using Response = RequestResponse<GetAllCoursesQueryResult>;
+
+#region Web API
+
+[Route("courses")]
+[ProducesResponseType(StatusCodes.Status403Forbidden)]
+[ApiExplorerSettings(GroupName = LearningGroupName)]
+public sealed class WebApiController : BaseController
+{
+    /// <summary>
+    /// Get all the training courses
+    /// </summary>
+    /// <param name="query">the query to get courses</param>
+    /// <param name="cancellationToken">The cancellation token</param>
+    /// <returns></returns>
+    [HttpGet]
+    [ProducesResponseType(typeof(RequestResponse<GetAllCoursesQueryResult>), StatusCodes.Status200OK)]
+    public async Task<ActionResult<GetAllCoursesQueryResult>> GetAllCourses([FromQuery] GetAllCoursesQuery query,
+        CancellationToken cancellationToken)
+    {
+        return Ok(await Mediator.Send(query, cancellationToken));
+    }
+}
+
+#endregion
+
+#region Query Result
+
+public sealed record GetAllCoursesQueryResult(List<CoursesListItem> Courses, int CourseTotalCount);
+
+public sealed record CoursesListItem
+{
+    public string Id { get; set; } = default!;
+    public string Title { get; set; } = default!;
+    public string? Description { get; set; }
+    public int Duration { get; set; }
+    public DateTime PublicationDate { get; set; }
+    public string? InstructorName { get; set; }
+    public bool IsBookmarked { get; set; }
+    public DateTime? LastAccess { get; set; }
+    public IEnumerable<string> Categories { get; set; } = default!;
+    public float LearnerProgress { get; set; }
+}
+
+#endregion
+
+public sealed record GetAllCoursesQuery : IRequest<RequestResponse<GetAllCoursesQueryResult>>
+{
+    public int Page { get; set; } = 1;
+    public int PageSize { get; set; } = 10;
+    public string OrderBy { get; set; } = string.Empty;
+    public string CategoriesIds { get; set; } = string.Empty;
+    public string ReferentsIds { get; set; } = string.Empty;
+    public bool BookmarkedOnly { get; set; } = false;
+}
 
 internal sealed class GetAllCoursesQueryHandler : IRequestHandler<GetAllCoursesQuery, Response>
 {
+    #region Constructor
+
     private readonly IRepository<Course> _courseRepository;
     private readonly ICurrentUser _currentUser;
-
-
+    
     public GetAllCoursesQueryHandler(IRepository<Course> courseRepository, ICurrentUser currentUser)
     {
         _courseRepository = courseRepository;
         _currentUser = currentUser;
     }
 
+    #endregion
+    
     public async Task<Response> Handle(GetAllCoursesQuery query, CancellationToken cancellationToken)
     {
         int courseTotalCount = await GetTotalCourseCountFromRepository(query, cancellationToken);
@@ -114,3 +169,27 @@ internal sealed class GetAllCoursesQueryHandler : IRequestHandler<GetAllCoursesQ
 
     #endregion
 }
+
+#region extensions
+
+internal static class CourseExtension
+{
+    public static CoursesListItem ToListItem(this Course course)
+    {
+        return new CoursesListItem
+        {
+            Id = course.Id,
+            Title = course.Title,
+            Description = course.Description,
+            Duration = course.Duration,
+            InstructorName = course.Instructor?.FullName,
+            PublicationDate = course.PublicationDate,
+            LastAccess = course.LearnersProgress?.FirstOrDefault()?.LastAccessTime,
+            LearnerProgress = course.LearnersProgress?.FirstOrDefault()?.Progress ?? 0,
+            IsBookmarked = course.LearnersBookmarks.Any(),
+            Categories = course.Categories.Select(x => x.Category.Name)
+        };
+    }
+}
+
+#endregion

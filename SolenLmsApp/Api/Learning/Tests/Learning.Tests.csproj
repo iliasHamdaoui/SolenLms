@@ -15,6 +15,7 @@
 	<ItemGroup>
 		<ProjectReference Include="..\..\CourseManagement\Src\CourseManagement.csproj" />
 		<ProjectReference Include="..\..\Shared\Tests\Shared.Tests.csproj" />
+		<ProjectReference Include="..\Src\Learning.csproj" />
 	</ItemGroup>
 
 </Project>

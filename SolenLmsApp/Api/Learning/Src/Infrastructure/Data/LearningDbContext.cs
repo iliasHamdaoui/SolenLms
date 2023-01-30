@@ -4,7 +4,6 @@ using Imanys.SolenLms.Application.Learning.Core.Domain.CourseCategory;
 using Imanys.SolenLms.Application.Learning.Core.Domain.InstructorAggregate;
 using Imanys.SolenLms.Application.Learning.Core.Domain.LearnerAggregate;
 using Imanys.SolenLms.Application.Learning.Core.Domain.LearnerProgressAggregate;
-using Imanys.SolenLms.Application.Shared.Core;
 using Imanys.SolenLms.Application.Shared.Core.Entities;
 using Imanys.SolenLms.Application.Shared.Core.Infrastructure;
 using Microsoft.EntityFrameworkCore;

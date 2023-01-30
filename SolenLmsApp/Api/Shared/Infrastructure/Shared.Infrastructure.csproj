@@ -22,7 +22,7 @@
 
 	<ItemGroup>
 		<ProjectReference Include="..\..\CourseManagement\Src\CourseManagement.csproj" />
-		<ProjectReference Include="..\..\Learning\Src\Infrastructure\Learning.Infrastructure.csproj" />
+		<ProjectReference Include="..\..\Learning\Src\Learning.csproj" />
 		<ProjectReference Include="..\..\Resources\Src\Resources.csproj" />
 		<ProjectReference Include="..\Presentation\WebApi\Shared.WebApi.csproj" />
 	</ItemGroup>

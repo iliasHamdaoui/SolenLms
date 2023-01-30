@@ -16,8 +16,7 @@ internal static class MediatR
         {
             typeof(CourseManagement.IAssemblyReference).Assembly,
             typeof(Resources.IAssemblyReference).Assembly,
-            typeof(Learning.Core.UseCases.IAssemblyReference).Assembly,
-            typeof(Learning.Infrastructure.IAssemblyReference).Assembly,
+            typeof(Learning.IAssemblyReference).Assembly,
         };
 
         services.AddValidatorsFromAssemblies(assemblies);

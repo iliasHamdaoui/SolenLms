@@ -5,7 +5,7 @@
 @inject IState<LearningCoursesState> State
 @inject NavigationManager NavigationManager
 @inject NotificationsService NotificationsService
-@inject ICoursesClient CoursesClient
+@inject IWebApiClient WebApiClient
 
 <div class="container mt-5 py-5">
     <div class="row">
@@ -109,7 +109,7 @@
     {
         try
         {
-            var result = await CoursesClient.ToggleBookmarkAsync(courseId, CancellationToken);
+            var result = await WebApiClient.ToggleBookmarkAsync(courseId, CancellationToken);
             NotificationsService.ShowConfirmation(result.Message);
             Dispatcher.Dispatch(new LoadCoursesAction(CancellationToken));
         }

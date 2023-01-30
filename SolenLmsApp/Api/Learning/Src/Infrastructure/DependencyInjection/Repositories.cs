@@ -1,5 +1,4 @@
-﻿using Imanys.SolenLms.Application.Learning.Core.UseCases.LearnersProgress.Commands.UpdateLearnerProgress;
-using Imanys.SolenLms.Application.Learning.Infrastructure.Data.Repositories.LearnersProgress;
+﻿using Imanys.SolenLms.Application.Learning.Features.LearnersProgress.Commands.UpdateLearnerProgress;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Imanys.SolenLms.Application.Learning.Infrastructure.DependencyInjection;

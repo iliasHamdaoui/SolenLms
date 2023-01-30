@@ -1,6 +1,6 @@
-﻿using Imanys.SolenLms.Application.CourseManagement.Core.UseCases.Courses.Queries.GetCourseById;
-using Imanys.SolenLms.Application.CourseManagement.Core.UseCases.Courses.Queries.GetLectureById;
-using Imanys.SolenLms.Application.CourseManagement.Core.UseCases.Courses.Queries.GetModuleById;
+﻿using Imanys.SolenLms.Application.CourseManagement.Features.Courses.Queries.GetLectureById;
+using Imanys.SolenLms.Application.CourseManagement.Features.Courses.Queries.GetModuleById;
+using Imanys.SolenLms.Application.CourseManagement.Features.Courses.Queries.GetCourseById;
 using Imanys.SolenLms.Application.Shared.Core.UseCases;
 using Imanys.SolenLms.Application.Shared.Tests.Helpers.Users;
 using System.Collections.Generic;

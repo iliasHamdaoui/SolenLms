@@ -1,6 +1,5 @@
 ﻿@inherits ComponentWithCancellationToken
-
-@inject ICategoriesClient SettingsCategoriesClient
+@inject IApiClient ApiClient
 @inject NotificationsService NotificationsService
 
 
@@ -36,7 +35,7 @@
     {
         try
         {
-            var result = await SettingsCategoriesClient.CreateCategoryAsync(_command, CancellationToken);
+            var result = await ApiClient.CreateCategoryAsync(_command, CancellationToken);
             NotificationsService.ShowConfirmation(result.Message);
             await BlazoredModal.CloseAsync();
         }

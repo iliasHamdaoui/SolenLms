@@ -10,12 +10,11 @@ namespace Imanys.SolenLms.Application.Shared.Infrastructure.DI;
 
 internal static class MediatR
 {
-    public static IServiceCollection AddMediatR(this IServiceCollection services, IMvcBuilder mvcBuilder)
+    public static IServiceCollection AddMediatR(this IServiceCollection services)
     {
         var assemblies = new Collection<Assembly>
         {
-            typeof(CourseManagement.Core.UseCases.IAssemblyReference).Assembly,
-            typeof(CourseManagement.Infrastructure.IAssemblyReference).Assembly,
+            typeof(CourseManagement.IAssemblyReference).Assembly,
             typeof(Resources.Core.UseCases.IAssemblyReference).Assembly,
             typeof(Resources.Infrastructure.IAssemblyReference).Assembly,
             typeof(Learning.Core.UseCases.IAssemblyReference).Assembly,

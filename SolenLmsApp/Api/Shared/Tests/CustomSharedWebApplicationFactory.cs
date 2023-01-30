@@ -2,9 +2,9 @@
 using DotNet.Testcontainers.Builders;
 using DotNet.Testcontainers.Configurations;
 using DotNet.Testcontainers.Containers;
-using Imanys.SolenLms.Application.CourseManagement.Core.UseCases.Courses.Commands.CreateCourse;
-using Imanys.SolenLms.Application.CourseManagement.Core.UseCases.Courses.Commands.CreateLecture;
-using Imanys.SolenLms.Application.CourseManagement.Core.UseCases.Courses.Commands.CreateModule;
+using Imanys.SolenLms.Application.CourseManagement.Features.Courses.Commands.CreateCourse;
+using Imanys.SolenLms.Application.CourseManagement.Features.Courses.Commands.CreateLecture;
+using Imanys.SolenLms.Application.CourseManagement.Features.Courses.Commands.CreateModule;
 using Imanys.SolenLms.Application.CourseManagement.Infrastructure.Data;
 using Imanys.SolenLms.Application.Learning.Infrastructure.Data;
 using Imanys.SolenLms.Application.Resources.Core.UseCases;

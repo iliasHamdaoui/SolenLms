@@ -1,5 +1,5 @@
-﻿using Imanys.SolenLms.Application.CourseManagement.Core.UseCases.Courses.Queries.GetCourseById;
-using Imanys.SolenLms.Application.CourseManagement.Core.UseCases.Courses.Queries.GetLectureById;
+﻿using Imanys.SolenLms.Application.CourseManagement.Features.Courses.Queries.GetLectureById;
+using Imanys.SolenLms.Application.CourseManagement.Features.Courses.Queries.GetCourseById;
 using Imanys.SolenLms.Application.Resources.Core.UseCases.Lectures.Commands.UpdateLectureArticle;
 using Imanys.SolenLms.Application.Shared.Core.UseCases;
 using Imanys.SolenLms.Application.Shared.Tests;

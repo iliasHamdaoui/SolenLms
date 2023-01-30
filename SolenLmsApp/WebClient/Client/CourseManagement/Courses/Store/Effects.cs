@@ -6,19 +6,15 @@ namespace Imanys.SolenLms.Application.WebClient.CourseManagement.Courses.Store;
 
 public sealed class Effects
 {
-    private readonly ICoursesClient _coursesClient;
-    private readonly ICategoriesClient _categoriesClient;
-    private readonly IInstructorsClient _instructorsClient;
+    private readonly IApiClient _apiClient;
     private readonly IState<CoursesState> _state;
     private readonly NotificationsService _notificationsService;
     private readonly ILogger<Effects> _logger;
 
-    public Effects(ICoursesClient coursesClient, ICategoriesClient categoriesClient,
-    IInstructorsClient instructorsClient, IState<CoursesState> state, NotificationsService notificationsService, ILogger<Effects> logger)
+    public Effects(IApiClient apiClient, IState<CoursesState> state, NotificationsService notificationsService,
+        ILogger<Effects> logger)
     {
-        _coursesClient = coursesClient;
-        _categoriesClient = categoriesClient;
-        _instructorsClient = instructorsClient;
+        _apiClient = apiClient;
         _state = state;
         _notificationsService = notificationsService;
         _logger = logger;
@@ -30,7 +26,8 @@ public sealed class Effects
         var (page, pageSize, orderBy, isSortDescending, categoriesIds, referentsIds) = _state.Value.GetCoursesQuery;
         try
         {
-            var result = await _coursesClient.GetAllCoursesAsync(page, pageSize, orderBy, isSortDescending, categoriesIds, referentsIds, action.CancellationToken);
+            var result = await _apiClient.GetAllCoursesAsync(page, pageSize, orderBy, isSortDescending,
+                categoriesIds, referentsIds, action.CancellationToken);
             dispatcher.Dispatch(new LoadCoursesResultAction(result.Data.Courses, result.Data.CourseTotalCount));
         }
         catch (ApiException<ProblemDetails> exception)
@@ -48,9 +45,10 @@ public sealed class Effects
     {
         try
         {
-            var categoriesResult = await _categoriesClient.GetAllCategoriesAsync(action.CancellationToken);
-            var referentsResult = await _instructorsClient.GetAllInstructorsAsync(action.CancellationToken);
-            dispatcher.Dispatch(new LoadFiltersResultAction(categoriesResult.Data.Categories, referentsResult.Data.Referents));
+            var categoriesResult = await _apiClient.GetAllCategoriesAsync(action.CancellationToken);
+            var referentsResult = await _apiClient.GetAllInstructorsAsync(action.CancellationToken);
+            dispatcher.Dispatch(new LoadFiltersResultAction(categoriesResult.Data.Categories,
+                referentsResult.Data.Referents));
         }
         catch (ApiException<ProblemDetails> exception)
         {

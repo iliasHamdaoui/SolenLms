@@ -13,6 +13,7 @@
 
 	<ItemGroup>
 	  <ProjectReference Include="..\..\Shared\Tests\Shared.Tests.csproj" />
+	  <ProjectReference Include="..\Src\CourseManagement.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>

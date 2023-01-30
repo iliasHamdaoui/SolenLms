@@ -1,6 +1,6 @@
 ﻿@inherits ComponentWithCancellationToken
 
-@inject ICoursesLecturesClient LecturesClient
+@inject IApiClient ApiClient
 @inject NotificationsService NotificationsService
 @inject IDispatcher Dispatcher
 
@@ -54,7 +54,7 @@
     {
         try
         {
-            var result = await LecturesClient.CreateLectureAsync(CourseId, ModuleId, _command, CancellationToken);
+            var result = await ApiClient.CreateLectureAsync(CourseId, ModuleId, _command, CancellationToken);
             NotificationsService.ShowConfirmation(result.Message);
             Dispatcher.Dispatch(new SetCurrentLectureAction(result.Data));
             await BlazoredModal.CloseAsync();

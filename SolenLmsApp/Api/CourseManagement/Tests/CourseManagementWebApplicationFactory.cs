@@ -1,4 +1,4 @@
-﻿using Imanys.SolenLms.Application.CourseManagement.Core.UseCases.Courses.Queries.GetLectureById;
+﻿using Imanys.SolenLms.Application.CourseManagement.Features.Courses.Queries.GetLectureById;
 using Imanys.SolenLms.Application.Resources.Core.UseCases.Lectures.Commands.UpdateLectureArticle;
 using Imanys.SolenLms.Application.Resources.Infrastructure.Storage.Local;
 using Imanys.SolenLms.Application.Shared.Core.UseCases;

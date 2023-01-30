@@ -12,13 +12,13 @@ public sealed class Effects
     private readonly NotificationsService _notificationsService;
     private readonly ILearningClient _learningClient;
     private readonly IState<LearningState> _state;
-    private readonly IResourcesClient _resourcesClient;
+    private readonly IWebApiClient _resourcesClient;
     private readonly ILogger<Effects> _logger;
     private readonly VideoResourcesUrl _videoResourcesUrl;
     private readonly NavigationManager _navigationManager;
 
     public Effects(NotificationsService notificationsService, ILearningClient learningClient, IState<LearningState> state,
-    IResourcesClient resourcesClient, ILogger<Effects> logger, IOptions<VideoResourcesUrl> videoResourcesUrlOptions, NavigationManager navigationManager)
+        IWebApiClient resourcesClient, ILogger<Effects> logger, IOptions<VideoResourcesUrl> videoResourcesUrlOptions, NavigationManager navigationManager)
     {
         _notificationsService = notificationsService;
         _learningClient = learningClient;

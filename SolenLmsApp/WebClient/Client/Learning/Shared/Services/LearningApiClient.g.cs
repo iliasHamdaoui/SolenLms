@@ -1165,62 +1165,38 @@ namespace Imanys.SolenLms.Application.WebClient.Learning.Shared.Services
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NSwag", "13.18.2.0 (NJsonSchema v10.8.0.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial interface IResourcesClient
+    public partial interface IWebApiClient
     {
-        /// <summary>
-        /// Get a lecture video
-        /// </summary>
-        /// <param name="resourceId">The id of the resource</param>
         /// <exception cref="ApiException">A server side error occurred.</exception>
         System.Threading.Tasks.Task<FileResponse> GetVideoAsync(string resourceId);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
-        /// <summary>
-        /// Get a lecture video
-        /// </summary>
-        /// <param name="resourceId">The id of the resource</param>
         /// <exception cref="ApiException">A server side error occurred.</exception>
         System.Threading.Tasks.Task<FileResponse> GetVideoAsync(string resourceId, System.Threading.CancellationToken cancellationToken);
 
-        /// <summary>
-        /// Get a lecture article
-        /// </summary>
-        /// <param name="resourceId">The id of the resource</param>
         /// <exception cref="ApiException">A server side error occurred.</exception>
         System.Threading.Tasks.Task<RequestResponseOfString> GetArticleAsync(string resourceId);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
-        /// <summary>
-        /// Get a lecture article
-        /// </summary>
-        /// <param name="resourceId">The id of the resource</param>
         /// <exception cref="ApiException">A server side error occurred.</exception>
         System.Threading.Tasks.Task<RequestResponseOfString> GetArticleAsync(string resourceId, System.Threading.CancellationToken cancellationToken);
 
-        /// <summary>
-        /// Check whether the lecture content has been set
-        /// </summary>
-        /// <param name="resourceId">The id of the resource</param>
         /// <exception cref="ApiException">A server side error occurred.</exception>
         System.Threading.Tasks.Task<RequestResponseOfBoolean> CheckLectureContentAsync(string resourceId);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
-        /// <summary>
-        /// Check whether the lecture content has been set
-        /// </summary>
-        /// <param name="resourceId">The id of the resource</param>
         /// <exception cref="ApiException">A server side error occurred.</exception>
         System.Threading.Tasks.Task<RequestResponseOfBoolean> CheckLectureContentAsync(string resourceId, System.Threading.CancellationToken cancellationToken);
 
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NSwag", "13.18.2.0 (NJsonSchema v10.8.0.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class ResourcesClient : IResourcesClient
+    public partial class WebApiClient : IWebApiClient
     {
         private System.Net.Http.HttpClient _httpClient;
         private System.Lazy<Newtonsoft.Json.JsonSerializerSettings> _settings;
 
-        public ResourcesClient(System.Net.Http.HttpClient httpClient)
+        public WebApiClient(System.Net.Http.HttpClient httpClient)
         {
             _httpClient = httpClient;
             _settings = new System.Lazy<Newtonsoft.Json.JsonSerializerSettings>(CreateSerializerSettings);
@@ -1241,10 +1217,6 @@ namespace Imanys.SolenLms.Application.WebClient.Learning.Shared.Services
         partial void PrepareRequest(System.Net.Http.HttpClient client, System.Net.Http.HttpRequestMessage request, System.Text.StringBuilder urlBuilder);
         partial void ProcessResponse(System.Net.Http.HttpClient client, System.Net.Http.HttpResponseMessage response);
 
-        /// <summary>
-        /// Get a lecture video
-        /// </summary>
-        /// <param name="resourceId">The id of the resource</param>
         /// <exception cref="ApiException">A server side error occurred.</exception>
         public virtual System.Threading.Tasks.Task<FileResponse> GetVideoAsync(string resourceId)
         {
@@ -1252,10 +1224,6 @@ namespace Imanys.SolenLms.Application.WebClient.Learning.Shared.Services
         }
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
-        /// <summary>
-        /// Get a lecture video
-        /// </summary>
-        /// <param name="resourceId">The id of the resource</param>
         /// <exception cref="ApiException">A server side error occurred.</exception>
         public virtual async System.Threading.Tasks.Task<FileResponse> GetVideoAsync(string resourceId, System.Threading.CancellationToken cancellationToken)
         {
@@ -1360,10 +1328,6 @@ namespace Imanys.SolenLms.Application.WebClient.Learning.Shared.Services
             }
         }
 
-        /// <summary>
-        /// Get a lecture article
-        /// </summary>
-        /// <param name="resourceId">The id of the resource</param>
         /// <exception cref="ApiException">A server side error occurred.</exception>
         public virtual System.Threading.Tasks.Task<RequestResponseOfString> GetArticleAsync(string resourceId)
         {
@@ -1371,10 +1335,6 @@ namespace Imanys.SolenLms.Application.WebClient.Learning.Shared.Services
         }
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
-        /// <summary>
-        /// Get a lecture article
-        /// </summary>
-        /// <param name="resourceId">The id of the resource</param>
         /// <exception cref="ApiException">A server side error occurred.</exception>
         public virtual async System.Threading.Tasks.Task<RequestResponseOfString> GetArticleAsync(string resourceId, System.Threading.CancellationToken cancellationToken)
         {
@@ -1481,10 +1441,6 @@ namespace Imanys.SolenLms.Application.WebClient.Learning.Shared.Services
             }
         }
 
-        /// <summary>
-        /// Check whether the lecture content has been set
-        /// </summary>
-        /// <param name="resourceId">The id of the resource</param>
         /// <exception cref="ApiException">A server side error occurred.</exception>
         public virtual System.Threading.Tasks.Task<RequestResponseOfBoolean> CheckLectureContentAsync(string resourceId)
         {
@@ -1492,10 +1448,6 @@ namespace Imanys.SolenLms.Application.WebClient.Learning.Shared.Services
         }
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
-        /// <summary>
-        /// Check whether the lecture content has been set
-        /// </summary>
-        /// <param name="resourceId">The id of the resource</param>
         /// <exception cref="ApiException">A server side error occurred.</exception>
         public virtual async System.Threading.Tasks.Task<RequestResponseOfBoolean> CheckLectureContentAsync(string resourceId, System.Threading.CancellationToken cancellationToken)
         {

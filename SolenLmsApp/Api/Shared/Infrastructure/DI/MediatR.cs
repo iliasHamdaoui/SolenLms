@@ -15,8 +15,7 @@ internal static class MediatR
         var assemblies = new Collection<Assembly>
         {
             typeof(CourseManagement.IAssemblyReference).Assembly,
-            typeof(Resources.Core.UseCases.IAssemblyReference).Assembly,
-            typeof(Resources.Infrastructure.IAssemblyReference).Assembly,
+            typeof(Resources.IAssemblyReference).Assembly,
             typeof(Learning.Core.UseCases.IAssemblyReference).Assembly,
             typeof(Learning.Infrastructure.IAssemblyReference).Assembly,
         };

@@ -1,4 +1,4 @@
-﻿using Imanys.SolenLms.Application.Resources.Core.UseCases.Lectures.Commands.UploadLectureVideo;
+﻿using Imanys.SolenLms.Application.Resources.Features.Lectures.Commands.UploadLectureVideo;
 using Microsoft.EntityFrameworkCore;
 
 namespace Imanys.SolenLms.Application.Resources.Infrastructure.Data.Repositories.Storage;

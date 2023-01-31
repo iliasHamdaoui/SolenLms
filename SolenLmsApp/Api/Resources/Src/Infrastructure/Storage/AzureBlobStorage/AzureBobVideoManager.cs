@@ -1,6 +1,6 @@
 ﻿using Azure.Storage.Blobs;
 using Azure.Storage.Blobs.Models;
-using Imanys.SolenLms.Application.Resources.Core.UseCases;
+using Imanys.SolenLms.Application.Resources.Features;
 using Microsoft.Extensions.Options;
 
 namespace Imanys.SolenLms.Application.Resources.Infrastructure.Storage.AzureBlobStorage;
@@ -54,24 +54,7 @@ internal sealed class AzureBobVideoManager : IMediaManager
         await foreach (var blob in allOrganizationBlobs)
             await containerClient.DeleteBlobAsync(blob.Name);
     }
-
-    public async Task<byte[]> GetMediaContent(string? mediaPath)
-    {
-        if (mediaPath == null)
-            return Array.Empty<byte>();
-
-        var containerClient = _blobServiceClient.GetBlobContainerClient(_blobStorageSettings.ResourcesContainerName);
-        var blobClient = containerClient.GetBlobClient(mediaPath);
-        if (await blobClient.ExistsAsync())
-        {
-            using var ms = new MemoryStream();
-            await blobClient.DownloadToAsync(ms);
-            return ms.ToArray();
-        }
-        
-        return Array.Empty<byte>();
-    }
-
+    
     public async Task<Stream?> GetMediaContentStream(string? mediaPath)
     {
         if (mediaPath == null)

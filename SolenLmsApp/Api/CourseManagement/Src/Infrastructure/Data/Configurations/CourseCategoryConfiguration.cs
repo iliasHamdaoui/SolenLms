@@ -1,4 +1,4 @@
-﻿using Imanys.SolenLms.Application.CourseManagement.Core.Domain.CourseCategoryAggregate;
+﻿using Imanys.SolenLms.Application.CourseManagement.Core.Domain.CoursesCategories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 

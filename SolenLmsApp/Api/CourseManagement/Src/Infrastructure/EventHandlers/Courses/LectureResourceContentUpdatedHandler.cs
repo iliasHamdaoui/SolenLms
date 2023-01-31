@@ -1,10 +1,7 @@
-﻿using HashidsNet;
-using Imanys.SolenLms.Application.CourseManagement.Core.Domain.CourseAggregate;
+﻿using Imanys.SolenLms.Application.CourseManagement.Core.Domain.Courses;
 using Imanys.SolenLms.Application.CourseManagement.Infrastructure.Data;
 using Imanys.SolenLms.Application.Shared.Core.Events.Resources;
-using MediatR;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
 
 namespace Imanys.SolenLms.Application.CourseManagement.Infrastructure.EventHandlers.Courses;
 

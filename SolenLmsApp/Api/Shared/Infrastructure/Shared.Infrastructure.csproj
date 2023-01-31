@@ -18,12 +18,13 @@
 		<PackageReference Include="ZymLabs.NSwag.FluentValidation" Version="0.6.2" />
 		<PackageReference Include="Azure.Messaging.ServiceBus" Version="7.11.1" />
 		<PackageReference Include="Serilog.AspNetCore" Version="6.1.0" />
+		<PackageReference Include="Scrutor" Version="4.2.0" />
 	</ItemGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\..\CourseManagement\Src\Infrastructure\CourseManagement.Infrastructure.csproj" />
-		<ProjectReference Include="..\..\Learning\Src\Infrastructure\Learning.Infrastructure.csproj" />
-		<ProjectReference Include="..\..\Resources\Src\Infrastructure\Resources.Infrastructure.csproj" />
+		<ProjectReference Include="..\..\CourseManagement\Src\CourseManagement.csproj" />
+		<ProjectReference Include="..\..\Learning\Src\Learning.csproj" />
+		<ProjectReference Include="..\..\Resources\Src\Resources.csproj" />
 		<ProjectReference Include="..\Presentation\WebApi\Shared.WebApi.csproj" />
 	</ItemGroup>
 

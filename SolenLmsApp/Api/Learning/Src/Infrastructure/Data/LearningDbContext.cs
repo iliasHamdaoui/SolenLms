@@ -1,10 +1,9 @@
-﻿using Imanys.SolenLms.Application.Learning.Core.Domain.CategoryAggregate;
-using Imanys.SolenLms.Application.Learning.Core.Domain.CourseAggregate;
-using Imanys.SolenLms.Application.Learning.Core.Domain.CourseCategory;
-using Imanys.SolenLms.Application.Learning.Core.Domain.InstructorAggregate;
-using Imanys.SolenLms.Application.Learning.Core.Domain.LearnerAggregate;
-using Imanys.SolenLms.Application.Learning.Core.Domain.LearnerProgressAggregate;
-using Imanys.SolenLms.Application.Shared.Core;
+﻿using Imanys.SolenLms.Application.Learning.Core.Domain.Categories;
+using Imanys.SolenLms.Application.Learning.Core.Domain.Courses;
+using Imanys.SolenLms.Application.Learning.Core.Domain.CoursesCategories;
+using Imanys.SolenLms.Application.Learning.Core.Domain.Instructors;
+using Imanys.SolenLms.Application.Learning.Core.Domain.Learners;
+using Imanys.SolenLms.Application.Learning.Core.Domain.LearnersProgress;
 using Imanys.SolenLms.Application.Shared.Core.Entities;
 using Imanys.SolenLms.Application.Shared.Core.Infrastructure;
 using Microsoft.EntityFrameworkCore;

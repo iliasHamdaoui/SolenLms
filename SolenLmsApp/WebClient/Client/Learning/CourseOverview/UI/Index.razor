@@ -2,7 +2,7 @@
 @page "/learning/courses/{CourseId}"
 @inject IDispatcher Dispatcher
 @inject IState<LearningCourseOverviewState> State
-@inject ICoursesClient CoursesClient
+@inject IWebApiClient WebApiClient
 @inject NotificationsService NotificationsService
 @inject NavigationManager NavigationManager
 
@@ -23,7 +23,7 @@
     {
         try
         {
-            var result = await CoursesClient.ToggleBookmarkAsync(courseId, CancellationToken);
+            var result = await WebApiClient.ToggleBookmarkAsync(courseId, CancellationToken);
             NotificationsService.ShowConfirmation(result.Message);
             Dispatcher.Dispatch(new LoadCourseAction(CourseId!, CancellationToken));
         }

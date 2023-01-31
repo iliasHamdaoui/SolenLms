@@ -1,4 +1,4 @@
-﻿using Imanys.SolenLms.Application.Learning.Core.Domain.CourseAggregate;
+﻿using Imanys.SolenLms.Application.Learning.Core.Domain.Courses;
 using Imanys.SolenLms.Application.Shared.Core.Enums;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;

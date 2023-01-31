@@ -1,4 +1,4 @@
-﻿using Imanys.SolenLms.Application.Resources.Core.UseCases;
+﻿using Imanys.SolenLms.Application.Resources.Features;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -57,20 +57,7 @@ internal sealed class LocalVideoManager : IMediaManager
 
         return Task.CompletedTask;
     }
-
-    public Task<byte[]> GetMediaContent(string? mediaPath)
-    {
-        if (mediaPath == null)
-            return Task.FromResult(Array.Empty<byte>());
-
-        mediaPath = Path.Combine(Directory.GetCurrentDirectory(), mediaPath);
-
-        if (File.Exists(mediaPath))
-            return Task.FromResult(File.ReadAllBytes(mediaPath));
-
-        return Task.FromResult(Array.Empty<byte>());
-    }
-
+    
     public async Task<MediaUploadResult> Upload(IResourceFile media, string organizationId, string courseId, string moduleId, string lectureId)
     {
         var result = new MediaUploadResult { IsSuccess = true };
@@ -125,6 +112,7 @@ internal sealed class LocalVideoManager : IMediaManager
             var ms = new MemoryStream();
             var fs = new FileStream(mediaPath, FileMode.Open, FileAccess.Read);
             await fs.CopyToAsync(ms);
+            return ms;
         }
         
         return null;

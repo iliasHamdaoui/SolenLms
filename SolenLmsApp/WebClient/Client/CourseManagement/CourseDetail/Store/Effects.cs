@@ -7,26 +7,19 @@ namespace Imanys.SolenLms.Application.WebClient.CourseManagement.CourseDetail.St
 
 public sealed class Effects
 {
-    private readonly ICoursesClient _coursesClient;
-    private readonly ICategoriesClient _categoriesClient;
-    private readonly ICoursesCategoriesClient _coursesCategoriesClient;
+    private readonly IApiClient _apiClient;
     private readonly NotificationsService _notificationsService;
     private readonly NavigationManager _navigationManager;
-    private readonly ILearnersProgressClient _coursesLearnersClient;
     private readonly ILogger<Effects> _logger;
 
-    public Effects(ICoursesClient coursesClient, ICategoriesClient categoriesClient, ICoursesCategoriesClient coursesCategoriesClient, NotificationsService notificationsService,
-    NavigationManager navigationManager, ILearnersProgressClient coursesLearnersClient, ILogger<Effects> logger)
+    public Effects(IApiClient apiClient, NotificationsService notificationsService, NavigationManager navigationManager,
+        ILogger<Effects> logger)
     {
-        _coursesClient = coursesClient;
-        _categoriesClient = categoriesClient;
-        _coursesCategoriesClient = coursesCategoriesClient;
+        _apiClient = apiClient;
         _notificationsService = notificationsService;
         _navigationManager = navigationManager;
-        _coursesLearnersClient = coursesLearnersClient;
         _logger = logger;
     }
-
 
 
     [EffectMethod]
@@ -34,7 +27,7 @@ public sealed class Effects
     {
         try
         {
-            var result = await _coursesClient.GetCourseByIdAsync(action.CourseId, action.CancellationToken);
+            var result = await _apiClient.GetCourseByIdAsync(action.CourseId, action.CancellationToken);
             dispatcher.Dispatch(new LoadCourseResultAction(result.Data));
         }
         catch (ApiException<ProblemDetails> exception)
@@ -58,9 +51,11 @@ public sealed class Effects
     {
         try
         {
-            var categoriesResult = await _categoriesClient.GetAllCategoriesAsync(action.CancellationToken);
-            var courseCategoriesResult = await _coursesCategoriesClient.GetCourseCategoriesIdsAsync(action.CourseId, action.CancellationToken);
-            dispatcher.Dispatch(new LoadCourseCategoriesResultAction(categoriesResult.Data.Categories, courseCategoriesResult.Data));
+            var categoriesResult = await _apiClient.GetAllCategoriesAsync(action.CancellationToken);
+            var courseCategoriesResult =
+                await _apiClient.GetCourseCategoriesIdsAsync(action.CourseId, action.CancellationToken);
+            dispatcher.Dispatch(new LoadCourseCategoriesResultAction(categoriesResult.Data.Categories,
+                courseCategoriesResult.Data));
         }
         catch (ApiException<ProblemDetails> exception)
         {
@@ -77,7 +72,7 @@ public sealed class Effects
     {
         try
         {
-            var result = await _coursesLearnersClient.GetLearnersProgressAsync(action.CourseId, action.CancellationToken);
+            var result = await _apiClient.GetLearnersProgressAsync(action.CourseId, action.CancellationToken);
             dispatcher.Dispatch(new LoadLearnersResultAction(result.Data.Learners));
         }
         catch (ApiException<ProblemDetails> exception)

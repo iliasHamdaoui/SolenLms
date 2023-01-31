@@ -1,4 +1,4 @@
-﻿using Imanys.SolenLms.Application.Resources.Core.UseCases.Lectures.Commands.UpdateLectureArticle;
+﻿using Imanys.SolenLms.Application.Resources.Features.Lectures.Commands.UpdateLectureArticle;
 using Imanys.SolenLms.Application.Shared.Core.UseCases;
 using Imanys.SolenLms.Application.Shared.Tests.Helpers.Users;
 

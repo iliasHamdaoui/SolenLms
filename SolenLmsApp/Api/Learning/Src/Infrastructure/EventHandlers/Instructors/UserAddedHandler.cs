@@ -1,10 +1,8 @@
-﻿using Imanys.SolenLms.Application.Learning.Core.Domain.InstructorAggregate;
+﻿using Imanys.SolenLms.Application.Learning.Core.Domain.Instructors;
 using Imanys.SolenLms.Application.Learning.Infrastructure.Data;
 using Imanys.SolenLms.Application.Shared.Core.Enums;
 using Imanys.SolenLms.Application.Shared.Core.Events.IdentityProvider;
-using MediatR;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
 
 namespace Imanys.SolenLms.Application.Learning.Infrastructure.EventHandlers.Instructors;
 

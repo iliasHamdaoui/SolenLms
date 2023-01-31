@@ -1,0 +1,12 @@
+﻿global using Ardalis.Specification;
+global using FluentValidation;
+global using HashidsNet;
+global using Imanys.SolenLms.Application.Shared.Core;
+global using MediatR;
+global using Imanys.SolenLms.Application.Shared.WebApi;
+global using Microsoft.AspNetCore.Mvc;
+global using Microsoft.AspNetCore.Http;
+global using Imanys.SolenLms.Application.Shared.Core.UseCases;
+global using static Imanys.SolenLms.Application.Shared.Core.UseCases.RequestResponse;
+global using static Imanys.SolenLms.Application.Shared.WebApi.PoliciesConstants;
+global using static Imanys.SolenLms.Application.Shared.WebApi.OpenApiConstants;

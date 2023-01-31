@@ -1,6 +1,5 @@
 ﻿using Azure.Storage.Blobs;
-using Imanys.SolenLms.Application.Resources.Core.UseCases;
-using Imanys.SolenLms.Application.Resources.Core.UseCases.Lectures.Commands.UploadLectureVideo;
+using Imanys.SolenLms.Application.Resources.Features;
 using Imanys.SolenLms.Application.Resources.Infrastructure.Storage.AzureBlobStorage;
 using Imanys.SolenLms.Application.Resources.Infrastructure.Storage.Local;
 using Imanys.SolenLms.Application.Resources.Infrastructure.Storage.Local.Videos;

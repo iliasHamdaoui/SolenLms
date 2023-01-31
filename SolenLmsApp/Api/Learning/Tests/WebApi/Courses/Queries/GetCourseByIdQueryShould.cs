@@ -1,4 +1,4 @@
-﻿using Imanys.SolenLms.Application.Learning.Core.UseCases.Courses.Queries.GetCourseById;
+﻿using Imanys.SolenLms.Application.Learning.Features.Courses.Queries.GetCourseById;
 using Imanys.SolenLms.Application.Shared.Core.UseCases;
 using Imanys.SolenLms.Application.Shared.Tests.Helpers.AutoFixtureAttributs;
 using Imanys.SolenLms.Application.Shared.Tests.Helpers.Users;

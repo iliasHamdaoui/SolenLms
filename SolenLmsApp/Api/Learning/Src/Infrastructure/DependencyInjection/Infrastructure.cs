@@ -5,13 +5,12 @@ namespace Imanys.SolenLms.Application.Learning.Infrastructure.DependencyInjectio
 
 public static class Infrastructure
 {
-    public static IServiceCollection AddLearnerInfrastructure(this IServiceCollection services, IConfiguration configuration, IMvcBuilder mvcBuilder)
+    public static IServiceCollection AddLearnerInfrastructure(this IServiceCollection services,
+        IConfiguration configuration, IMvcBuilder mvcBuilder)
     {
         services
-        .AddPersistence(configuration)
-         .AddRepositories()
-        .AddWebApi(mvcBuilder);
-
+            .AddPersistence(configuration)
+            .AddWebApi(mvcBuilder);
 
         return services;
     }

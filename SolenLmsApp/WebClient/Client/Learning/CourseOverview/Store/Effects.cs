@@ -8,15 +8,15 @@ namespace Imanys.SolenLms.Application.WebClient.Learning.CourseOverview.Store;
 public sealed class Effects
 {
 
-    private readonly ICoursesClient _coursesClient;
+    private readonly IWebApiClient _webApiClient;
     private readonly NotificationsService _notificationsService;
     private readonly NavigationManager _navigationManager;
     private readonly ILogger<Effects> _logger;
 
-    public Effects(ICoursesClient coursesClient, NotificationsService notificationsService,
+    public Effects(IWebApiClient webApiClient, NotificationsService notificationsService,
                 NavigationManager navigationManager, ILogger<Effects> logger)
     {
-        _coursesClient = coursesClient;
+        _webApiClient = webApiClient;
         _notificationsService = notificationsService;
         _navigationManager = navigationManager;
         _logger = logger;
@@ -28,7 +28,7 @@ public sealed class Effects
     {
         try
         {
-            var result = await _coursesClient.GetCourseByIdAsync(action.CourseId, action.CancellationToken);
+            var result = await _webApiClient.GetCourseByIdAsync(action.CourseId, action.CancellationToken);
             dispatcher.Dispatch(new LoadCourseResultAction(result.Data));
         }
         catch (ApiException<ProblemDetails> exception)

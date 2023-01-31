@@ -1,4 +1,4 @@
-﻿using Imanys.SolenLms.Application.Learning.Core.Domain.BookmarkAggregate;
+﻿using Imanys.SolenLms.Application.Learning.Core.Domain.Bookmarks;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 

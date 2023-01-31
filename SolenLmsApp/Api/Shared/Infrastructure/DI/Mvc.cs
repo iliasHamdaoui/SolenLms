@@ -43,7 +43,7 @@ internal static class Mvc
 
         services.Configure<ApiBehaviorOptions>(options => { options.SuppressModelStateInvalidFilter = true; });
 
-        if (!long.TryParse(configuration["FormOptions:MultipartBodyLengthLimit"], out var multipartBodyLengthLimit))
+        if (!long.TryParse(configuration["FormOptions:MultipartBodyLengthLimit"], out long multipartBodyLengthLimit))
             multipartBodyLengthLimit = 2147483648;
 
         services.Configure<FormOptions>(x => { x.MultipartBodyLengthLimit = multipartBodyLengthLimit; });

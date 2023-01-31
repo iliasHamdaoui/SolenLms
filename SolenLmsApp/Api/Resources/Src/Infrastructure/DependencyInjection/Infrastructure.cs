@@ -13,8 +13,7 @@ public static class Infrastructure
             .AddVideoDurationCalculator(configuration)
             .AddStorage(configuration)
             .AddWebApi(mvcBuilder);
-
-
+        
         return services;
     }
 }

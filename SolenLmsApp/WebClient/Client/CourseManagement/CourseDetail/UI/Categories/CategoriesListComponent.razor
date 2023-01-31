@@ -1,7 +1,6 @@
 ﻿@inherits ComponentWithCancellationToken
 
-@inject ICoursesCategoriesClient CoursesCategoriesClient
-@inject ICategoriesClient SettingsCategoriesClient
+@inject IApiClient ApiClient
 @inject NotificationsService NotificationsService
 @inject IDispatcher Dispatcher
 
@@ -94,7 +93,7 @@
         try
         {
             var command = new UpdateCourseCategoriesCommand { SelectecdCategroriesIds = _selectedIds };
-            var result = await CoursesCategoriesClient.UpdateCourseCategoriesAsync(CurrentCourseId, command, CancellationToken);
+            var result = await ApiClient.UpdateCourseCategoriesAsync(CurrentCourseId, command, CancellationToken);
             NotificationsService.ShowConfirmation(result.Message);
         }
         catch (ApiException<ProblemDetails> exception)
@@ -148,7 +147,7 @@
 
         try
         {
-            var deleteResponse = await SettingsCategoriesClient.DeleteCategoryAsync(categoryId, CancellationToken);
+            var deleteResponse = await ApiClient.DeleteCategoryAsync(categoryId, CancellationToken);
             NotificationsService.ShowConfirmation(deleteResponse.Message);
             Dispatcher.Dispatch(new LoadCourseCategoriesAction(CurrentCourseId!, CancellationToken));
         }

@@ -7,15 +7,15 @@ namespace Imanys.SolenLms.Application.WebClient.Learning.Courses.Store;
 public sealed class Effects
 {
     private readonly IState<LearningCoursesState> _state;
-    private readonly ICoursesClient _coursesClient;
+    private readonly IWebApiClient _webApiClient;
     private readonly NotificationsService _notificationsService;
     private readonly ILogger<Effects> _logger;
 
-    public Effects(IState<LearningCoursesState> state, ICoursesClient coursesClient, NotificationsService notificationsService,
+    public Effects(IState<LearningCoursesState> state, IWebApiClient webApiClient, NotificationsService notificationsService,
              ILogger<Effects> logger)
     {
         _state = state;
-        _coursesClient = coursesClient;
+        _webApiClient = webApiClient;
         _notificationsService = notificationsService;
         _logger = logger;
     }
@@ -26,9 +26,9 @@ public sealed class Effects
         var (page, pageSize, orderBy, categoriesIds, referentsIds, bookmarkOnly) = _state.Value.GetCoursesQuery;
         try
         {
-            var coursesResultTask = _coursesClient.GetAllCoursesAsync(page, pageSize, orderBy, categoriesIds, referentsIds, bookmarkOnly, action.CancellationToken);
+            var coursesResultTask = _webApiClient.GetAllCoursesAsync(page, pageSize, orderBy, categoriesIds, referentsIds, bookmarkOnly, action.CancellationToken);
 
-            var filtersResultTask = _coursesClient.GetFiltersAsync(action.CancellationToken);
+            var filtersResultTask = _webApiClient.GetFiltersAsync(action.CancellationToken);
 
             await Task.WhenAll(coursesResultTask, filtersResultTask);
 

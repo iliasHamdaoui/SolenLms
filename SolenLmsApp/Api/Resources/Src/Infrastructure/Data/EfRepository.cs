@@ -1,6 +1,5 @@
 ﻿using Ardalis.Specification.EntityFrameworkCore;
-using Imanys.SolenLms.Application.Resources.Core.UseCases;
-using Imanys.SolenLms.Application.Shared.Core;
+using Imanys.SolenLms.Application.Resources.Features;
 
 namespace Imanys.SolenLms.Application.Resources.Infrastructure.Data;
 

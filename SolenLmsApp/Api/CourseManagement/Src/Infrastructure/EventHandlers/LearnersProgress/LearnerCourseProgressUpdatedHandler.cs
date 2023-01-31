@@ -1,10 +1,7 @@
-﻿using HashidsNet;
-using Imanys.SolenLms.Application.CourseManagement.Core.Domain.LearnerProgressAggregate;
+﻿using Imanys.SolenLms.Application.CourseManagement.Core.Domain.LearnersProgress;
 using Imanys.SolenLms.Application.CourseManagement.Infrastructure.Data;
 using Imanys.SolenLms.Application.Shared.Core.Events.Learning;
-using MediatR;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
 
 namespace Imanys.SolenLms.Application.CourseManagement.Infrastructure.EventHandlers.LearnersProgress;
 

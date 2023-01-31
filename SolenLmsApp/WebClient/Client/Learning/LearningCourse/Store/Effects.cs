@@ -10,20 +10,19 @@ namespace Imanys.SolenLms.Application.WebClient.Learning.LearningCourse.Store;
 public sealed class Effects
 {
     private readonly NotificationsService _notificationsService;
-    private readonly ILearningClient _learningClient;
+    private readonly IWebApiClient _webApiClient;
     private readonly IState<LearningState> _state;
-    private readonly IResourcesClient _resourcesClient;
     private readonly ILogger<Effects> _logger;
     private readonly VideoResourcesUrl _videoResourcesUrl;
     private readonly NavigationManager _navigationManager;
 
-    public Effects(NotificationsService notificationsService, ILearningClient learningClient, IState<LearningState> state,
-    IResourcesClient resourcesClient, ILogger<Effects> logger, IOptions<VideoResourcesUrl> videoResourcesUrlOptions, NavigationManager navigationManager)
+    public Effects(NotificationsService notificationsService, IWebApiClient webApiClient, IState<LearningState> state,
+        ILogger<Effects> logger, IOptions<VideoResourcesUrl> videoResourcesUrlOptions,
+        NavigationManager navigationManager)
     {
         _notificationsService = notificationsService;
-        _learningClient = learningClient;
+        _webApiClient = webApiClient;
         _state = state;
-        _resourcesClient = resourcesClient;
         _logger = logger;
         _videoResourcesUrl = videoResourcesUrlOptions.Value;
         _navigationManager = navigationManager;
@@ -34,9 +33,10 @@ public sealed class Effects
     {
         try
         {
-            var result = await _learningClient.GetCourseAsync(action.CourseId, action.CancellationToken);
+            var result = await _webApiClient.GetCourseAsync(action.CourseId, action.CancellationToken);
             dispatcher.Dispatch(new LoadLearningCourseResultAction(result.Data));
-            dispatcher.Dispatch(new LoadLectureAction(action.CourseId, result.Data.FirstLecture, action.CancellationToken));
+            dispatcher.Dispatch(new LoadLectureAction(action.CourseId, result.Data.FirstLecture,
+                action.CancellationToken));
         }
         catch (ApiException<ProblemDetails> exception)
         {
@@ -59,14 +59,16 @@ public sealed class Effects
     {
         try
         {
-            var lecture = _state.Value?.Course?.Modules.SelectMany(x => x.Lectures).FirstOrDefault(x => x.Id == action.LectureId);
+            var lecture = _state.Value?.Course?.Modules.SelectMany(x => x.Lectures)
+                .FirstOrDefault(x => x.Id == action.LectureId);
             if (lecture == null)
                 return;
             if (lecture.ResourceId != null)
             {
                 if (lecture.LectureType == "Article")
                 {
-                    var resourceContent = await _resourcesClient.GetArticleAsync(lecture.ResourceId, action.CancellationToken);
+                    var resourceContent =
+                        await _webApiClient.GetArticleAsync(lecture.ResourceId, action.CancellationToken);
                     lecture.Content = resourceContent.Data;
                 }
                 else if (lecture.LectureType == "Video")
@@ -75,7 +77,8 @@ public sealed class Effects
                 }
             }
 
-           await _learningClient.UpdateLearnerProgressAsync(action.CourseId, action.LectureId, IsTheLastLectureOfTheCourse(lecture), action.CancellationToken);
+            await _webApiClient.UpdateLearnerProgressAsync(action.CourseId, action.LectureId,
+                IsTheLastLectureOfTheCourse(lecture), action.CancellationToken);
 
             dispatcher.Dispatch(new LoadLectureResultAction(lecture));
         }
@@ -94,4 +97,3 @@ public sealed class Effects
         }
     }
 }
-

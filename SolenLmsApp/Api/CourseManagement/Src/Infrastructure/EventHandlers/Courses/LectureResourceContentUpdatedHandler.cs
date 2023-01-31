@@ -1,4 +1,4 @@
-﻿using Imanys.SolenLms.Application.CourseManagement.Core.Domain.CourseAggregate;
+﻿using Imanys.SolenLms.Application.CourseManagement.Core.Domain.Courses;
 using Imanys.SolenLms.Application.CourseManagement.Infrastructure.Data;
 using Imanys.SolenLms.Application.Shared.Core.Events.Resources;
 using Microsoft.EntityFrameworkCore;

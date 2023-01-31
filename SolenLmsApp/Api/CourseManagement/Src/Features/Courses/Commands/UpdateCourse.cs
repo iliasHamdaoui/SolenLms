@@ -1,5 +1,5 @@
 ﻿using System.Text.Json.Serialization;
-using Imanys.SolenLms.Application.CourseManagement.Core.Domain.CourseAggregate;
+using Imanys.SolenLms.Application.CourseManagement.Core.Domain.Courses;
 
 namespace Imanys.SolenLms.Application.CourseManagement.Features.Courses.Commands.UpdateCourse;
 

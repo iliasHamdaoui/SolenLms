@@ -1,4 +1,4 @@
-﻿using Imanys.SolenLms.Application.CourseManagement.Core.Domain.CategoryAggregate;
+﻿using Imanys.SolenLms.Application.CourseManagement.Core.Domain.Categories;
 using Imanys.SolenLms.Application.CourseManagement.Features;
 
 namespace Imanys.SolenLms.Application.CourseManagement.Core.UseCases.Features.Categories.Queries.GetAllCategories;

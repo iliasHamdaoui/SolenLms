@@ -1,4 +1,4 @@
-﻿using Imanys.SolenLms.Application.Learning.Core.Domain.CourseAggregate;
+﻿using Imanys.SolenLms.Application.Learning.Core.Domain.Courses;
 
 namespace Imanys.SolenLms.Application.Learning.Features.Courses.Queries.GetCourseById;
 

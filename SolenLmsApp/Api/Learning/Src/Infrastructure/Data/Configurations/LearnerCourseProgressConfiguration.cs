@@ -1,4 +1,4 @@
-﻿using Imanys.SolenLms.Application.Learning.Core.Domain.LearnerProgressAggregate;
+﻿using Imanys.SolenLms.Application.Learning.Core.Domain.LearnersProgress;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 

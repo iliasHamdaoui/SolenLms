@@ -1,7 +1,6 @@
 ﻿using Imanys.SolenLms.Application.Resources.Features;
 using Imanys.SolenLms.Application.Resources.Infrastructure.Data;
 using Imanys.SolenLms.Application.Shared.Core.Events.IdentityProvider;
-using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 

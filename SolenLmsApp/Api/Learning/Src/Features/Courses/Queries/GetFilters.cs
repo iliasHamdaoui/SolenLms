@@ -1,5 +1,5 @@
-﻿using Imanys.SolenLms.Application.Learning.Core.Domain.CategoryAggregate;
-using Imanys.SolenLms.Application.Learning.Core.Domain.InstructorAggregate;
+﻿using Imanys.SolenLms.Application.Learning.Core.Domain.Categories;
+using Imanys.SolenLms.Application.Learning.Core.Domain.Instructors;
 
 namespace Imanys.SolenLms.Application.Learning.Features.Courses.Queries.GetFilters;
 

@@ -1,5 +1,5 @@
-﻿using Imanys.SolenLms.Application.CourseManagement.Core.Domain.LearnerAggregate;
-using Imanys.SolenLms.Application.CourseManagement.Core.Domain.LearnerProgressAggregate;
+﻿using Imanys.SolenLms.Application.CourseManagement.Core.Domain.Learners;
+using Imanys.SolenLms.Application.CourseManagement.Core.Domain.LearnersProgress;
 
 namespace Imanys.SolenLms.Application.CourseManagement.Features.LearnersProgress.Queries.GetLearnersProgress;
 

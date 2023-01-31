@@ -1,4 +1,4 @@
-﻿using Imanys.SolenLms.Application.Learning.Core.Domain.BookmarkAggregate;
+﻿using Imanys.SolenLms.Application.Learning.Core.Domain.Bookmarks;
 
 namespace Imanys.SolenLms.Application.Learning.Features.Bookmarks.Commands.ToggleBookmark;
 

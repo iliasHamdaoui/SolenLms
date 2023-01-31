@@ -1,4 +1,4 @@
-﻿using Imanys.SolenLms.Application.CourseManagement.Core.Domain.InstructorAggregate;
+﻿using Imanys.SolenLms.Application.CourseManagement.Core.Domain.Instructors;
 using Imanys.SolenLms.Application.CourseManagement.Infrastructure.Data;
 using Imanys.SolenLms.Application.Shared.Core.Events.IdentityProvider;
 using Imanys.SolenLms.Application.Shared.Core.Enums;

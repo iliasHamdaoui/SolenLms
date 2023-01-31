@@ -1,4 +1,4 @@
-﻿using Imanys.SolenLms.Application.CourseManagement.Core.Domain.CourseCategoryAggregate;
+﻿using Imanys.SolenLms.Application.CourseManagement.Core.Domain.CoursesCategories;
 using System.Text.Json.Serialization;
 
 namespace Imanys.SolenLms.Application.CourseManagement.Features.CoursesCategories.Command.UpdateCourseCategories;

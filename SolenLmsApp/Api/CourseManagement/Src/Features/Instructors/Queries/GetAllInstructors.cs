@@ -1,4 +1,4 @@
-﻿using Imanys.SolenLms.Application.CourseManagement.Core.Domain.InstructorAggregate;
+﻿using Imanys.SolenLms.Application.CourseManagement.Core.Domain.Instructors;
 
 namespace Imanys.SolenLms.Application.CourseManagement.Features.Instructors.Queries.GetAllInstructors;
 

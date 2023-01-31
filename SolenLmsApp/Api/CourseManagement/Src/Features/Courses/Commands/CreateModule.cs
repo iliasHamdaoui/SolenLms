@@ -1,5 +1,5 @@
 ﻿using System.Text.Json.Serialization;
-using Imanys.SolenLms.Application.CourseManagement.Core.Domain.CourseAggregate;
+using Imanys.SolenLms.Application.CourseManagement.Core.Domain.Courses;
 using static Imanys.SolenLms.Application.Shared.Core.UseCases.RequestResponse<string>;
 
 namespace Imanys.SolenLms.Application.CourseManagement.Features.Courses.Commands.CreateModule;

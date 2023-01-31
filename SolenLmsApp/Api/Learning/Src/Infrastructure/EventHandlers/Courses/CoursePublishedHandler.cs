@@ -1,6 +1,5 @@
-﻿using Imanys.SolenLms.Application.Learning.Core.Domain.CourseAggregate;
-using Imanys.SolenLms.Application.Learning.Core.Domain.CourseCategory;
-using Imanys.SolenLms.Application.Learning.Features;
+﻿using Imanys.SolenLms.Application.Learning.Core.Domain.Courses;
+using Imanys.SolenLms.Application.Learning.Core.Domain.CoursesCategories;
 using Imanys.SolenLms.Application.Learning.Infrastructure.Data;
 using Imanys.SolenLms.Application.Shared.Core.Events.CourseManagement.Courses;
 using Microsoft.EntityFrameworkCore;
@@ -9,17 +8,11 @@ namespace Imanys.SolenLms.Application.Learning.Infrastructure.EventHandlers.Cour
 
 internal sealed class CoursePublishedHandler : INotificationHandler<CoursePublished>
 {
-    private readonly IRepository<Course> _courseRepo;
-    private readonly IRepository<CourseCategory> _categoryRepo;
     private readonly LearningDbContext _dbContext;
     private readonly ILogger<CoursePublishedHandler> _logger;
 
-    public CoursePublishedHandler(IRepository<Course> courseRepo, IRepository<CourseCategory> categoryRepo,
-        LearningDbContext dbContext,
-        ILogger<CoursePublishedHandler> logger)
+    public CoursePublishedHandler(LearningDbContext dbContext, ILogger<CoursePublishedHandler> logger)
     {
-        _courseRepo = courseRepo;
-        _categoryRepo = categoryRepo;
         _dbContext = dbContext;
         _logger = logger;
     }

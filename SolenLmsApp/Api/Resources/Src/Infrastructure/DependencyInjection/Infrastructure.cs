@@ -1,5 +1,4 @@
-﻿using Imanys.SolenLms.Application.Resources.Features;
-using Microsoft.Extensions.Configuration;
+﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Imanys.SolenLms.Application.Resources.Infrastructure.DependencyInjection;

@@ -1,5 +1,4 @@
-﻿using Imanys.SolenLms.Application.Resources.Core.Domain.LectureResourceAggregate;
-using Imanys.SolenLms.Application.Shared.Core;
+﻿using Imanys.SolenLms.Application.Resources.Core.Domain.LectureResources;
 using Imanys.SolenLms.Application.Shared.Core.Entities;
 using Imanys.SolenLms.Application.Shared.Core.Infrastructure;
 using Microsoft.EntityFrameworkCore;

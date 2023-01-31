@@ -1,5 +1,5 @@
-﻿using Imanys.SolenLms.Application.Learning.Core.Domain.CourseAggregate;
-using Imanys.SolenLms.Application.Learning.Core.Domain.LearnerProgressAggregate;
+﻿using Imanys.SolenLms.Application.Learning.Core.Domain.Courses;
+using Imanys.SolenLms.Application.Learning.Core.Domain.LearnersProgress;
 using Imanys.SolenLms.Application.Learning.Infrastructure.Data;
 using Imanys.SolenLms.Application.Shared.Core.Events;
 using Imanys.SolenLms.Application.Shared.Core.Events.Learning;

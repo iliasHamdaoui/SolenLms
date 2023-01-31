@@ -1,4 +1,4 @@
-﻿using Imanys.SolenLms.Application.CourseManagement.Core.Domain.LearnerProgressAggregate;
+﻿using Imanys.SolenLms.Application.CourseManagement.Core.Domain.LearnersProgress;
 using Imanys.SolenLms.Application.CourseManagement.Infrastructure.Data;
 using Imanys.SolenLms.Application.Shared.Core.Events.Learning;
 using Microsoft.EntityFrameworkCore;

@@ -18,6 +18,7 @@
 		<PackageReference Include="ZymLabs.NSwag.FluentValidation" Version="0.6.2" />
 		<PackageReference Include="Azure.Messaging.ServiceBus" Version="7.11.1" />
 		<PackageReference Include="Serilog.AspNetCore" Version="6.1.0" />
+		<PackageReference Include="Scrutor" Version="4.2.0" />
 	</ItemGroup>
 
 	<ItemGroup>

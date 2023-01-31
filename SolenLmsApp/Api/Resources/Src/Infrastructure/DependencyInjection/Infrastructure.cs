@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using Imanys.SolenLms.Application.Resources.Features;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Imanys.SolenLms.Application.Resources.Infrastructure.DependencyInjection;
@@ -13,8 +14,7 @@ public static class Infrastructure
             .AddVideoDurationCalculator(configuration)
             .AddStorage(configuration)
             .AddWebApi(mvcBuilder);
-
-
+        
         return services;
     }
 }

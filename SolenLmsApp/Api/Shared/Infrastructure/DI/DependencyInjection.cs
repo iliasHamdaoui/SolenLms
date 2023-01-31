@@ -11,7 +11,7 @@ public static class DependencyInjection
 {
     public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration, IWebHostEnvironment environment)
     {
-        var mvcBuilder = services.AddMvc(configuration);
+        IMvcBuilder mvcBuilder = services.AddMvc(configuration);
 
         services
         .AddMediatR()
@@ -27,7 +27,8 @@ public static class DependencyInjection
         .AddHashids(configuration)
         .AddCourseManagementInfrastructure(configuration, mvcBuilder)
         .AddResourcesInfrastructure(configuration, mvcBuilder)
-        .AddLearnerInfrastructure(configuration, mvcBuilder);
+        .AddLearnerInfrastructure(configuration, mvcBuilder)
+        .AddScrutor();
 
         return services;
     }

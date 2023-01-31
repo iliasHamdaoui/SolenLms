@@ -12,7 +12,7 @@ internal static class MediatR
 {
     public static IServiceCollection AddMediatR(this IServiceCollection services)
     {
-        var assemblies = new Collection<Assembly>
+        Collection<Assembly> assemblies = new()
         {
             typeof(CourseManagement.IAssemblyReference).Assembly,
             typeof(Resources.IAssemblyReference).Assembly,

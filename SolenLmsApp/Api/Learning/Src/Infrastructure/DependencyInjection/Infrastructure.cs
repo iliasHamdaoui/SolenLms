@@ -10,9 +10,7 @@ public static class Infrastructure
     {
         services
             .AddPersistence(configuration)
-            .AddRepositories()
             .AddWebApi(mvcBuilder);
-
 
         return services;
     }

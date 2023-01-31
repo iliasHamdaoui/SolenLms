@@ -1,7 +1,9 @@
 ﻿using Imanys.SolenLms.Application.Resources.Core.Domain.LectureResourceAggregate;
+using Imanys.SolenLms.Application.Resources.Infrastructure.Data;
 using Imanys.SolenLms.Application.Shared.Core.Events;
 using Imanys.SolenLms.Application.Shared.Core.Events.Resources;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
@@ -197,6 +199,22 @@ internal sealed class UploadLectureVideoCommandHandler : IRequestHandler<UploadL
 internal interface IStorageRepo
 {
     Task<long> GetCurrentStorageRepo(string organizationId, CancellationToken cancellationToken);
+}
+
+internal sealed class StorageRepo : IStorageRepo
+{
+    private readonly ResourcesDbContext _dbContext;
+
+    public StorageRepo(ResourcesDbContext dbContext)
+    {
+        _dbContext = dbContext;
+    }
+
+    public Task<long> GetCurrentStorageRepo(string organizationId, CancellationToken cancellationToken)
+    {
+        return _dbContext.Resources.Where(x => x.OrganizationId == organizationId)
+            .SumAsync(x => x.Size, cancellationToken);
+    }
 }
 
 #endregion

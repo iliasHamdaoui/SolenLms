@@ -14,11 +14,11 @@ on:
 env:
   AZURE_WEBAPP_NAME: solenlmsdemoapi
   STARTUP_PROJECT_PATH: 'SolenLmsApp/Api/Startup/WebApi/WebApi.Startup.csproj'
-  COURSE_MANAGEMENT_INFRASTRUCTURE_PROJECT_PATH: 'SolenLmsApp/Api/CourseManagement/Src/Infrastructure/CourseManagement.Infrastructure.csproj'
+  COURSE_MANAGEMENT_INFRASTRUCTURE_PROJECT_PATH: 'SolenLmsApp/Api/CourseManagement/Src/CourseManagement.csproj'
   COURSE_MANAGEMENT_TESTS_PROJECT_PATH: 'SolenLmsApp/Api/CourseManagement/Tests/CourseManagement.Tests.csproj'
-  LEARNING_INFRASTRUCTURE_PROJECT_PATH: 'SolenLmsApp/Api/Learning/Src/Infrastructure/Learning.Infrastructure.csproj'
+  LEARNING_INFRASTRUCTURE_PROJECT_PATH: 'SolenLmsApp/Api/Learning/Src/Learning.csproj'
   LEARNING_TESTS_PROJECT_PATH: 'SolenLmsApp/Api/Learning/Tests/Learning.Tests.csproj'
-  RESOURCES_INFRASTRUCTURE_PROJECT_PATH: 'SolenLmsApp/Api/Resources/Src/Infrastructure/Resources.Infrastructure.csproj'
+  RESOURCES_INFRASTRUCTURE_PROJECT_PATH: 'SolenLmsApp/Api/Resources/Src/Resources.csproj'
   DOTNET_VERSION: '7.x'
 
 jobs:

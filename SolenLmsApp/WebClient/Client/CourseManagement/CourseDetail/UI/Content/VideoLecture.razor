@@ -1,7 +1,7 @@
 ﻿@using Microsoft.Extensions.Configuration
 @using Microsoft.Extensions.Options
 @inherits ComponentWithCancellationToken
-@inject IApiClient ApiClient
+@inject IWebApiClient WebApiClient
 @inject IConfiguration Configuration
 @inject NotificationsService NotificationsService
 @inject IOptions<VideoResourcesUrl> videoResourceUrlOptions
@@ -38,7 +38,7 @@ else
     {
         try
         {
-            var result = await ApiClient.CheckLectureContentAsync(Lecture.ResourceId, CancellationToken);
+            var result = await WebApiClient.CheckLectureContentAsync(Lecture.ResourceId, CancellationToken);
             _contentSet = result.Data;
         }
         catch (ApiException<ProblemDetails> exception)

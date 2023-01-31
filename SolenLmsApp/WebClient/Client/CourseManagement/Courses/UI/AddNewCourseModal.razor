@@ -1,6 +1,6 @@
 ﻿@inherits ComponentWithCancellationToken
 
-@inject IApiClient ApiClient
+@inject IWebApiClient WebApiClient
 @inject NotificationsService NotificationsService
 @inject NavigationManager NavigationManager
 
@@ -36,7 +36,7 @@
     {
         try
         {
-            var result = await ApiClient.CreateCourseAsync(_command, CancellationToken);
+            var result = await WebApiClient.CreateCourseAsync(_command, CancellationToken);
             NotificationsService.ShowConfirmation(result.Message);
             NavigationManager.NavigateTo($"course-management/courses/{result.Data}");
             await BlazoredModal.CloseAsync();

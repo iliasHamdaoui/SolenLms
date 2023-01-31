@@ -1,5 +1,5 @@
 ﻿@inherits ComponentWithCancellationToken
-@inject IApiClient ApiClient
+@inject IWebApiClient WebApiClient
 @inject NotificationsService NotificationsService
 
 
@@ -57,7 +57,7 @@
     {
         try
         {
-            var result = await ApiClient.GetArticleAsync(Lecture.ResourceId, CancellationToken);
+            var result = await WebApiClient.GetArticleAsync(Lecture.ResourceId, CancellationToken);
             _content = result.Data;
             await this._quillHtml!.LoadHTMLContent(_content);
         }
@@ -73,7 +73,7 @@
         {
             var content = await this._quillHtml!.GetHTML();
 
-            var response = await ApiClient.UpdateContentAsync(Lecture.ResourceId, new UpdateLectureArticleCommand { Content = content }, CancellationToken);
+            var response = await WebApiClient.UpdateContentAsync(Lecture.ResourceId, new UpdateLectureArticleCommand { Content = content }, CancellationToken);
 
             NotificationsService.ShowConfirmation(response.Message);
 

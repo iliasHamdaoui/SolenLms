@@ -1,6 +1,6 @@
 ﻿@inherits ComponentWithCancellationToken
 
-@inject IApiClient ApiClient
+@inject IWebApiClient WebApiClient
 @inject IDispatcher Dispatcher
 @inject NotificationsService NotificationsService
 
@@ -44,7 +44,7 @@ else
     {
         try
         {
-            var response = await ApiClient.DeleteModuleAsync(CurrentCourseId, module.Id);
+            var response = await WebApiClient.DeleteModuleAsync(CurrentCourseId, module.Id);
 
             NotificationsService.ShowConfirmation(response.Message);
 
@@ -83,7 +83,7 @@ else
             for (int i = 0; i < Modules!.Count; i++)
                 modulesOrders.Add(new ModuleOrder { ModuleId = Modules[i].Id, Order = i + 1 });
 
-            var response = await ApiClient.UpdateModuleOrdersAsync(CurrentCourseId!, new UpdateModulesOrdersCommand { ModulesOrders = modulesOrders }, CancellationToken);
+            var response = await WebApiClient.UpdateModuleOrdersAsync(CurrentCourseId!, new UpdateModulesOrdersCommand { ModulesOrders = modulesOrders }, CancellationToken);
 
             NotificationsService.ShowConfirmation(response.Message);
 

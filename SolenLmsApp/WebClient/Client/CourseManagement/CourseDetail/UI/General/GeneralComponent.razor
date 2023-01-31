@@ -2,7 +2,7 @@
 @using System.ComponentModel.DataAnnotations
 
 @inject IDispatcher Dispatcher
-@inject IApiClient ApiClient
+@inject IWebApiClient WebApiClient
 @inject NotificationsService NotificationsService
 @inject NavigationManager NavigationManager
 
@@ -112,7 +112,7 @@
     {
         try
         {
-            var result = await ApiClient.UpdateCourseAsync(Course?.CourseId, _model, CancellationToken);
+            var result = await WebApiClient.UpdateCourseAsync(Course?.CourseId, _model, CancellationToken);
             NotificationsService.ShowConfirmation(result.Message);
             Dispatcher.Dispatch(new LoadCourseAction(Course!.CourseId, CancellationToken));
         }
@@ -139,7 +139,7 @@
 
         try
         {
-            var response = await ApiClient.DeleteCourseAsync(Course!.CourseId, CancellationToken);
+            var response = await WebApiClient.DeleteCourseAsync(Course!.CourseId, CancellationToken);
             NotificationsService.ShowConfirmation(response.Message);
             NavigationManager.NavigateTo($"course-management/courses");
         }
@@ -162,7 +162,7 @@
 
         try
         {
-            var response = await ApiClient.PublishCourseAsync(Course!.CourseId, CancellationToken);
+            var response = await WebApiClient.PublishCourseAsync(Course!.CourseId, CancellationToken);
             NotificationsService.ShowConfirmation(response.Message);
             Dispatcher.Dispatch(new LoadCourseAction(Course!.CourseId, CancellationToken));
 
@@ -185,7 +185,7 @@
 
         try
         {
-            var response = await ApiClient.UnpublishCourseAsync(Course!.CourseId, CancellationToken);
+            var response = await WebApiClient.UnpublishCourseAsync(Course!.CourseId, CancellationToken);
             NotificationsService.ShowConfirmation(response.Message);
             Dispatcher.Dispatch(new LoadCourseAction(Course!.CourseId, CancellationToken));
 

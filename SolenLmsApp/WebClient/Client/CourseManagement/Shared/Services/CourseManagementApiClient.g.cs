@@ -18,7 +18,7 @@ namespace Imanys.SolenLms.Application.WebClient.CourseManagement.Shared.Services
     using System = global::System;
 
     [System.CodeDom.Compiler.GeneratedCode("NSwag", "13.18.2.0 (NJsonSchema v10.8.0.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial interface IApiClient
+    public partial interface IWebApiClient
     {
         /// <summary>
         /// Get course learners progress
@@ -481,12 +481,12 @@ namespace Imanys.SolenLms.Application.WebClient.CourseManagement.Shared.Services
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NSwag", "13.18.2.0 (NJsonSchema v10.8.0.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class ApiClient : IApiClient
+    public partial class WebApiClient : IWebApiClient
     {
         private System.Net.Http.HttpClient _httpClient;
         private System.Lazy<Newtonsoft.Json.JsonSerializerSettings> _settings;
 
-        public ApiClient(System.Net.Http.HttpClient httpClient)
+        public WebApiClient(System.Net.Http.HttpClient httpClient)
         {
             _httpClient = httpClient;
             _settings = new System.Lazy<Newtonsoft.Json.JsonSerializerSettings>(CreateSerializerSettings);

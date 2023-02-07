@@ -1,9 +1,12 @@
 ﻿using Azure.Messaging.ServiceBus;
+using Imanys.SolenLms.Application.Shared.Core.Events;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using System.Text;
+using System.Text.Json;
 
 namespace Imanys.SolenLms.Application.Shared.Infrastructure.IdpEvents;
 
@@ -11,17 +14,14 @@ internal sealed class IdpEventsListenerService : BackgroundService
 {
     private readonly IServiceProvider _serviceProvider;
     private readonly ServiceBusClient _serviceBusClient;
-    private readonly IdpEventsCreatorFactory _idpEventsCreatorFactory;
     private readonly ILogger<IdpEventsListenerService> _logger;
     private readonly ServiceBusProcessor _serviceBusProcessor;
 
     public IdpEventsListenerService(IServiceProvider serviceProvider, ServiceBusClient serviceBusClient,
-        IOptions<IdpEventsAzureServiceBusSettings> settings, IdpEventsCreatorFactory idpEventsCreatorFactory,
-        ILogger<IdpEventsListenerService> logger)
+        IOptions<IdpEventsAzureServiceBusSettings> settings, ILogger<IdpEventsListenerService> logger)
     {
         _serviceProvider = serviceProvider;
         _serviceBusClient = serviceBusClient;
-        _idpEventsCreatorFactory = idpEventsCreatorFactory;
         _logger = logger;
         _serviceBusProcessor = serviceBusClient.CreateProcessor(settings.Value.IdpQueueName,
             new ServiceBusProcessorOptions { MaxConcurrentCalls = 1, AutoCompleteMessages = false });
@@ -39,23 +39,32 @@ internal sealed class IdpEventsListenerService : BackgroundService
 
     async Task MessageHandler(ProcessMessageEventArgs args)
     {
-        _logger.LogInformation("Handling the message from IDP, {message}", args.Message.Body.ToString());
-
-        var (isSuccess, createdEvent) = _idpEventsCreatorFactory.GetEvent(args.Message);
-
-        if (!isSuccess)
-        {
-            _logger.LogWarning("Unknown event type, {message}", args.Message.Body.ToString());
-            return;
-        }
-
         try
         {
+            _logger.LogInformation("Handling the message from IDP, {message}", args.Message.Body.ToString());
+
+            string? eventString = args.Message.ApplicationProperties["eventType"].ToString();
+
+            Type? eventType =
+                Type.GetType(
+                    $"Imanys.SolenLms.Application.Shared.Core.Events.IdentityProvider.{eventString}, Shared.Core");
+
+            if (eventType is null)
+            {
+                _logger.LogWarning("Unknown event type, {message}", args.Message.Body.ToString());
+                await args.CompleteMessageAsync(args.Message);
+                return;
+            }
+
+            BaseIntegrationEvent createdEvent =
+                (BaseIntegrationEvent)JsonSerializer.Deserialize(Encoding.UTF8.GetString(args.Message.Body),
+                    eventType)!;
+
             using var scope = _serviceProvider.CreateScope();
 
             var mediator = scope.ServiceProvider.GetRequiredService<IMediator>();
 
-            await mediator.Publish(createdEvent!);
+            await mediator.Publish(createdEvent);
 
             await args.CompleteMessageAsync(args.Message);
 

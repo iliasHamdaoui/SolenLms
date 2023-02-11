@@ -1,4 +1,4 @@
-﻿namespace Imanys.SolenLms.Application.Shared.Core.Events.CourseManagement.Courses;
+﻿namespace Imanys.SolenLms.Application.Shared.Core.Events;
 
 
 public sealed record CourseUnpublished(string CourseId) : BaseIntegrationEvent

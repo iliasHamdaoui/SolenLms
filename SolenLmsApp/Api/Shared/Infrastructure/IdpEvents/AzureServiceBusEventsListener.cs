@@ -10,20 +10,20 @@ using System.Text.Json;
 
 namespace Imanys.SolenLms.Application.Shared.Infrastructure.IdpEvents;
 
-internal sealed class IdpEventsListenerService : BackgroundService
+internal sealed class AzureServiceBusEventsListener : BackgroundService
 {
     private readonly IServiceProvider _serviceProvider;
     private readonly ServiceBusClient _serviceBusClient;
-    private readonly ILogger<IdpEventsListenerService> _logger;
+    private readonly ILogger<AzureServiceBusEventsListener> _logger;
     private readonly ServiceBusProcessor _serviceBusProcessor;
 
-    public IdpEventsListenerService(IServiceProvider serviceProvider, ServiceBusClient serviceBusClient,
-        IOptions<IdpEventsAzureServiceBusSettings> settings, ILogger<IdpEventsListenerService> logger)
+    public AzureServiceBusEventsListener(IServiceProvider serviceProvider, ServiceBusClient serviceBusClient,
+        IOptions<AzureServiceBusEventsSettings> settings, ILogger<AzureServiceBusEventsListener> logger)
     {
         _serviceProvider = serviceProvider;
         _serviceBusClient = serviceBusClient;
         _logger = logger;
-        _serviceBusProcessor = serviceBusClient.CreateProcessor(settings.Value.IdpQueueName,
+        _serviceBusProcessor = serviceBusClient.CreateProcessor(settings.Value.TopicName, settings.Value.SubscriptionName,
             new ServiceBusProcessorOptions { MaxConcurrentCalls = 1, AutoCompleteMessages = false });
     }
 
@@ -47,7 +47,7 @@ internal sealed class IdpEventsListenerService : BackgroundService
 
             Type? eventType =
                 Type.GetType(
-                    $"Imanys.SolenLms.Application.Shared.Core.Events.IdentityProvider.{eventString}, Shared.Core");
+                    $"Imanys.SolenLms.Application.Shared.Core.Events.{eventString}, Shared.Core");
 
             if (eventType is null)
             {

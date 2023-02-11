@@ -1,4 +1,4 @@
-﻿namespace Imanys.SolenLms.Application.Shared.Core.Events.Learning;
+﻿namespace Imanys.SolenLms.Application.Shared.Core.Events;
 
 
 public sealed record LearnerCourseProgressUpdated : BaseIntegrationEvent

@@ -1,6 +1,5 @@
 ﻿using Imanys.SolenLms.Application.CourseManagement.Core.Domain.Courses;
 using Imanys.SolenLms.Application.Shared.Core.Events;
-using Imanys.SolenLms.Application.Shared.Core.Events.CourseManagement.Courses;
 using Imanys.SolenLms.Application.Shared.Core.Infrastructure;
 
 namespace Imanys.SolenLms.Application.CourseManagement.Features.Courses.Commands.PublishCourse;

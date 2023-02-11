@@ -1,6 +1,5 @@
 ﻿using Imanys.SolenLms.Application.CourseManagement.Core.Domain.Categories;
 using Imanys.SolenLms.Application.Shared.Core.Events;
-using Imanys.SolenLms.Application.Shared.Core.Events.CourseManagement.Categories;
 
 namespace Imanys.SolenLms.Application.CourseManagement.Features.Categories.Commands.DeleteCategory;
 

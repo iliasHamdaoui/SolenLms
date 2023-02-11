@@ -21,7 +21,7 @@ public static class DependencyInjection
         .AddSystem()
         .AddLocalization()
         .AddIntegrationEvents()
-        .AddIdpEvents(configuration)
+        .AddEventsListener(configuration)
         .AddAzureServiceBus(configuration)
         .AddSecurity()
         .AddHashids(configuration)

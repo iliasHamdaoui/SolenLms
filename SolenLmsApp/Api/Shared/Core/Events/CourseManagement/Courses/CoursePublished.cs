@@ -1,6 +1,6 @@
 ﻿using Imanys.SolenLms.Application.Shared.Core.Enums;
 
-namespace Imanys.SolenLms.Application.Shared.Core.Events.CourseManagement.Courses;
+namespace Imanys.SolenLms.Application.Shared.Core.Events;
 
 public sealed record CoursePublished(PublishedCourse PublishedCourse) : BaseIntegrationEvent
 {

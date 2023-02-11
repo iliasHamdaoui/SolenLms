@@ -1,4 +1,4 @@
-﻿using Imanys.SolenLms.Application.Shared.Core.Events.IdentityProvider;
+﻿using Imanys.SolenLms.Application.Shared.Core.Events;
 using Imanys.SolenLms.Application.Shared.Tests.Helpers.Users;
 
 namespace Imanys.SolenLms.Application.Shared.Tests.Extensions;

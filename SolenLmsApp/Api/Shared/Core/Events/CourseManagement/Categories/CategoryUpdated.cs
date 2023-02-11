@@ -1,4 +1,4 @@
-﻿namespace Imanys.SolenLms.Application.Shared.Core.Events.CourseManagement.Categories;
+﻿namespace Imanys.SolenLms.Application.Shared.Core.Events;
 
 
 public sealed record CategoryUpdated(int CategoryId, string CategoryName) : BaseIntegrationEvent

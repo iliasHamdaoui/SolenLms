@@ -1,4 +1,4 @@
-﻿namespace Imanys.SolenLms.Application.Shared.Core.Events.IdentityProvider;
+﻿namespace Imanys.SolenLms.Application.Shared.Core.Events;
 
 
 public sealed record UserAdded(string OrganizationId, string UserId) : BaseIntegrationEvent

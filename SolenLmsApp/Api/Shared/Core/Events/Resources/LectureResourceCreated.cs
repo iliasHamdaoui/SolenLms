@@ -1,4 +1,4 @@
-﻿namespace Imanys.SolenLms.Application.Shared.Core.Events.Resources;
+﻿namespace Imanys.SolenLms.Application.Shared.Core.Events;
 
 #nullable disable
 

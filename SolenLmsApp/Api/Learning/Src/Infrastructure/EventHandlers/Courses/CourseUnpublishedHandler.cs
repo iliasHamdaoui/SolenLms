@@ -1,6 +1,6 @@
 ﻿using Imanys.SolenLms.Application.Learning.Core.Domain.Courses;
 using Imanys.SolenLms.Application.Learning.Infrastructure.Data;
-using Imanys.SolenLms.Application.Shared.Core.Events.CourseManagement.Courses;
+using Imanys.SolenLms.Application.Shared.Core.Events;
 using Microsoft.EntityFrameworkCore;
 
 namespace Imanys.SolenLms.Application.Learning.Infrastructure.EventHandlers.Courses;

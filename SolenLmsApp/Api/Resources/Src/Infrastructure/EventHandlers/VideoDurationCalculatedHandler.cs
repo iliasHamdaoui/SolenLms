@@ -1,7 +1,6 @@
 ﻿using Imanys.SolenLms.Application.Resources.Infrastructure.Data;
 using Imanys.SolenLms.Application.Resources.Infrastructure.VideoDurationCalculator;
 using Imanys.SolenLms.Application.Shared.Core.Events;
-using Imanys.SolenLms.Application.Shared.Core.Events.Resources;
 using Microsoft.EntityFrameworkCore;
 
 namespace Imanys.SolenLms.Application.Resources.Infrastructure.EventHandlers;

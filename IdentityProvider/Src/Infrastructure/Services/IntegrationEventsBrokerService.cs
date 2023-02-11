@@ -18,7 +18,7 @@ internal class IntegrationEventsBrokerService : BackgroundService, IIntegrationE
         IOptions<AzureServiceBusSettings> settings, ILogger<IntegrationEventsBrokerService> logger)
     {
         _channel = Channel.CreateUnbounded<BaseIntegrationEvent>();
-        _serviceBusSender = serviceBusClient.CreateSender(settings.Value.IdpQueueName);
+        _serviceBusSender = serviceBusClient.CreateSender(settings.Value.TopicName);
         _logger = logger;
     }
 
@@ -35,20 +35,21 @@ internal class IntegrationEventsBrokerService : BackgroundService, IIntegrationE
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
-        await foreach (var @event in _channel.Reader.ReadAllAsync(stoppingToken))
+        await foreach (BaseIntegrationEvent @event in _channel.Reader.ReadAllAsync(stoppingToken))
         {
             try
             {
-                var message = new ServiceBusMessage(JsonConvert.SerializeObject(@event));
-                message.ApplicationProperties["eventType"] = @event.EventType;
+                ServiceBusMessage message = new(JsonConvert.SerializeObject(@event))
+                {
+                    ApplicationProperties = { ["eventType"] = @event.EventType }
+                };
 
                 await _serviceBusSender.SendMessageAsync(message, stoppingToken);
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error ocurrend while sending message, {event}", @event);
+                _logger.LogError(ex, "Error occurred while sending message, {event}", @event);
             }
-
         }
     }
 }

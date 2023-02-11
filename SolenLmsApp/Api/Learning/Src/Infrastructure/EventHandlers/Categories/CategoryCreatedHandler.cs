@@ -1,6 +1,6 @@
 ﻿using Imanys.SolenLms.Application.Learning.Core.Domain.Categories;
 using Imanys.SolenLms.Application.Learning.Infrastructure.Data;
-using Imanys.SolenLms.Application.Shared.Core.Events.CourseManagement.Categories;
+using Imanys.SolenLms.Application.Shared.Core.Events;
 
 namespace Imanys.SolenLms.Application.Learning.Infrastructure.EventHandlers.Categories;
 

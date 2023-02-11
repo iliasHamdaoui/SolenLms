@@ -1,7 +1,6 @@
 ﻿using Imanys.SolenLms.Application.Resources.Core.Domain.LectureResources;
 using Imanys.SolenLms.Application.Resources.Infrastructure.Data;
 using Imanys.SolenLms.Application.Shared.Core.Events;
-using Imanys.SolenLms.Application.Shared.Core.Events.Resources;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;

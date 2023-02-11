@@ -2,7 +2,6 @@
 using Imanys.SolenLms.Application.CourseManagement.Core.Domain.Courses;
 using Imanys.SolenLms.Application.Shared.Core.Enums;
 using Imanys.SolenLms.Application.Shared.Core.Events;
-using Imanys.SolenLms.Application.Shared.Core.Events.CourseManagement.Courses;
 using static Imanys.SolenLms.Application.Shared.Core.UseCases.RequestResponse<string>;
 
 namespace Imanys.SolenLms.Application.CourseManagement.Features.Courses.Commands.CreateLecture;

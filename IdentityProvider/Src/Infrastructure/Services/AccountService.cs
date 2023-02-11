@@ -1,6 +1,5 @@
 ﻿using IdentityModel;
 using Imanys.SolenLms.Application.Shared.Core.Events;
-using Imanys.SolenLms.Application.Shared.Core.Events.IdentityProvider;
 using Imanys.SolenLms.IdentityProvider.Core.Domain.Entities;
 using Imanys.SolenLms.IdentityProvider.Core.UseCases;
 using Imanys.SolenLms.IdentityProvider.Infrastructure.Data;

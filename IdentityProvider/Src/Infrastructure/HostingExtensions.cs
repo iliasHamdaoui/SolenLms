@@ -1,5 +1,6 @@
 ﻿using Imanys.SolenLms.IdentityProvider.Infrastructure.DI;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.HttpOverrides;
 using Serilog;
 using static Imanys.SolenLms.IdentityProvider.WebApi.PoliciesConstants;
 
@@ -21,6 +22,14 @@ public static class HostingExtensions
         app.UseExceptionHandler("/error");
 
         app.UseApplicationSwaggerUI();
+
+        var forwardedHeaderOptions = new ForwardedHeadersOptions
+        {
+            ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
+        };
+        forwardedHeaderOptions.KnownNetworks.Clear();
+        forwardedHeaderOptions.KnownProxies.Clear();
+        app.UseForwardedHeaders(forwardedHeaderOptions);
 
         app.UseStaticFiles();
         app.UseRouting();

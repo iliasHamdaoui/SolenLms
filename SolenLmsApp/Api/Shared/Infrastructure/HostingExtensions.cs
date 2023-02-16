@@ -2,6 +2,8 @@
 using Imanys.SolenLms.Application.Shared.Infrastructure.DI;
 using Imanys.SolenLms.Application.Shared.Infrastructure.Middlewares;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.HttpOverrides;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -26,6 +28,7 @@ public static class HostingExtensions
                 .WriteTo.Console(
                     outputTemplate:
                     "[{Timestamp:HH:mm:ss} {Level}] {SourceContext}{NewLine}{Message:lj}{NewLine}{Properties:j}{NewLine}{Exception}{NewLine}")
+                .WriteTo.Seq("http://seq")
                 .Enrich.FromLogContext()
                 .ReadFrom.Configuration(ctx.Configuration));
         }
@@ -35,11 +38,17 @@ public static class HostingExtensions
         return builder.Build();
     }
 
-    public static WebApplication ConfigurePipeline(this WebApplication app)
+    public static WebApplication ConfigurePipeline(this WebApplication app, IConfiguration configuration)
     {
         app.UseExceptionHandler("/error");
 
-        app.UseHttpsRedirection();
+        var forwardedHeaderOptions = new ForwardedHeadersOptions
+        {
+            ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
+        };
+        forwardedHeaderOptions.KnownNetworks.Clear();
+        forwardedHeaderOptions.KnownProxies.Clear();
+        app.UseForwardedHeaders(forwardedHeaderOptions);
 
         app.UseApplicationSwaggerUI();
 
@@ -60,9 +69,13 @@ public static class HostingExtensions
         app.UseCors("Open");
 
         app.MapControllers().RequireAuthorization();
-#if DEBUG
-        app.MigrateDatabase();
-#endif
+
+        if (configuration["applyMigration"] != null)
+        {
+            app.MigrateDatabase();
+        }
+
+
         return app;
     }
 }

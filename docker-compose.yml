@@ -1,0 +1,90 @@
+version: '3'
+
+services:
+  reverseproxy:
+    build:
+      context: .
+      dockerfile: nginx/nginx.Dockerfile
+    depends_on:
+      - idp
+      - api
+    ports:
+      - "44395:44395"
+    networks:
+      localnetwork:
+        aliases: 
+          - "idp.local.solenlms.com"
+          - "api.local.solenlms.com"
+          - "web.local.solenlms.com"
+  idp:
+    build:
+      context: .
+      dockerfile: IdentityProvider/Src/Presentation/Web/Dockerfile
+    depends_on:
+      - sqlserver
+    environment:
+      - ASPNETCORE_URLS=http://*:6000
+      - applyMigration=true
+      - Docker_WebClient__Url=https://localhost:4001 # tip to debug webcleint
+    ports:
+      - "6000:6000"
+    networks:
+      - localnetwork
+
+  api:
+    build:
+      context: .
+      dockerfile: SolenLmsApp/Api/Startup/WebApi/Dockerfile
+    depends_on:
+      - sqlserver
+      - idp
+    environment:
+      - ASPNETCORE_URLS=http://*:5000
+      - applyMigration=true
+    ports:
+      - "5000:5000"
+    networks:
+      - localnetwork
+
+  web:
+    build:
+      context: .
+      dockerfile: SolenLmsApp/WebClient/Server/Dockerfile
+    depends_on:
+      - idp
+    environment:
+      - ASPNETCORE_URLS=http://*:4000
+    ports:
+      - "4000:4000"
+    networks:
+      - localnetwork
+
+  seq:
+    image: datalust/seq
+    restart: unless-stopped
+    ports:
+      - "5342:80"
+    environment:
+      - ACCEPT_EULA=Y
+    networks:
+      - localnetwork
+  
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server 
+    restart: always
+    user: root
+    ports:
+      - "1440:1433"
+    volumes:
+      - solenlms-database-data:/var/opt/mssql/data
+    environment:      
+      - ACCEPT_EULA=Y
+      - SA_PASSWORD=S3cur3P@ssW0rd!
+    networks:
+      - localnetwork
+
+volumes:
+  solenlms-database-data:
+
+networks:
+  localnetwork: {}

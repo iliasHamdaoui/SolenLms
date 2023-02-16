@@ -17,6 +17,9 @@ try
         .Enrich.FromLogContext()
         .ReadFrom.Configuration(ctx.Configuration));
 
+
+    builder.Configuration.AddEnvironmentVariables(prefix: "Docker_");
+
     var app = builder
         .ConfigureServices()
         .ConfigurePipeline();

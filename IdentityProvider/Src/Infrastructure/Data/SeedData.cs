@@ -20,33 +20,42 @@ public static class SeedData
 
         if (configuration["applyMigration"] != null)
         {
-            scope.ServiceProvider.GetRequiredService<IdentityDbContext>().Database.Migrate();
-
-            scope.ServiceProvider.GetRequiredService<PersistedGrantDbContext>().Database.Migrate();
-
-            configurationDbContext.Database.Migrate();
-
-
-            if (!configurationDbContext.Clients.Any())
+            try
             {
-                foreach (Client client in Config.Clients(configuration))
-                    configurationDbContext.Clients.Add(client.ToEntity());
-            }
+                scope.ServiceProvider.GetRequiredService<IdentityDbContext>().Database.Migrate();
 
-            if (!configurationDbContext.IdentityResources.Any())
+                scope.ServiceProvider.GetRequiredService<PersistedGrantDbContext>().Database.Migrate();
+
+                configurationDbContext.Database.Migrate();
+
+
+                if (!configurationDbContext.Clients.Any())
+                {
+                    foreach (Client client in Config.Clients(configuration))
+                        configurationDbContext.Clients.Add(client.ToEntity());
+                }
+
+                if (!configurationDbContext.IdentityResources.Any())
+                {
+                    foreach (IdentityResource resource in Config.IdentityResources)
+                        configurationDbContext.IdentityResources.Add(resource.ToEntity());
+                }
+
+                if (!configurationDbContext.ApiScopes.Any())
+                {
+                    foreach (ApiScope apiScope in Config.ApiScopes)
+                        configurationDbContext.ApiScopes.Add(apiScope.ToEntity());
+                }
+
+
+                configurationDbContext.SaveChanges();
+            }
+            catch (Exception)
             {
-                foreach (IdentityResource resource in Config.IdentityResources)
-                    configurationDbContext.IdentityResources.Add(resource.ToEntity());
+                Thread.Sleep(TimeSpan.FromSeconds(10));
+                EnsureSeedData(app, configuration);
             }
-
-            if (!configurationDbContext.ApiScopes.Any())
-            {
-                foreach (ApiScope apiScope in Config.ApiScopes)
-                    configurationDbContext.ApiScopes.Add(apiScope.ToEntity());
-            }
-
-
-            configurationDbContext.SaveChanges();
+   
         }
     }
 }

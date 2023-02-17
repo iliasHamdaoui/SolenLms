@@ -72,7 +72,15 @@ public static class HostingExtensions
 
         if (configuration["applyMigration"] != null)
         {
-            app.MigrateDatabase();
+            try
+            {
+                app.MigrateDatabase();
+            }
+            catch (Exception)
+            {
+                Thread.Sleep(TimeSpan.FromSeconds(10));
+                app.MigrateDatabase();
+            }
         }
 
 

@@ -5,7 +5,7 @@
       "commandVersion": "1.0",
       "composeLaunchAction": "LaunchBrowser",
       "composeLaunchServiceName": "web",
-      "composeLaunchUrl": "https://web.local.solenlms.com:44395/",
+      "composeLaunchUrl": "https://web.local.solenlms.com:44395",
       "serviceActions": {
         "api": "StartDebugging",
         "idp": "StartDebugging",

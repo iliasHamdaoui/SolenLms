@@ -25,7 +25,6 @@ services:
     environment:
       - ASPNETCORE_URLS=http://*:6000
       - applyMigration=true
-      # - Docker_WebClient__Url=https://localhost:4001 # tip to debug webclient
     ports:
       - "6000:6000"
     networks:
@@ -54,6 +53,7 @@ services:
       - idp
     environment:
       - ASPNETCORE_URLS=http://*:4000
+      - ASPNETCORE_ENVIRONMENT=Development
     ports:
       - "4000:4000"
     networks:

@@ -22,8 +22,14 @@ public static class Config
             new ApiScope(IdentityServerConstants.LocalApi.ScopeName, new[] {ClaimTypes.Role })
         };
 
-    public static IEnumerable<Client> Clients(IConfiguration configuration) =>
-        new[]
+    public static IEnumerable<Client> Clients(IConfiguration configuration)
+    {
+        var clientsUrls = configuration["WebClient:Url"]!.Split(';');
+        var redirectUris = clientsUrls.Select(url => $"{url}/signin-oidc").ToList();
+        var logoutUris = clientsUrls.Select(url => $"{url}/signout-callback-oidc").ToList();
+        var frontChannelLogoutUri = $"{clientsUrls?.First()}/signout-oidc";
+
+        return new[]
         {
             new Client
             {
@@ -32,9 +38,9 @@ public static class Config
 
                 AllowedGrantTypes = GrantTypes.Code,
 
-                RedirectUris = { $"{configuration["WebClient:Url"]}/signin-oidc" },
-                FrontChannelLogoutUri = $"{configuration["WebClient:Url"]}/signout-oidc",
-                PostLogoutRedirectUris = { $"{configuration["WebClient:Url"]}/signout-callback-oidc" },
+                RedirectUris = redirectUris,
+                FrontChannelLogoutUri = frontChannelLogoutUri,
+                PostLogoutRedirectUris = logoutUris,
 
                 AllowOfflineAccess = true,
                 AllowedScopes = { "openid", "profile", "solenLmsApi", "solenLmsProfile", IdentityServerConstants.LocalApi.ScopeName },
@@ -42,4 +48,5 @@ public static class Config
                 UpdateAccessTokenClaimsOnRefresh = true,
             },
         };
+    }
 }

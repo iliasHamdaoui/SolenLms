@@ -3,6 +3,8 @@
 FROM mcr.microsoft.com/dotnet/aspnet:7.0 AS base
 WORKDIR /app
 
+RUN apt-get update && apt-get install -y ffmpeg
+
 COPY nginx/idp.crt /usr/local/share/ca-certificates/idp.crt
 RUN update-ca-certificates
 

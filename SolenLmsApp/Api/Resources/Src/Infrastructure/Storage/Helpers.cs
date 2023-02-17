@@ -13,7 +13,7 @@ internal static class Helpers
         {
             Stopwatch stopwatch = new();
             stopwatch.Start();
-            FFmpeg.SetExecutablesPath(Path.Combine(env.ContentRootPath, "ffmpeg"));
+            // FFmpeg.SetExecutablesPath(Path.Combine(env.ContentRootPath, "ffmpeg"));
 
             IMediaInfo mediaInfo = await FFmpeg.GetMediaInfo(videoPath);
             var videoDuration = Convert.ToInt32(mediaInfo.VideoStreams.First().Duration.TotalSeconds);

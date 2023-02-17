@@ -40,6 +40,8 @@ services:
     environment:
       - ASPNETCORE_URLS=http://*:5000
       - applyMigration=true
+    volumes:
+      - api-resources:/app/Resources
     ports:
       - "5000:5000"
     networks:
@@ -76,7 +78,7 @@ services:
     ports:
       - "1440:1433"
     volumes:
-      - solenlms-database-data:/var/opt/mssql/data
+      - database-data:/var/opt/mssql/data
     environment:      
       - ACCEPT_EULA=Y
       - SA_PASSWORD=S3cur3P@ssW0rd!
@@ -84,7 +86,9 @@ services:
       - localnetwork
 
 volumes:
-  solenlms-database-data:
+  database-data:
+  api-resources:
+
 
 networks:
   localnetwork: {}

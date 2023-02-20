@@ -26,7 +26,6 @@ internal sealed class RequestValidationBehavior<TRequest, TResponse> : IPipeline
             .Where(f => f != null)
             .ToList();
 
-
         if (failures.Count != 0)
         {
             var response = new TResponse() { IsSuccess = false, Message = failures.First().ErrorMessage };

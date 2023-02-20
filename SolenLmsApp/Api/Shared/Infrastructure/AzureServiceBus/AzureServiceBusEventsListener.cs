@@ -18,7 +18,7 @@ internal sealed class AzureServiceBusEventsListener : BackgroundService
     private readonly ServiceBusProcessor _serviceBusProcessor;
 
     public AzureServiceBusEventsListener(IServiceProvider serviceProvider, ServiceBusClient serviceBusClient,
-        IOptions<AzureServiceBusEventsSettings> settings, ILogger<AzureServiceBusEventsListener> logger)
+        IOptions<AzureServiceBusSettings> settings, ILogger<AzureServiceBusEventsListener> logger)
     {
         _serviceProvider = serviceProvider;
         _serviceBusClient = serviceBusClient;

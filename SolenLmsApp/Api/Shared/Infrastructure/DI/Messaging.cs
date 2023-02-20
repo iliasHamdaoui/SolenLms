@@ -26,6 +26,7 @@ internal static class Messaging
 
         services.AddHostedService<AzureServiceBusEventsListener>();
         services.AddSingleton(_ => new ServiceBusClient(configuration["AzureServiceBusSettings:ConnectionString"]));
+        services.Configure<AzureServiceBusSettings>(configuration.GetSection("AzureServiceBusSettings"));
 
         if (configuration["RabbitMqSettings:UseRabbitMq"] != null && bool.Parse(configuration["RabbitMqSettings:UseRabbitMq"]))
         {

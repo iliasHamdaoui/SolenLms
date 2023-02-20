@@ -27,6 +27,7 @@ services:
       - ASPNETCORE_URLS=http://*:6000
       - ASPNETCORE_ENVIRONMENT=Development
       - RabbitMqSettings__UseRabbitMq=true
+      - EmailSettings__UseSmtp=true
       - applyMigration=true
     ports:
       - "6000:6000"
@@ -97,6 +98,14 @@ services:
     ports:
       - 5672:5672
       - 15672:15672
+    networks:
+      - localnetwork
+
+  smtpserver:
+    image: rnwood/smtp4dev
+    restart: always
+    ports:
+      - "5010:80"
     networks:
       - localnetwork
 

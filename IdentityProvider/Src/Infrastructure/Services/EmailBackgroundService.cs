@@ -5,6 +5,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using SendGrid;
 using SendGrid.Helpers.Mail;
+using System.Net.Mail;
 using System.Text;
 using System.Threading.Channels;
 
@@ -96,11 +97,14 @@ internal class EmailBackgroundService : BackgroundService, IEmailService
     {
         await foreach (EmailMessage email in _channel.Reader.ReadAllAsync(stoppingToken))
         {
-            await SendEmailAsync(email);
+            if (_emailSettings.UseSmtp.HasValue && _emailSettings.UseSmtp.Value)
+                await SendEmailSmtpAsync(email);
+            else
+                await SendSendgridEmailAsync(email);
         }
     }
 
-    private async Task SendEmailAsync(EmailMessage email)
+    private async Task SendSendgridEmailAsync(EmailMessage email)
     {
         SendGridClient client = new(_emailSettings.SendgridApiKey);
         EmailAddress from = new(_emailSettings.From);
@@ -119,6 +123,21 @@ internal class EmailBackgroundService : BackgroundService, IEmailService
         {
             _logger.LogError(ex, "SendEmailAsync Failed");
         }
+    }
+
+    private async Task SendEmailSmtpAsync(EmailMessage email)
+    {
+        var message = new MailMessage
+        {
+            From = new MailAddress(_emailSettings.From),
+            Subject = email.Subject,
+            Body = email.Body,
+            IsBodyHtml = true
+        };
+        message.To.Add(new MailAddress(email.To));
+
+        using var client = new SmtpClient(_emailSettings.SmtpServer, _emailSettings.SmtpPort);
+        await client.SendMailAsync(message);
     }
 
 

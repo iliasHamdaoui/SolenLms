@@ -32,7 +32,7 @@ jobs:
         run: mv SolenLmsApp/Api/Startup/WebApi/appsettings.template.json SolenLmsApp/Api/Startup/WebApi/appsettings.json
 
       - name: installing ffmpeg
-        run: apt-get update && apt-get install -y ffmpeg
+        run: sudo apt-get update && apt-get install -y ffmpeg
 
       - name: Set up .NET Core
         uses: actions/setup-dotnet@v1

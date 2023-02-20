@@ -13,11 +13,11 @@ public sealed class NotificationsService
 
     public void ShowConfirmation(string? message)
     {
-        _toastService.ShowSuccess(message, "Success");
+        _toastService.ShowSuccess(message!);
     }
 
     public void ShowErreur(string? message)
     {
-        _toastService.ShowError(message, "Error");
+        _toastService.ShowError(message!);
     }
 }

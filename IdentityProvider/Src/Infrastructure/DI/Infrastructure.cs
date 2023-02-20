@@ -14,7 +14,7 @@ internal static class Infrastructure
             .AddExternalProviders()
             .AddIdentityServer(configuration)
             .AddWebConfiguration()
-            .AddMediatR(mvcBuilder)
+            .AddMediatR()
             .AddWebApi(mvcBuilder)
             .AddCors()
             .AddOpenApi()

@@ -14,7 +14,7 @@ public static class DependencyInjection
         IMvcBuilder mvcBuilder = services.AddMvc(configuration);
 
         services
-        .AddMediatR()
+        .AddMediator()
         .AddSwagger()
         .AddAppAuthentication(configuration, environment)
         .AddAuthorization()

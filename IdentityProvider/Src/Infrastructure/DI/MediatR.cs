@@ -10,7 +10,7 @@ namespace Imanys.SolenLms.IdentityProvider.Infrastructure.DI;
 
 internal static class MediatR
 {
-    public static IServiceCollection AddMediatR(this IServiceCollection services, IMvcBuilder mvcBuilder)
+    public static IServiceCollection AddMediatR(this IServiceCollection services)
     {
         var assemblies = new Collection<Assembly>
         {
@@ -21,11 +21,10 @@ internal static class MediatR
 
         services.AddFluentValidationRulesToSwagger();
 
-        services.AddMediatR(assemblies.ToArray());
+        services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblies(assemblies.ToArray()));
 
 
         services.AddScoped(typeof(IPipelineBehavior<,>), typeof(RequestValidationBehavior<,>));
-
 
 
 

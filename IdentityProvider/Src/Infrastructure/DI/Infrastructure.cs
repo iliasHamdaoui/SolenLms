@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Imanys.SolenLms.IdentityProvider.Infrastructure.DI;
@@ -17,9 +18,10 @@ internal static class Infrastructure
             .AddWebApi(mvcBuilder)
             .AddCors()
             .AddOpenApi()
-            .AddServices(configuration);
+            .AddServices(configuration)
+            .AddMessaging(configuration);
 
-        services.Configure<SolenLmsWebClientUrl>(options => options.Value = configuration["WebClient:Url"]!);
+        services.Configure<SolenLmsWebClientUrl>(options => options.Value = configuration["WebClient:Url"]!.Split(';').First());
 
         return services;
     }

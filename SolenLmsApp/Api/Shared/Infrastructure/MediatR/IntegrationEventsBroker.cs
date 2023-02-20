@@ -5,7 +5,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using System.Threading.Channels;
 
-namespace Imanys.SolenLms.Application.Shared.Infrastructure.IntegrationEvents;
+namespace Imanys.SolenLms.Application.Shared.Infrastructure.MediatR;
 
 internal sealed class IntegrationEventsBroker : BackgroundService, IIntegrationEventsSender
 {

@@ -1,4 +1,4 @@
-﻿namespace Imanys.SolenLms.Application.Shared.Infrastructure.Events;
+﻿namespace Imanys.SolenLms.Application.Shared.Infrastructure.AzureServiceBus;
 
 internal sealed class AzureServiceBusEventsSettings
 {

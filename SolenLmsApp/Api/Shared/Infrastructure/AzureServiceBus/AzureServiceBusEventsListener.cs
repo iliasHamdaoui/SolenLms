@@ -8,7 +8,7 @@ using Microsoft.Extensions.Options;
 using System.Text;
 using System.Text.Json;
 
-namespace Imanys.SolenLms.Application.Shared.Infrastructure.Events;
+namespace Imanys.SolenLms.Application.Shared.Infrastructure.AzureServiceBus;
 
 internal sealed class AzureServiceBusEventsListener : BackgroundService
 {
@@ -41,7 +41,7 @@ internal sealed class AzureServiceBusEventsListener : BackgroundService
     {
         try
         {
-            _logger.LogInformation("Handling the message from IDP, {message}", args.Message.Body.ToString());
+            _logger.LogInformation("Handling the message, {message}", args.Message.Body.ToString());
 
             string? eventString = args.Message.ApplicationProperties["eventType"].ToString();
 
@@ -60,9 +60,9 @@ internal sealed class AzureServiceBusEventsListener : BackgroundService
                 (BaseIntegrationEvent)JsonSerializer.Deserialize(Encoding.UTF8.GetString(args.Message.Body),
                     eventType)!;
 
-            using IServiceScope scope = _serviceProvider.CreateScope();
+            using var scope = _serviceProvider.CreateScope();
 
-            IMediator mediator = scope.ServiceProvider.GetRequiredService<IMediator>();
+            var mediator = scope.ServiceProvider.GetRequiredService<IMediator>();
 
             await mediator.Publish(createdEvent);
 

@@ -8,14 +8,14 @@ using System.Threading.Channels;
 
 namespace Imanys.SolenLms.IdentityProvider.Infrastructure.Services;
 
-internal class IntegrationEventsBrokerService : BackgroundService, IIntegrationEventsSender
+internal sealed class AzureBusIntegrationEventBroker : BackgroundService, IIntegrationEventsSender
 {
     private readonly Channel<BaseIntegrationEvent> _channel;
     private readonly ServiceBusSender _serviceBusSender;
-    private readonly ILogger<IntegrationEventsBrokerService> _logger;
+    private readonly ILogger<AzureBusIntegrationEventBroker> _logger;
 
-    public IntegrationEventsBrokerService(ServiceBusClient serviceBusClient,
-        IOptions<AzureServiceBusSettings> settings, ILogger<IntegrationEventsBrokerService> logger)
+    public AzureBusIntegrationEventBroker(ServiceBusClient serviceBusClient,
+        IOptions<AzureServiceBusSettings> settings, ILogger<AzureBusIntegrationEventBroker> logger)
     {
         _channel = Channel.CreateUnbounded<BaseIntegrationEvent>();
         _serviceBusSender = serviceBusClient.CreateSender(settings.Value.TopicName);

@@ -47,7 +47,6 @@ builder.Services.AddAuthentication(options =>
         options.ResponseType = "code";
         options.ResponseMode = "query";
         options.AccessDeniedPath = "/";
-        // options.SignedOutRedirectUri  = "/signedout";
         options.Scope.Clear();
         options.Scope.Add("openid");
         options.Scope.Add("profile");
@@ -55,14 +54,6 @@ builder.Services.AddAuthentication(options =>
         options.Scope.Add("solenLmsProfile");
         options.Scope.Add("IdentityServerApi");
         options.Scope.Add("offline_access");
-        //options.Events.OnSignedOutCallbackRedirect += context =>
-        //{
-        //    context.Response.Redirect(context.Options.SignedOutRedirectUri);
-        //    context.HandleResponse();
-
-        //    return Task.CompletedTask;
-        //};
-
         options.MapInboundClaims = false;
         options.GetClaimsFromUserInfoEndpoint = true;
         options.ClaimActions.MapUniqueJsonKey("organizationId", "organizationId");

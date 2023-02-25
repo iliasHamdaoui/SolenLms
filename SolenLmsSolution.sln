@@ -65,7 +65,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Learning", "SolenLmsApp\Api
 EndProject
 Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{274B3DF7-EE01-4CB8-8447-C5182DD87CCC}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "04. infra", "04. infra", "{58EAFCFF-E830-42CE-BE45-3DB497984B06}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "04. Containers Infra", "04. Containers Infra", "{58EAFCFF-E830-42CE-BE45-3DB497984B06}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "nginx", "nginx", "{9E5993C9-8784-4B0E-BEB5-AAE93C897184}"
 	ProjectSection(SolutionItems) = preProject

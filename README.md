@@ -14,6 +14,7 @@ book [Clean Architecture](https://www.amazon.com/Clean-Architecture-Craftsmans-S
 
 Table of Contents :
 
+- [Azure Environment Architecture](#azure-environment-architecture)
 - [Clean Architecture (Quick Overview)](#clean-architecture--quick-overview-)
   * [Introduction](#introduction)
   * [The Dependency Rule](#the-dependency-rule)
@@ -32,7 +33,12 @@ Table of Contents :
   * [Presentation layer](#presentation-layer)
     + [_Thin_ Controller vs _Fat_ Controller](#-thin--controller-vs--fat--controller)
 - [Contribution](#contribution)
-- 
+
+
+# Azure Environment Architecture
+
+![Solen LMS Archi](https://user-images.githubusercontent.com/52765247/221437913-44bdc0bc-cef2-4bbf-aa5e-d8f19fc20240.png)
+
 # Clean Architecture (Quick Overview)
 
 ## Introduction

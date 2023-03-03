@@ -24,7 +24,7 @@
         </PackageReference>
 
         <PackageReference Include="Xabe.FFmpeg" Version="5.2.5" />
-        <PackageReference Include="Azure.Storage.Blobs" Version="12.14.1" />
+        <PackageReference Include="Azure.Storage.Blobs" Version="12.15.0" />
     </ItemGroup>
     
 

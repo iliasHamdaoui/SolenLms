@@ -27,28 +27,29 @@ public static class SeedData
                 scope.ServiceProvider.GetRequiredService<PersistedGrantDbContext>().Database.Migrate();
 
                 configurationDbContext.Database.Migrate();
+
+
+                if (!configurationDbContext.Clients.Any())
+                {
+                    foreach (Client client in Config.Clients(configuration))
+                        configurationDbContext.Clients.Add(client.ToEntity());
+                }
+
+                if (!configurationDbContext.IdentityResources.Any())
+                {
+                    foreach (IdentityResource resource in Config.IdentityResources)
+                        configurationDbContext.IdentityResources.Add(resource.ToEntity());
+                }
+
+                if (!configurationDbContext.ApiScopes.Any())
+                {
+                    foreach (ApiScope apiScope in Config.ApiScopes)
+                        configurationDbContext.ApiScopes.Add(apiScope.ToEntity());
+                }
+
+
+                configurationDbContext.SaveChanges();
             }
-
-            if (!configurationDbContext.Clients.Any())
-            {
-                foreach (Client client in Config.Clients(configuration))
-                    configurationDbContext.Clients.Add(client.ToEntity());
-            }
-
-            if (!configurationDbContext.IdentityResources.Any())
-            {
-                foreach (IdentityResource resource in Config.IdentityResources)
-                    configurationDbContext.IdentityResources.Add(resource.ToEntity());
-            }
-
-            if (!configurationDbContext.ApiScopes.Any())
-            {
-                foreach (ApiScope apiScope in Config.ApiScopes)
-                    configurationDbContext.ApiScopes.Add(apiScope.ToEntity());
-            }
-
-
-            configurationDbContext.SaveChanges();
         }
         catch (Exception)
         {
